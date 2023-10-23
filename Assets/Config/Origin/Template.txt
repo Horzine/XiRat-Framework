@@ -1,4 +1,4 @@
-#Id	Age	Sex	Msic
+#Id	Age	Sex	Misc
 Key	Type	Value	Description
 string	int	bool	List<string>
 
