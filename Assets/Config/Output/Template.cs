@@ -3,7 +3,7 @@
 //
 using System.Collections.Generic;
 
-namespace Config
+namespace XiConfig
 {
     [ConfigDataType]
     public class Template : IConfigData
