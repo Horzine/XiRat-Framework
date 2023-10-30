@@ -11,13 +11,13 @@ namespace Xi.Framework
     {
         private static T _instance;
         private static readonly object _lock = new();
-        private static bool applicationIsQuitting = false;
+        private static bool _applicationIsQuitting = false;
 
         public static T Instance
         {
             get
             {
-                if (applicationIsQuitting)
+                if (_applicationIsQuitting)
                 {
                     Debug.LogWarning($"[Singleton] Instance '{typeof(T)}' already destroyed on application quit. Won't create again - returning null.");
                     return null;
@@ -51,6 +51,6 @@ namespace Xi.Framework
             }
         }
 
-        private void OnDestroy() => applicationIsQuitting = true;
+        private void OnDestroy() => _applicationIsQuitting = true;
     }
 }
