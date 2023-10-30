@@ -375,7 +375,7 @@ public static class ExtendEvents
     /// 全局 Subscribe-Publish model implements from Action callback 
     /// 推荐
     /// </summary>
-    public class SPublisher<K> : Xi.Singleton<SPublisher<K>> where K : IConvertible
+    public class SPublisher<K> : Xi.Framework.Singleton<SPublisher<K>> where K : IConvertible
     {
 
         private Publisher<K> Publisher = new Publisher<K>();

@@ -2,38 +2,49 @@ using System;
 
 namespace Xi.Framework
 {
-    public class Singleton<T> where T : Singleton<T>, new()
+    public abstract class Singleton<T> where T : class, new()
     {
         private static T instance;
-        public static T Instance
-        {
-            get
-            {
-                instance ??= new T();
-                return instance;
-            }
-        }
+        private static readonly object lockObject = new();
 
-        public void Dispose()
-        {
-            if (instance != null)
-            {
-                instance = null;
-            }
-        }
-    }
-
-    public class AppSingleton<T> : IDisposable where T : AppSingleton<T>, new()
-    {
-        private static T instance;
         public static T Instance
         {
             get
             {
                 if (instance == null)
                 {
-                    instance = new T();
-                    instance.OnCreate();
+                    lock (lockObject)
+                    {
+                        instance ??= new T();
+                    }
+                }
+
+                return instance;
+            }
+        }
+
+        public static void Dispose() => instance = null;
+    }
+
+    public abstract class AppSingleton<T> : IDisposable where T : class, new()
+    {
+        private static T instance;
+        private static readonly object lockObject = new();
+
+        public static T Instance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    lock (lockObject)
+                    {
+                        if (instance == null)
+                        {
+                            instance = new T();
+                            (instance as AppSingleton<T>)?.OnCreate();
+                        }
+                    }
                 }
 
                 return instance;
@@ -42,11 +53,8 @@ namespace Xi.Framework
 
         public void Dispose()
         {
-            if (instance != null)
-            {
-                instance.OnDispose();
-                instance = null;
-            }
+            (instance as AppSingleton<T>)?.OnDispose();
+            instance = null;
         }
 
         protected virtual void OnCreate() { }
