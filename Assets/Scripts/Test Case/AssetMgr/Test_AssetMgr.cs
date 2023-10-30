@@ -2,9 +2,8 @@
 using UnityEngine;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using Xi.Framework;
-using Xi.TestCase;
 
-namespace Xi
+namespace Xi.TestCase
 {
     public class Test_AssetMgr : MonoBehaviour
     {
@@ -26,10 +25,7 @@ namespace Xi
             print(asset.name);
         }
 
-        private async UniTask<Test_AssetMgr_Cube> TestInstantiateScript()
-        {
-            return await AssetManager.Instance.InstantiateScriptAsync<Test_AssetMgr_Cube>($"AssetMgr/Cube.prefab", Vector3.zero, Quaternion.identity);
-        }
+        private async UniTask<Test_AssetMgr_Cube> TestInstantiateScript() => await AssetManager.Instance.InstantiateScriptAsync<Test_AssetMgr_Cube>($"AssetMgr/Cube.prefab", Vector3.zero, Quaternion.identity);
 
         private void OnDestroy()
         {

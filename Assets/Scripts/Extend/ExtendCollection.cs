@@ -1,9 +1,9 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Xi.Framework.Extend
+namespace Xi.Extend
 {
     public static partial class ExtendCollection
     {

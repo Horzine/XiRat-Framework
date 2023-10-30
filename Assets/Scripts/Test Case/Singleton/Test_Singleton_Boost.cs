@@ -1,7 +1,6 @@
-using UnityEngine;
-using Xi.TestCase;
+﻿using UnityEngine;
 
-namespace Xi
+namespace Xi.TestCase
 {
     public class Test_Singleton_Boost : MonoBehaviour
     {
