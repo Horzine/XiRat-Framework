@@ -6,7 +6,11 @@ namespace Xi.TestCase
 {
     public class Test_Collection : MonoBehaviour
     {
-        private void Start()
+        private void Start() =>
+            //Func_1();
+            Func_2();
+
+        private void Func_1()
         {
             string space = "__________";
             ExtendCollection.Foreach(3, (x) => Debug.Log(x));
@@ -25,6 +29,54 @@ namespace Xi.TestCase
             Debug.Log(space);
             dic.ForeachValue(v => Debug.Log(v));
             Debug.Log(space);
+        }
+
+        private void Func_2()
+        {
+            var fList = new ForeachMutableList<int>() { 1, 2, 3, 4, 5, 6, 7, 8, };
+            foreach (int item in fList)
+            {
+                if (item == 1)
+                {
+                    fList.Add(100);
+                }
+
+                if (item == 4)
+                {
+                    fList.Remove(2);
+                }
+
+                if (item == 100)
+                {
+                    fList.Add(1000);
+                }
+            }
+            foreach (var item in fList)
+            {
+                Debug.Log(item);
+            }
+            foreach (int item in fList)
+            {
+                if (item == 1)
+                {
+                    fList.Add(100);
+                }
+
+                if (item == 4)
+                {
+                    fList.Remove(2);
+                }
+
+                if (item == 100)
+                {
+                    fList.Add(1000);
+                }
+            }
+
+            foreach (var item in fList)
+            {
+                Debug.Log(item);
+            }
         }
     }
 }
