@@ -1,2 +1,14 @@
-[*]
+﻿[*]
 charset = utf-8-BOM
+
+[*.cs]
+
+# UNT0013: Remove invalid SerializeField attribute
+dotnet_diagnostic.UNT0013.severity = error
+
+# UNT0008: Null propagation on Unity objects
+dotnet_diagnostic.UNT0008.severity = error
+
+# UNT0007: Null coalescing on Unity objects
+dotnet_diagnostic.UNT0007.severity = error
+
