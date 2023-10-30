@@ -8,7 +8,7 @@ namespace XiConfig.Editor
         private const string kTxtOriginFolder = ConfigUtils.kTxtOriginFolder;
         private const string kCSharpOutputFolder = ConfigUtils.kCSharpOutputFolder;
 
-        [MenuItem("ConfigTool/Generate ConfigData")]
+        [MenuItem("Xi/ConfigTool/Generate ConfigData")]
         public static void GenerateAllConfigData()
         {
             if (!Directory.Exists(kCSharpOutputFolder))
@@ -35,7 +35,7 @@ namespace XiConfig.Editor
             AssetDatabase.Refresh();
         }
 
-        [MenuItem("ConfigTool/Generate ConfigCollection")]
+        [MenuItem("Xi/ConfigTool/Generate ConfigCollection")]
         public static void GenerateConfigCollection()
         {
             if (!Directory.Exists(kCSharpOutputFolder))
