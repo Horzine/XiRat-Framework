@@ -9,6 +9,7 @@ namespace XiConfig
         public const string kTxtOriginFolder = "Assets/Config/Origin";
         public const string kCSharpOutputFolder = "Assets/Config/Output";
         public const string kRuntimLoadFolder = "Assets/Config/Origin";
+        public const string kConfigFileSuffix = ".cfg";
 
         private static readonly Dictionary<string, Type> typeCache = new();
 

@@ -52,7 +52,7 @@ namespace XiConfig
 
             foreach (var item in configDataTypes)
             {
-                sb.AppendLine($@"            ConfigUtils.ParseConfigData(File.ReadAllLines(Path.Combine(kLoadFloder, ""{item.Name}.txt"")), All{item.Name});");
+                sb.AppendLine($@"            ConfigUtils.ParseConfigData(File.ReadAllLines(Path.Combine(kLoadFloder, ""{item.Name}{ConfigUtils.kConfigFileSuffix}"")), All{item.Name});");
             }
 
             sb.AppendLine(@"

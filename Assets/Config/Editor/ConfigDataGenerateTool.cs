@@ -8,6 +8,7 @@ namespace XiConfig.Editor
     public static class ConfigDataGenerateTool
     {
         private static readonly Dictionary<string, Type> typeCache = new();
+
         public static void GenerateCode(string filePath, string outputFilePath)
         {
             var lines = new List<string>(File.ReadAllLines(filePath));

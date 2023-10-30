@@ -13,7 +13,7 @@ namespace XiConfig
 
         public void Init()
         {
-            ConfigUtils.ParseConfigData(File.ReadAllLines(Path.Combine(kLoadFloder, "Template.txt")), AllTemplate);
+            ConfigUtils.ParseConfigData(File.ReadAllLines(Path.Combine(kLoadFloder, "Template.cfg")), AllTemplate);
 
         }
     }

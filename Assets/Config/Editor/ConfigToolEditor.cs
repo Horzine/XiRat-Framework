@@ -24,7 +24,7 @@ namespace XiConfig.Editor
             foreach (string item in GetTextFiles(kTxtOriginFolder))
             {
                 string fileName = Path.GetFileNameWithoutExtension(item);
-                string originPath = Path.Combine(kTxtOriginFolder, fileName + ".txt");
+                string originPath = Path.Combine(kTxtOriginFolder, fileName + ConfigUtils.kConfigFileSuffix);
                 string outputPath = Path.Combine(kCSharpOutputFolder, fileName + ".cs");
 
                 ConfigDataGenerateTool.GenerateCode(originPath, outputPath);
@@ -51,7 +51,7 @@ namespace XiConfig.Editor
 
         private static string[] GetTextFiles(string folderPath)
         {
-            string[] files = Directory.GetFiles(folderPath, "*.txt", SearchOption.AllDirectories);
+            string[] files = Directory.GetFiles(folderPath, $"*{ConfigUtils.kConfigFileSuffix}", SearchOption.AllDirectories);
             if (files.Length > 0)
             {
                 return files;
