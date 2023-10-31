@@ -5,33 +5,13 @@ using System.Linq;
 using System.IO;
 using System;
 using XiConfig;
+using Xi.Extent.Attribute;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
 
 namespace Xi.Data
 {
-    public abstract class SoCollectionEntry_SO : ScriptableObject
-    {
-        [SerializeField] private int m_ConfigId;
-        [SerializeField] private string m_DisplayName;
-        public void SetIntConfigId(int value) => m_ConfigId = value;
-        public int GetIntConfigId(bool silence = false)
-        {
-            if (!SoCollection_SO.ConfigIdValid(m_ConfigId) && !silence)
-            {
-                Debug.LogError("ConfigIdValid", this);
-            }
-
-            return m_ConfigId;
-        }
-        public string ConfigId => GetIntConfigId().ToString();
-        public string DisplayName => m_DisplayName;
-        public abstract string ToTxt_Comment();
-        public abstract string ToTxt_Header();
-        public abstract string ToTxt_Type();
-        public abstract string ToTxt_Entry();
-    }
     [Serializable]
     public class EntryInfo
     {
@@ -41,7 +21,7 @@ namespace Xi.Data
     [CreateAssetMenu(fileName = "SoCollection_SO_", menuName = "Xi/Data/ScriptableObject Collection")]
     public class SoCollection_SO : ScriptableObject
     {
-        [SerializeField] private int m_NextConfigId = 1;
+        [ReadOnly, SerializeField] private int m_NextConfigId = 1;
         [SerializeField] private string m_ExportTxtFileName;
         [SerializeField] private List<EntryInfo> m_So_Info;
         public string FileOutputFullName => $"{ConfigUtils.kTxtOriginFolder}/{ExportTxtFileName}{ConfigUtils.kConfigFileSuffix}";
