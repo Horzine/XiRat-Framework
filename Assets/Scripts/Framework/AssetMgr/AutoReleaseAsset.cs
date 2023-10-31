@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿#if UNITY_EDITOR
+using UnityEditor;
+#endif
+using UnityEngine;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace Xi.Framework
@@ -14,5 +17,18 @@ namespace Xi.Framework
                 AssetManager.Instance.Release(_operationHandle);
             }
         }
+
+#if UNITY_EDITOR
+        private void OnValidate()
+        {
+            if (EditorApplication.isPlaying || EditorApplication.isPlayingOrWillChangePlaymode)
+            {
+                return;
+            }
+
+            Debug.LogError($"{nameof(AutoReleaseAsset)} should not exist in the Prefab, please manually remove this component. Path = {AssetDatabase.GetAssetPath(transform)}");
+        }
+#endif
+
     }
 }
