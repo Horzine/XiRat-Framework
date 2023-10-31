@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using UnityEditor;
 
-namespace XiConfig.Editor
+namespace Xi.Config.Editor
 {
     public static class ConfigToolEditor
     {

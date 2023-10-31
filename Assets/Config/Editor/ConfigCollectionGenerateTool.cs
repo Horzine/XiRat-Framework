@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 using Type = System.Type;
 
-namespace XiConfig.Editor
+namespace Xi.Config.Editor
 {
     public static class ConfigCollectionGenerateTool
     {
@@ -35,7 +35,7 @@ namespace XiConfig.Editor
 using System.Collections.Generic;
 using System.IO;
 
-namespace XiConfig
+namespace Xi.Config
 {{
     public class {className}
     {{

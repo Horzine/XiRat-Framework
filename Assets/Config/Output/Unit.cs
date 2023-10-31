@@ -3,7 +3,7 @@
 //
 using System.Collections.Generic;
 
-namespace XiConfig
+namespace Xi.Config
 {
     [ConfigDataType]
     public class Unit : IConfigData

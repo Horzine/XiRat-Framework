@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using XiConfig;
+using Xi.Config;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif

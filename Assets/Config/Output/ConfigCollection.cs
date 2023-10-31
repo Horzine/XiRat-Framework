@@ -4,7 +4,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace XiConfig
+namespace Xi.Config
 {
     public class ConfigCollection
     {

@@ -4,7 +4,7 @@ using System.Text;
 using System.Linq;
 using System.IO;
 using System;
-using XiConfig;
+using Xi.Config;
 using Xi.Extent.Attribute;
 #if UNITY_EDITOR
 using UnityEditor;

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace XiConfig
+namespace Xi.Config
 {
     public class ConfigUtils
     {

@@ -1,6 +1,6 @@
 using System;
 
-namespace XiConfig
+namespace Xi.Config
 {
     [AttributeUsage(AttributeTargets.Class)]
     public class ConfigDataTypeAttribute : Attribute

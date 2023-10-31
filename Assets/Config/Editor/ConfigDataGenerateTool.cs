@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace XiConfig.Editor
+namespace Xi.Config.Editor
 {
     public static class ConfigDataGenerateTool
     {
@@ -24,7 +24,7 @@ namespace XiConfig.Editor
 // This code is Generated. Do not modify !
 //");
             sb.AppendLine("using System.Collections.Generic;\n");
-            sb.AppendLine($@"namespace XiConfig
+            sb.AppendLine($@"namespace Xi.Config
 {{
     [{$"{nameof(ConfigDataTypeAttribute).Replace("Attribute", "")}"}]
     public class {className} : IConfigData

@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using XiConfig;
+using Xi.Config;
 
 namespace Xi.TestCase
 {
