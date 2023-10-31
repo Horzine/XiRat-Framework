@@ -24,8 +24,8 @@ namespace XiConfig.Editor
             foreach (string item in GetTextFiles(kTxtOriginFolder))
             {
                 string fileName = Path.GetFileNameWithoutExtension(item);
-                string originPath = Path.Combine(kTxtOriginFolder, fileName + ConfigUtils.kConfigFileSuffix);
-                string outputPath = Path.Combine(kCSharpOutputFolder, fileName + ".cs");
+                string originPath = Path.Combine(kTxtOriginFolder, string.Concat(fileName, ConfigUtils.kConfigFileSuffix));
+                string outputPath = Path.Combine(kCSharpOutputFolder, string.Concat(fileName, ".cs"));
 
                 ConfigDataGenerateTool.GenerateCode(originPath, outputPath);
                 AssetDatabase.ImportAsset(outputPath);

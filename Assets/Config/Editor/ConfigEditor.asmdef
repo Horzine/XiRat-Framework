@@ -1,0 +1,18 @@
+{
+    "name": "ConfigEditor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:f5cd695d320e89547817136920b2fd5a"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

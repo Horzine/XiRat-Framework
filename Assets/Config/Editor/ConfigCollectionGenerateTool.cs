@@ -11,7 +11,7 @@ namespace XiConfig.Editor
         public static void GenerateCode(string outputFilePath)
         {
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-            var assembly = Array.Find(assemblies, item => item.FullName.Contains("Assembly-CSharp"));
+            var assembly = Array.Find(assemblies, item => item.FullName.Contains("Config,"));
             var types = assembly.GetTypes();
             var configDataTypes = new List<Type>();
             foreach (var type in types)
