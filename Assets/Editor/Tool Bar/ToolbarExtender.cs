@@ -9,7 +9,7 @@ namespace Xi.EditorExtend
     [InitializeOnLoad]
     public static class ToolbarExtender
     {
-        private static int m_toolCount;
+        private static readonly int m_toolCount;
         private static GUIStyle m_commandStyle = null;
 
         public static readonly List<Action> LeftToolbarGUI = new();

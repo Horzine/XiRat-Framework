@@ -4,7 +4,6 @@ using UnityEngine;
 namespace Xi.EditorExtend
 {
     [InitializeOnLoad]
-    [AddComponentMenu("Recreate/Editor/Local Test Play Button")]
     public class LocalTestPlayButton : MonoBehaviour
     {
         static LocalTestPlayButton() => ToolbarExtender.LeftToolbarGUI.Add(OnToolbarGUI);
@@ -13,20 +12,11 @@ namespace Xi.EditorExtend
         {
             GUILayout.FlexibleSpace();
 
-            if (GUILayout.Button(new GUIContent("► Local Test", "Start in local test mode"), new GUILayoutOption[0]))
+            if (!EditorApplication.isPlayingOrWillChangePlaymode && GUILayout.Button(new GUIContent("► Local Test", "Start in local test mode"), new GUILayoutOption[0]))
             {
-                // AAEditorHelper.PlayModeScriptReminder();
-
-                // DebugModeManager.isLocalTestMode = true;
-
+                Debug.Log($"[{nameof(LocalTestPlayButton)}]<{nameof(OnToolbarGUI)}>: Playing local test mode");
                 EditorApplication.isPlaying = true;
             }
         }
-
-        [MenuItem("SourceTool/LocalTest")]
-        private static void StartPlay() =>
-            // AAEditorHelper.PlayModeScriptReminder();
-            // DebugModeManager.isLocalTestMode = true;
-            EditorApplication.isPlaying = true;
     }
 }

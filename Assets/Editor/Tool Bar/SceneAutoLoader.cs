@@ -17,51 +17,29 @@ using UnityEngine;
 namespace Xi.EditorExtend
 {
     [InitializeOnLoad]
-    internal static class SceneAutoLoader
+    internal static class SceneAutoLoaderButton
     {
+        private const string kMasterSceneName = "Assets/Scenes/Boost.unity";
+
         // Static constructor binds a playmode-changed callback.
         // [InitializeOnLoad] above makes sure this gets executed.
-        static SceneAutoLoader()
+        static SceneAutoLoaderButton()
         {
             ToolbarExtender.RightToolbarGUI.Add(OnToolbarGUI);
             EditorApplication.playModeStateChanged += OnPlayModeChanged;
-            MasterScene = "Assets/Recreate/Scenes/Gui/MenuScene/Menu.unity";
         }
 
         private static void OnToolbarGUI()
         {
-            if (GUILayout.Button(new GUIContent("► Menu", "Play from Menu"), new GUILayoutOption[0]))
+            if (!EditorApplication.isPlayingOrWillChangePlaymode && GUILayout.Button(new GUIContent("► Boost", "Play from Boost"), new GUILayoutOption[0]))
             {
-                // AAEditorHelper.PlayModeScriptReminder();
-
                 LoadMasterOnPlay = true;
-
                 EditorApplication.isPlaying = true;
             }
 
             GUILayout.FlexibleSpace();
         }
 
-        //   [MenuItem("SourceTool/Play From Menu")]
-        //private static void SetLoadMasterOnPlay()
-        //{
-        //	LoadMasterOnPlay = !LoadMasterOnPlay;
-        //	Menu.SetChecked("SourceTool/Play From Menu", LoadMasterOnPlay);
-
-        //	if (LoadMasterOnPlay)
-        //	{
-        //		MasterScene = "Assets/Recreate/Scenes/Gui/MenuScene/Menu.unity";
-        //	}
-        //}
-
-        //[MenuItem("SourceTool/Play From Menu", true)]
-        //private static bool SetLoadMasterOnPlayValidate()
-        //{
-        //	Menu.SetChecked("SourceTool/Play From Menu", LoadMasterOnPlay);
-        //	return true;
-        //}
-
-        // Play mode change callback handles the scene load/reload.
         private static void OnPlayModeChanged(PlayModeStateChange state)
         {
             if (!LoadMasterOnPlay)
@@ -121,26 +99,26 @@ namespace Xi.EditorExtend
         }
 
         // Properties are remembered as editor preferences.
-        private const string cEditorPrefLoadMasterOnPlay = "SceneAutoLoader.LoadMasterOnPlay";
-        private const string cEditorPrefMasterScene = "SceneAutoLoader.MasterScene";
-        private const string cEditorPrefPreviousScene = "SceneAutoLoader.PreviousScene";
+        private const string kEditorPrefLoadMasterOnPlay = "SceneAutoLoaderButton.LoadMasterOnPlay";
+        private const string kEditorPrefMasterScene = "SceneAutoLoaderButton.MasterScene";
+        private const string kEditorPrefPreviousScene = "SceneAutoLoaderButton.PreviousScene";
 
         private static bool LoadMasterOnPlay
         {
-            get => EditorPrefs.GetBool(cEditorPrefLoadMasterOnPlay, false);
-            set => EditorPrefs.SetBool(cEditorPrefLoadMasterOnPlay, value);
+            get => EditorPrefs.GetBool(kEditorPrefLoadMasterOnPlay, false);
+            set => EditorPrefs.SetBool(kEditorPrefLoadMasterOnPlay, value);
         }
 
         private static string MasterScene
         {
-            get => EditorPrefs.GetString(cEditorPrefMasterScene, "Master.unity");
-            set => EditorPrefs.SetString(cEditorPrefMasterScene, value);
+            get => EditorPrefs.GetString(kEditorPrefMasterScene, kMasterSceneName);
+            set => EditorPrefs.SetString(kEditorPrefMasterScene, value);
         }
 
         private static string PreviousScene
         {
-            get => EditorPrefs.GetString(cEditorPrefPreviousScene, EditorSceneManager.GetActiveScene().path);
-            set => EditorPrefs.SetString(cEditorPrefPreviousScene, value);
+            get => EditorPrefs.GetString(kEditorPrefPreviousScene, EditorSceneManager.GetActiveScene().path);
+            set => EditorPrefs.SetString(kEditorPrefPreviousScene, value);
         }
 
         private static bool PathMatch(string path1, string path2)

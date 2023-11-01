@@ -2,7 +2,6 @@
 using UnityEngine;
 using UnityEditor;
 using System.Reflection;
-
 #if UNITY_2019_1_OR_NEWER
 using UnityEngine.UIElements;
 #else
@@ -13,19 +12,19 @@ namespace Xi.EditorExtend
 {
     public static class ToolbarCallback
     {
-        private static Type m_toolbarType = typeof(Editor).Assembly.GetType("UnityEditor.Toolbar");
-        private static Type m_guiViewType = typeof(Editor).Assembly.GetType("UnityEditor.GUIView");
+        private static readonly Type m_toolbarType = typeof(Editor).Assembly.GetType("UnityEditor.Toolbar");
+        private static readonly Type m_guiViewType = typeof(Editor).Assembly.GetType("UnityEditor.GUIView");
 #if UNITY_2020_1_OR_NEWER
-        private static Type m_iWindowBackendType = typeof(Editor).Assembly.GetType("UnityEditor.IWindowBackend");
-        private static PropertyInfo m_windowBackend = m_guiViewType.GetProperty("windowBackend",
+        private static readonly Type m_iWindowBackendType = typeof(Editor).Assembly.GetType("UnityEditor.IWindowBackend");
+        private static readonly PropertyInfo m_windowBackend = m_guiViewType.GetProperty("windowBackend",
             BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-        private static PropertyInfo m_viewVisualTree = m_iWindowBackendType.GetProperty("visualTree",
+        private static readonly PropertyInfo m_viewVisualTree = m_iWindowBackendType.GetProperty("visualTree",
             BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 #else
 		static PropertyInfo m_viewVisualTree = m_guiViewType.GetProperty("visualTree",
 			BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 #endif
-        private static FieldInfo m_imguiContainerOnGui = typeof(IMGUIContainer).GetField("m_OnGUIHandler",
+        private static readonly FieldInfo m_imguiContainerOnGui = typeof(IMGUIContainer).GetField("m_OnGUIHandler",
             BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
         private static ScriptableObject m_currentToolbar;
 
