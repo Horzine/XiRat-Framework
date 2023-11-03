@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using Xi.Extend;
+using Xi.Extend.Collection;
 
 namespace Xi.TestCase
 {

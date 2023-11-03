@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Xi.Extend
+namespace Xi.Extend.Collection
 {
     public static partial class ExtendCollection
     {
