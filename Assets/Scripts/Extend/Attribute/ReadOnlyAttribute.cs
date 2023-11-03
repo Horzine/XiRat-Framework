@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEditor;
 #endif
 
-namespace Xi.Extent.Attribute
+namespace Xi.Extend.Attribute
 {
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
     public class ReadOnlyAttribute : PropertyAttribute

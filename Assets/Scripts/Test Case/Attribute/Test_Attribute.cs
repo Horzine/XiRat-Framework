@@ -1,5 +1,5 @@
 using UnityEngine;
-using Xi.Extent.Attribute;
+using Xi.Extend.Attribute;
 
 namespace Xi.TestCase
 {

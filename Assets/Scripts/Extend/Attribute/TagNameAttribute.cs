@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEditor;
 #endif
 
-namespace Xi.Extent.Attribute
+namespace Xi.Extend.Attribute
 {
     [AttributeUsage(AttributeTargets.Field, Inherited = true, AllowMultiple = false)]
     public class TagNameAttribute : PropertyAttribute
