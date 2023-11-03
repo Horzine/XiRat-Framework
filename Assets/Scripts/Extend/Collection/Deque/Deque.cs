@@ -216,9 +216,9 @@ namespace Xi.Extend.Collection
 
         #region ObjectListImplementations
 
-        private static bool IsT(object? value) => value is T || (value == null && default(T) == null);
+        private static bool IsT(object value) => value is T || (value == null && default(T) == null);
 
-        int System.Collections.IList.Add(object? value)
+        int System.Collections.IList.Add(object value)
         {
             if (value == null && default(T) != null)
             {
@@ -234,11 +234,11 @@ namespace Xi.Extend.Collection
             return Count - 1;
         }
 
-        bool System.Collections.IList.Contains(object? value) => IsT(value) && ((ICollection<T>)this).Contains((T)value!);
+        bool System.Collections.IList.Contains(object value) => IsT(value) && ((ICollection<T>)this).Contains((T)value!);
 
-        int System.Collections.IList.IndexOf(object? value) => IsT(value) ? IndexOf((T)value!) : -1;
+        int System.Collections.IList.IndexOf(object value) => IsT(value) ? IndexOf((T)value!) : -1;
 
-        void System.Collections.IList.Insert(int index, object? value)
+        void System.Collections.IList.Insert(int index, object value)
         {
             if (value == null && default(T) != null)
             {
@@ -257,7 +257,7 @@ namespace Xi.Extend.Collection
 
         bool System.Collections.IList.IsReadOnly => false;
 
-        void System.Collections.IList.Remove(object? value)
+        void System.Collections.IList.Remove(object value)
         {
             if (IsT(value))
             {
@@ -265,7 +265,7 @@ namespace Xi.Extend.Collection
             }
         }
 
-        object? System.Collections.IList.this[int index]
+        object System.Collections.IList.this[int index]
         {
             get => this[index];
 

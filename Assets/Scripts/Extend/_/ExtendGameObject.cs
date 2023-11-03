@@ -1,43 +1,36 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
 
-
-
-/// <summary>
-/// GameObject  Extends
-/// @fangyiliu(刘方毅)
-/// </summary>
 public static class ExtendGameObject
 {
     internal static GameObject Singleton
     {
-        get {
-            if(sSingleton == null)
+        get
+        {
+            if (sSingleton == null)
             {
                 sSingleton = new GameObject("Singleton");
                 GameObject.DontDestroyOnLoad(sSingleton);
             }
+
             return sSingleton;
         }
     }
 
-    static GameObject sSingleton;
+    private static GameObject sSingleton;
     static ExtendGameObject()
     {
 
     }
 
-    public static void Destroy(this UnityEngine.Object obj)
-    {
+    public static void Destroy(this UnityEngine.Object obj) =>
 #if UNITY_EDITOR
         GameObject.DestroyImmediate(obj);
 #else
         GameObject.Destroy(obj);
 #endif
-	}
+
     /// <summary>
     /// 递归搜索对象树里面为name的子对象，忽略层级 
     /// 兼容Unity的 Find("parent/cc/child")的方法
@@ -61,9 +54,14 @@ public static class ExtendGameObject
             {
                 continue;
             }
+
             var ob = GetChild(child.gameObject, name, needActive);
-            if (ob) return ob;
+            if (ob)
+            {
+                return ob;
+            }
         }
+
         return null;
     }
     public static bool HasChild(this GameObject obj, GameObject child)
@@ -71,20 +69,22 @@ public static class ExtendGameObject
         if (obj)
         {
             var myTrans = obj.transform;
-            Transform parent = child.transform;
+            var parent = child.transform;
             while (parent)
             {
                 if (parent == myTrans)
                 {
                     return true;
                 }
+
                 parent = parent.parent;
             }
         }
+
         return false;
     }
 
-    public static GameObject AddChildEx(this GameObject parent,GameObject child)
+    public static GameObject AddChildEx(this GameObject parent, GameObject child)
     {
         child.transform.parent = parent.transform;
         child.transform.localPosition = Vector3.zero;
@@ -104,13 +104,14 @@ public static class ExtendGameObject
     /// <returns></returns>
     public static bool ReplaceChild(this GameObject parent, string name, GameObject obj)
     {
-        GameObject old = parent.GetChild(name);
+        var old = parent.GetChild(name);
 
         if (old == null)
         {
             obj.Destroy();
             return false;
         }
+
         obj.transform.parent = old.transform.parent;
         obj.transform.localPosition = Vector3.zero;
         obj.transform.localRotation = Quaternion.identity;
@@ -130,6 +131,7 @@ public static class ExtendGameObject
             obj.Destroy();
             return false;
         }
+
         obj.transform.parent = old.transform.parent;
         obj.transform.localPosition = Vector3.zero;
         obj.transform.localRotation = Quaternion.identity;
@@ -153,14 +155,15 @@ public static class ExtendGameObject
         {
             return null;
         }
-        T component = gameobject.GetComponent<T>();
+
+        var component = gameobject.GetComponent<T>();
         if (component == null)
         {
             component = gameobject.AddComponent<T>();
         }
+
         return component;
     }
-
 
     /// <summary>
     /// 获取组件 如果没有则添加
@@ -174,11 +177,13 @@ public static class ExtendGameObject
         {
             return null;
         }
-        T component = trs.gameObject.GetComponent<T>();
+
+        var component = trs.gameObject.GetComponent<T>();
         if (component == null)
         {
             component = trs.gameObject.AddComponent<T>();
         }
+
         return component;
     }
     /// <summary>
@@ -193,11 +198,13 @@ public static class ExtendGameObject
         {
             return null;
         }
-        T component = behaviour.GetComponent<T>();
+
+        var component = behaviour.GetComponent<T>();
         if (component == null)
         {
             component = behaviour.gameObject.AddComponent<T>();
         }
+
         return component;
     }
 
@@ -208,7 +215,7 @@ public static class ExtendGameObject
             return null;
         }
 
-        T comp = gameObject.GetComponentInChildren<T>(includeInactive);
+        var comp = gameObject.GetComponentInChildren<T>(includeInactive);
         if (comp == null)
         {
             if (string.IsNullOrEmpty(name))
@@ -216,10 +223,11 @@ public static class ExtendGameObject
                 name = typeof(T).FullName;
             }
 
-            GameObject child = new GameObject(name);
+            var child = new GameObject(name);
             comp = child.AddComponent<T>();
             child.transform.SetParent(gameObject.transform);
         }
+
         return comp;
     }
 
@@ -237,22 +245,22 @@ public static class ExtendGameObject
             r = c.name + "->" + r;
             c = c.parent;
         }
+
         return r;
     }
 
+    public static void SetLayerRecursively(this GameObject go, int layer)
+    {
+        if (go != null)
+        {
+            go.layer = layer;
 
-	public static void SetLayerRecursively(this GameObject go, int layer)
-	{
-		if (go != null)
-		{
-			go.layer = layer;
-
-			for (int i = 0; i < go.transform.childCount; ++i)
-			{
-				go.transform.GetChild(i).gameObject.SetLayerRecursively(layer);
-			}
-		}
-	}
+            for (int i = 0; i < go.transform.childCount; ++i)
+            {
+                go.transform.GetChild(i).gameObject.SetLayerRecursively(layer);
+            }
+        }
+    }
 
     public static void SetLayerExceptFixedLayer(this GameObject go, int layer)
     {
@@ -262,15 +270,15 @@ public static class ExtendGameObject
 
             for (int i = 0; i < go.transform.childCount; ++i)
             {
-                Transform tran = go.transform.GetChild(i);
-                if (tran != null && tran.gameObject!=null)
+                var tran = go.transform.GetChild(i);
+                if (tran != null && tran.gameObject != null)
                 {
                     tran.gameObject.SetLayerExceptFixedLayer(layer);
                 }
             }
         }
     }
-    
+
     public static void SetLayerExceptIgnoreLayer(this GameObject go, int layer)
     {
         if (go != null && go.layer != LayerMask.NameToLayer("Ignore"))
@@ -279,7 +287,7 @@ public static class ExtendGameObject
 
             for (int i = 0; i < go.transform.childCount; ++i)
             {
-                Transform tran = go.transform.GetChild(i);
+                var tran = go.transform.GetChild(i);
                 if (tran != null && tran.gameObject != null)
                 {
                     tran.gameObject.SetLayerExceptIgnoreLayer(layer);
@@ -305,34 +313,35 @@ public static class ExtendGameObject
             return null;
         }
 
-        GameObject[] children = new GameObject[go.transform.childCount];
+        var children = new GameObject[go.transform.childCount];
         for (int i = 0; i < go.transform.childCount; i++)
         {
-            GameObject gameObject = go.transform.GetChild(i).gameObject;
+            var gameObject = go.transform.GetChild(i).gameObject;
             children[i] = gameObject;
         }
+
         return children;
     }
 
-	#region Collider
-	public static float GetColliderHeight(this GameObject gameobject)
+    #region Collider
+    public static float GetColliderHeight(this GameObject gameobject)
     {
         float height = 0f;
         if (gameobject)
         {
-            Collider collider = gameobject.GetComponent<Collider>();
+            var collider = gameobject.GetComponent<Collider>();
             if (collider != null)
             {
                 if (collider is BoxCollider)
                 {
-                    height = ((BoxCollider)(collider)).size.y;
+                    height = ((BoxCollider)collider).size.y;
                 }
+
                 if (collider is CapsuleCollider)
                 {
-                    height = ((CapsuleCollider)(collider)).height;
+                    height = ((CapsuleCollider)collider).height;
                 }
             }
-
         }
 
         return height;
@@ -340,18 +349,19 @@ public static class ExtendGameObject
 
     public static Vector3 GetColliderCenter(this GameObject gameobject)
     {
-        Vector3 center = Vector3.zero;
+        var center = Vector3.zero;
 
-        Collider collider = gameobject.GetComponent<Collider>();
+        var collider = gameobject.GetComponent<Collider>();
         if (collider != null)
         {
             if (collider is BoxCollider)
             {
-                center = ((BoxCollider)(collider)).center;
+                center = ((BoxCollider)collider).center;
             }
+
             if (collider is CapsuleCollider)
             {
-                center = ((CapsuleCollider)(collider)).center;
+                center = ((CapsuleCollider)collider).center;
             }
         }
 
@@ -360,129 +370,57 @@ public static class ExtendGameObject
     #endregion
 
     #region 事件机制 高效!!
-    class GameObjectEventHolder : MonoBehaviour
+    private class GameObjectEventHolder : MonoBehaviour
     {
-        void OnDestroy()
-        {
-            gameObject._UnSubscribeAll();
-        }
+        private void OnDestroy() => gameObject._UnSubscribeAll();
     }
-    
-    static Dictionary<GameObject, ExtendEvents.Publisher<string>> sGameObjectEventMap = new Dictionary<GameObject, ExtendEvents.Publisher<string>>();
+
+    private static Dictionary<GameObject, ExtendEvents.Publisher<string>> sGameObjectEventMap = new();
 
     private static ExtendEvents.Publisher<string> _GetOrAddPublisher(this GameObject obj)
     {
-        ExtendEvents.Publisher<string> publisher;
-        if(!sGameObjectEventMap.TryGetValue(obj, out publisher))
+        if (!sGameObjectEventMap.TryGetValue(obj, out var publisher))
         {
             publisher = new ExtendEvents.Publisher<string>();
             obj.GetOrAddComponent<GameObjectEventHolder>();
             sGameObjectEventMap.Add(obj, publisher);
-            
+
         }
+
         return publisher;
     }
 
-    internal static void _UnSubscribeAll(this GameObject obj)
-    {
-        sGameObjectEventMap.Remove(obj);
-    }
+    internal static void _UnSubscribeAll(this GameObject obj) => sGameObjectEventMap.Remove(obj);
 
-    public static void UnSubscribeAll()
-    {
-        sGameObjectEventMap.Clear();
-    }
-    public static void Subscribe<T1, T2, T3, T4, T5, T6>(this GameObject obj, string name, Action<T1, T2, T3, T4, T5, T6> cb)
-    {
-        obj._GetOrAddPublisher().Subscribe(name, cb);
-    }
-    public static void UnSubscribe<T1, T2, T3, T4, T5, T6>(this  GameObject obj,string name, Action<T1, T2, T3, T4, T5, T6> cb)
-    {
-        obj._GetOrAddPublisher().UnSubscribe(name, cb);
-    }
+    public static void UnSubscribeAll() => sGameObjectEventMap.Clear();
+    public static void Subscribe<T1, T2, T3, T4, T5, T6>(this GameObject obj, string name, Action<T1, T2, T3, T4, T5, T6> cb) => obj._GetOrAddPublisher().Subscribe(name, cb);
+    public static void UnSubscribe<T1, T2, T3, T4, T5, T6>(this GameObject obj, string name, Action<T1, T2, T3, T4, T5, T6> cb) => obj._GetOrAddPublisher().UnSubscribe(name, cb);
 
-    public static void Notify<T1, T2, T3, T4, T5, T6>(this GameObject obj,string name, T1 a1, T2 a2, T3 a3, T4 a4, T5 a5, T6 a6)
-    {
-        obj._GetOrAddPublisher().Notify(name, a1, a2, a3, a4, a5, a6);
-    }
-    public static void Subscribe<T1, T2, T3, T4, T5>(this GameObject obj, string name, Action<T1, T2, T3, T4, T5> cb)
-    {
-        obj._GetOrAddPublisher().Subscribe(name, cb);
-    }
-    public static void UnSubscribe<T1, T2, T3, T4, T5>(this GameObject obj, string name, Action<T1, T2, T3, T4, T5> cb)
-    {
-        obj._GetOrAddPublisher().UnSubscribe(name, cb);
-    }
+    public static void Notify<T1, T2, T3, T4, T5, T6>(this GameObject obj, string name, T1 a1, T2 a2, T3 a3, T4 a4, T5 a5, T6 a6) => obj._GetOrAddPublisher().Notify(name, a1, a2, a3, a4, a5, a6);
+    public static void Subscribe<T1, T2, T3, T4, T5>(this GameObject obj, string name, Action<T1, T2, T3, T4, T5> cb) => obj._GetOrAddPublisher().Subscribe(name, cb);
+    public static void UnSubscribe<T1, T2, T3, T4, T5>(this GameObject obj, string name, Action<T1, T2, T3, T4, T5> cb) => obj._GetOrAddPublisher().UnSubscribe(name, cb);
 
-    public static void Notify<T1, T2, T3, T4, T5>(this GameObject obj, string name, T1 a1, T2 a2, T3 a3, T4 a4, T5 a5)
-    {
-        obj._GetOrAddPublisher().Notify(name, a1, a2, a3, a4, a5);
-    }
-    public static void Subscribe<T1, T2, T3, T4>(this GameObject obj, string name, Action<T1, T2, T3, T4> cb)
-    {
-        obj._GetOrAddPublisher().Subscribe(name, cb);
-    }
-    public static void UnSubscribe<T1, T2, T3, T4>(this GameObject obj, string name, Action<T1, T2, T3, T4> cb)
-    {
-        obj._GetOrAddPublisher().UnSubscribe(name, cb);
-    }
+    public static void Notify<T1, T2, T3, T4, T5>(this GameObject obj, string name, T1 a1, T2 a2, T3 a3, T4 a4, T5 a5) => obj._GetOrAddPublisher().Notify(name, a1, a2, a3, a4, a5);
+    public static void Subscribe<T1, T2, T3, T4>(this GameObject obj, string name, Action<T1, T2, T3, T4> cb) => obj._GetOrAddPublisher().Subscribe(name, cb);
+    public static void UnSubscribe<T1, T2, T3, T4>(this GameObject obj, string name, Action<T1, T2, T3, T4> cb) => obj._GetOrAddPublisher().UnSubscribe(name, cb);
 
-    public static void Notify<T1, T2, T3, T4>(this GameObject obj, string name, T1 a1, T2 a2, T3 a3, T4 a4)
-    {
-        obj._GetOrAddPublisher().Notify(name, a1, a2, a3, a4);
-    }
-    public static void Subscribe<T1, T2, T3>(this GameObject obj, string name, Action<T1, T2, T3> cb)
-    {
-        obj._GetOrAddPublisher().Subscribe(name, cb);
-    }
-    public static void UnSubscribe<T1, T2, T3>(this GameObject obj, string name, Action<T1, T2, T3> cb)
-    {
-        obj._GetOrAddPublisher().UnSubscribe(name, cb);
-    }
+    public static void Notify<T1, T2, T3, T4>(this GameObject obj, string name, T1 a1, T2 a2, T3 a3, T4 a4) => obj._GetOrAddPublisher().Notify(name, a1, a2, a3, a4);
+    public static void Subscribe<T1, T2, T3>(this GameObject obj, string name, Action<T1, T2, T3> cb) => obj._GetOrAddPublisher().Subscribe(name, cb);
+    public static void UnSubscribe<T1, T2, T3>(this GameObject obj, string name, Action<T1, T2, T3> cb) => obj._GetOrAddPublisher().UnSubscribe(name, cb);
 
-    public static void Notify<T1, T2, T3>(this GameObject obj, string name, T1 a1, T2 a2, T3 a3)
-    {
-        obj._GetOrAddPublisher().Notify(name, a1, a2, a3);
-    }
+    public static void Notify<T1, T2, T3>(this GameObject obj, string name, T1 a1, T2 a2, T3 a3) => obj._GetOrAddPublisher().Notify(name, a1, a2, a3);
 
-    public static void Subscribe<T1, T2>(this GameObject obj, string name, Action<T1, T2> cb)
-    {
-        obj._GetOrAddPublisher().Subscribe(name, cb);
-    }
-    public static void UnSubscribe<T1, T2>(this GameObject obj, string name, Action<T1, T2> cb)
-    {
-        obj._GetOrAddPublisher().UnSubscribe(name, cb);
-    }
+    public static void Subscribe<T1, T2>(this GameObject obj, string name, Action<T1, T2> cb) => obj._GetOrAddPublisher().Subscribe(name, cb);
+    public static void UnSubscribe<T1, T2>(this GameObject obj, string name, Action<T1, T2> cb) => obj._GetOrAddPublisher().UnSubscribe(name, cb);
 
-    public static void Notify<T1, T2>(this GameObject obj, string name, T1 a1, T2 a2)
-    {
-        obj._GetOrAddPublisher().Notify(name, a1, a2);
-    }
-    public static void Subscribe<T1>(this GameObject obj, string name, Action<T1> cb)
-    {
-        obj._GetOrAddPublisher().Subscribe(name, cb);
-    }
-    public static void UnSubscribe<T1>(this GameObject obj, string name, Action<T1> cb)
-    {
-        obj._GetOrAddPublisher().UnSubscribe(name, cb);
-    }
+    public static void Notify<T1, T2>(this GameObject obj, string name, T1 a1, T2 a2) => obj._GetOrAddPublisher().Notify(name, a1, a2);
+    public static void Subscribe<T1>(this GameObject obj, string name, Action<T1> cb) => obj._GetOrAddPublisher().Subscribe(name, cb);
+    public static void UnSubscribe<T1>(this GameObject obj, string name, Action<T1> cb) => obj._GetOrAddPublisher().UnSubscribe(name, cb);
 
-    public static void Notify<T1>(this GameObject obj, string name, T1 a1)
-    {
-        obj._GetOrAddPublisher().Notify(name, a1);
-    }
-    public static void Subscribe(this GameObject obj, string name, Action cb)
-    {
-        obj._GetOrAddPublisher().Subscribe(name, cb);
-    }
-    public static void UnSubscribe(this GameObject obj, string name, Action cb)
-    {
-        obj._GetOrAddPublisher().UnSubscribe(name, cb);
-    }
+    public static void Notify<T1>(this GameObject obj, string name, T1 a1) => obj._GetOrAddPublisher().Notify(name, a1);
+    public static void Subscribe(this GameObject obj, string name, Action cb) => obj._GetOrAddPublisher().Subscribe(name, cb);
+    public static void UnSubscribe(this GameObject obj, string name, Action cb) => obj._GetOrAddPublisher().UnSubscribe(name, cb);
 
-    public static void Notify(this GameObject obj, string name)
-    {
-        obj._GetOrAddPublisher().Notify(name);
-    }
+    public static void Notify(this GameObject obj, string name) => obj._GetOrAddPublisher().Notify(name);
     #endregion //事件机制 高效！！
 }
