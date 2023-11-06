@@ -5,7 +5,7 @@ using System.Linq;
 using System.IO;
 using System;
 using Xi.Config;
-using Xi.Extent.Attribute;
+using Xi.Extend.Attribute;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif

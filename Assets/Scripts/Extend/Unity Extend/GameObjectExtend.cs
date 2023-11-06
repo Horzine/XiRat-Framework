@@ -13,19 +13,19 @@ namespace Xi.Extend.UnityExtend
             }
         }
 
-        public static void SetSelfActive(this MonoBehaviour mono, bool active)
+        public static void SetSelfActive(this Component comp, bool active)
         {
-            if (mono && mono.gameObject)
+            if (comp)
             {
-                mono.gameObject.SetActive(active);
+                SetSelfActive(comp.gameObject, active);
             }
         }
 
-        public static void SetSelfEnable(this MonoBehaviour mono, bool enabled)
+        public static void SetSelfEnable(this Behaviour behaviour, bool enabled)
         {
-            if (mono)
+            if (behaviour)
             {
-                mono.enabled = enabled;
+                behaviour.enabled = enabled;
             }
         }
 
@@ -43,6 +43,93 @@ namespace Xi.Extend.UnityExtend
             {
                 button.interactable = interactable;
             }
+        }
+
+        public static T GetOrAddComponent<T>(this Component comp) where T : Component
+            => comp.gameObject.GetOrAddComponent<T>();
+
+        public static T GetOrAddComponent<T>(this GameObject gameObject) where T : Component
+        {
+            if (!gameObject.TryGetComponent<T>(out var comp))
+            {
+                comp = gameObject.AddComponent<T>();
+            }
+
+            return comp;
+        }
+
+        public static string PrintObjectTree(this GameObject go)
+        {
+            var c = go.transform.parent;
+            string r = go.name;
+            while (c != null)
+            {
+                r = c.name + "->" + r;
+                c = c.parent;
+            }
+
+            return r;
+        }
+
+        public static void SetLayerRecursively(this GameObject go, int layer)
+        {
+            if (go == null)
+            {
+                return;
+            }
+
+            go.layer = layer;
+            for (int i = 0; i < go.transform.childCount; ++i)
+            {
+                go.transform.GetChild(i).gameObject.SetLayerRecursively(layer);
+            }
+        }
+
+        public static bool HasChild(this GameObject parent, GameObject child) => child.transform.IsChildOf(parent.transform);
+
+        public static bool IsChildOf(this GameObject child, GameObject parent) => child.transform.IsChildOf(parent.transform);
+
+        public static void DestroySelf(this GameObject go)
+        {
+            if (go == null)
+            {
+                return;
+            }
+
+#if UNITY_EDITOR
+            if (!Application.isPlaying)
+            {
+                Object.DestroyImmediate(go);
+            }
+            else
+#endif
+            {
+                Object.Destroy(go);
+            }
+        }
+
+        public static void DestroySelfGameObject(this Component comp) => comp.gameObject.DestroySelf();
+
+        public static void DestroyObjectAndReleaseReference(this MonoBehaviour _, ref GameObject targetObj)
+        {
+            if (!targetObj)
+            {
+                return;
+            }
+
+            Object.Destroy(targetObj);
+            targetObj = null;
+        }
+
+        public static void DestroyObjectAndReleaseReference(this MonoBehaviour _, ref Component targetObj)
+        {
+            if (!targetObj)
+            {
+                return;
+            }
+
+            Object.Destroy(targetObj.gameObject);
+            targetObj = null;
         }
     }
 }
