@@ -5,6 +5,8 @@ namespace Xi.Extend.UnityExtend
 {
     public static class GameObjectExtend
     {
+        public static void SetParent(this GameObject child, GameObject parent) => child.transform.SetParent(parent.transform);
+
         public static void SetSelfActive(this GameObject go, bool active)
         {
             if (go)
@@ -48,23 +50,23 @@ namespace Xi.Extend.UnityExtend
         public static T GetOrAddComponent<T>(this Component comp) where T : Component
             => comp.gameObject.GetOrAddComponent<T>();
 
-        public static T GetOrAddComponent<T>(this GameObject gameObject) where T : Component
+        public static T GetOrAddComponent<T>(this GameObject go) where T : Component
         {
-            if (!gameObject.TryGetComponent<T>(out var comp))
+            if (!go.TryGetComponent<T>(out var comp))
             {
-                comp = gameObject.AddComponent<T>();
+                comp = go.AddComponent<T>();
             }
 
             return comp;
         }
 
-        public static string PrintObjectTree(this GameObject go)
+        public static string PrintGameObjectTreePath(this GameObject go)
         {
             var c = go.transform.parent;
             string r = go.name;
             while (c != null)
             {
-                r = c.name + "->" + r;
+                r = $"{c.name}->{r}";
                 c = c.parent;
             }
 
@@ -108,28 +110,56 @@ namespace Xi.Extend.UnityExtend
             }
         }
 
-        public static void DestroySelfGameObject(this Component comp) => comp.gameObject.DestroySelf();
-
-        public static void DestroyObjectAndReleaseReference(this MonoBehaviour _, ref GameObject targetObj)
+        public static void DestroySelfGameObject(this Component comp)
         {
-            if (!targetObj)
+            if (comp && comp.gameObject)
             {
-                return;
+                comp.gameObject.DestroySelf();
             }
-
-            Object.Destroy(targetObj);
-            targetObj = null;
         }
 
-        public static void DestroyObjectAndReleaseReference(this MonoBehaviour _, ref Component targetObj)
+        public static void DestroyObjectAndReleaseReference(this MonoBehaviour _, ref GameObject targetGo)
         {
-            if (!targetObj)
+            if (targetGo)
             {
-                return;
+                Object.Destroy(targetGo);
+                targetGo = null;
+            }
+        }
+
+        public static void DestroyObjectAndReleaseReference<T>(this MonoBehaviour _, ref T target) where T : Component
+        {
+            if (target && target.gameObject)
+            {
+                Object.Destroy(target.gameObject);
+                target = null;
+            }
+        }
+
+        public static T GetOrAddComponentAsChild<T>(this Component comp, string name = "", bool includeInactive = false) where T : Component
+            => comp && comp.gameObject ? comp.gameObject.GetOrAddComponentAsChild<T>(name, includeInactive) : null;
+
+        public static T GetOrAddComponentAsChild<T>(this GameObject go, string name = "", bool includeInactive = false) where T : Component
+        {
+            if (!go)
+            {
+                return null;
             }
 
-            Object.Destroy(targetObj.gameObject);
-            targetObj = null;
+            var newComp = go.GetComponentInChildren<T>(includeInactive);
+            if (newComp == null)
+            {
+                if (string.IsNullOrEmpty(name))
+                {
+                    name = typeof(T).FullName;
+                }
+
+                var child = new GameObject(name);
+                newComp = child.AddComponent<T>();
+                child.SetParent(go);
+            }
+
+            return newComp;
         }
     }
 }

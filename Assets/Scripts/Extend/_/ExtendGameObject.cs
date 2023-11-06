@@ -5,29 +5,6 @@ using Xi.Extend.UnityExtend;
 
 public static class ExtendGameObject
 {
-    public static T GetOrAddComponentAsChildren<T>(this GameObject gameObject, string name = "", bool includeInactive = false) where T : Component
-    {
-        if (gameObject == null)
-        {
-            return null;
-        }
-
-        var comp = gameObject.GetComponentInChildren<T>(includeInactive);
-        if (comp == null)
-        {
-            if (string.IsNullOrEmpty(name))
-            {
-                name = typeof(T).FullName;
-            }
-
-            var child = new GameObject(name);
-            comp = child.AddComponent<T>();
-            child.transform.SetParent(gameObject.transform);
-        }
-
-        return comp;
-    }
-
     #region Collider
     public static float GetColliderHeight(this GameObject gameobject)
     {
