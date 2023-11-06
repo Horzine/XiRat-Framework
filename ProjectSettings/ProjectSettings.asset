@@ -673,7 +673,7 @@ PlayerSettings:
   webGLThreadsSupport: 0
   webGLDecompressionFallback: 0
   scriptingDefineSymbols:
-    Standalone: UNITASK_ADDRESSABLE_SUPPORT;UNITASK_DOTWEEN_SUPPORT
+    Standalone: UNITASK_ADDRESSABLE_SUPPORT;UNITASK_DOTWEEN_SUPPORT;DREAMTECK_SPLINES
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend: {}
