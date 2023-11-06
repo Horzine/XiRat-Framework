@@ -38,6 +38,13 @@ namespace Xi.TestCase
 
         public async UniTaskVoid TestDOTweenAsync()
         {
+            //Tween 中存在以下扩展方法：
+            // AwaitForComplete
+            // AwaitForPause
+            // AwaitForPlay
+            // AwaitForRewind
+            // AwaitForStepComplete
+
             // 序列
             await transform.DOMoveX(2, 10);
             await transform.DOMoveZ(5, 20);
@@ -48,6 +55,16 @@ namespace Xi.TestCase
             await UniTask.WhenAll(
                 transform.DOMoveX(10, 3).WithCancellation(ct),
                 transform.DOScale(10, 3).WithCancellation(ct));
+
+            await transform.DOMove(transform.position + Vector3.up, 1.0f);
+            await transform.DOScale(Vector3.one * 2.0f, 1.0f);
+
+            // UniTask.WhenAll同时运行并等待终止
+            await
+            (
+                transform.DOMove(Vector3.zero, 1.0f).ToUniTask(),
+                transform.DOScale(Vector3.one, 1.0f).ToUniTask()
+            );
         }
 
         public async UniTaskVoid TestTextMeshPro()
