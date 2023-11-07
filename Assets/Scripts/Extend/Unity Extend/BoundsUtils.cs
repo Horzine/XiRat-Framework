@@ -2,7 +2,7 @@
 
 namespace Xi.Extend
 {
-    public class BoundsUtils : MonoBehaviour
+    public static class BoundsUtils
     {
         public static Bounds BoundsFromAllCollider(GameObject gameObject, bool includeChild = true) => BoundsFromAllCollider(gameObject.transform, includeChild);
 

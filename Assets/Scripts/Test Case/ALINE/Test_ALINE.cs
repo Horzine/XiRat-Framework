@@ -5,6 +5,11 @@ namespace Xi.TestCase
 {
     public class Test_ALINE : MonoBehaviour
     {
+        private void Start()
+        {
+            DrawWithDuration();
+        }
+
         private void Update()
         {
             {
@@ -14,9 +19,10 @@ namespace Xi.TestCase
 
                 //DrayInLocalSpace();
 
-                DrawWithDuration();
+                //DrawWithDuration();
 
-                DrawInSceenSpace();
+                //DrawInSceenSpace();
+
             }
         }
 

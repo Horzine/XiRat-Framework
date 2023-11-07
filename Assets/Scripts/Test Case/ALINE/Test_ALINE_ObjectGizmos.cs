@@ -4,6 +4,7 @@ using Draw = Drawing.Draw;
 
 namespace Xi.TestCase
 {
+    // "MonoBehaviourGizmos": Show up in Unity's menu for enabling/disabling the gizmos per object type (upper right corner of the scene view).
     public class Test_ALINE_ObjectGizmos : MonoBehaviourGizmos
     {
         public override void DrawGizmos()
