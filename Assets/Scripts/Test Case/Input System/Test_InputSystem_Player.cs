@@ -1,11 +1,10 @@
 ﻿using UnityEngine;
 using UnityEngine.InputSystem;
-using Xi.Config;
 using static UnityEngine.InputSystem.InputAction;
 
 namespace Xi.TestCase
 {
-    public class Test_InputSystem_Player : MonoBehaviour, InputActionConfig.IPlayerActions
+    public class Test_InputSystem_Player : MonoBehaviour
     {
         public void InputMove(CallbackContext context)
         {
@@ -23,11 +22,6 @@ namespace Xi.TestCase
 
         private void KeyWasPressedThisFrame() => print(Keyboard.current.spaceKey.wasPressedThisFrame);
 
-        void InputActionConfig.IPlayerActions.OnFire(CallbackContext context) => print(nameof(InputActionConfig.IPlayerActions.OnFire));
-        void InputActionConfig.IPlayerActions.OnLook(CallbackContext context) => print(nameof(InputActionConfig.IPlayerActions.OnLook));
-        void InputActionConfig.IPlayerActions.OnMove(CallbackContext context) => print(nameof(InputActionConfig.IPlayerActions.OnMove));
-        void InputActionConfig.IPlayerActions.OnReload(CallbackContext context) => print(nameof(InputActionConfig.IPlayerActions.OnReload));
-
         private void Start()
         {
             // var playerInput = FindObjectOfType<PlayerInput>();
@@ -36,9 +30,9 @@ namespace Xi.TestCase
             // var moveAction = map.FindAction("Move");
             // moveAction.performed += TTTTT;
 
-            var inputObj = new InputActionConfig();
-            inputObj.Enable();
-            inputObj.Player.SetCallbacks(this);
+            // var inputObj = new InputActionConfig();
+            // inputObj.Enable();
+            // inputObj.Player.SetCallbacks(this);
         }
     }
 }

@@ -1,5 +1,5 @@
 {
-    "name": "Love-Xi",
+    "name": "InputActionConfig",
     "maps": [
         {
             "name": "Player",
@@ -36,6 +36,24 @@
                     "name": "Reload",
                     "type": "Button",
                     "id": "26d23c86-0ecb-42ab-88c1-4bcdf2110a47",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "TacticsReload",
+                    "type": "Button",
+                    "id": "0be0c4b8-062d-40d8-8b6c-7a05cb6edd98",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "MultiTap",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Sprint",
+                    "type": "Button",
+                    "id": "a9f09365-e5d9-42e8-b726-c68797a135aa",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -271,6 +289,56 @@
                     "processors": "",
                     "groups": "Keyboard&Mouse",
                     "action": "Reload",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "34201247-4aae-49d6-8aef-d8185a31a226",
+                    "path": "<Keyboard>/r",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "TacticsReload",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "943e900b-20d9-4c4b-a614-0471a28decf7",
+                    "path": "<Keyboard>/leftShift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Sprint",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "HUD",
+            "id": "08708497-4b8b-43fb-9cfb-38e4aee4fc55",
+            "actions": [
+                {
+                    "name": "Interactive",
+                    "type": "Button",
+                    "id": "5f71eaf5-a5a2-4ea9-8cd7-66e4bf770780",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "3f4824e3-d0b1-4312-b1b5-6915ca071631",
+                    "path": "<Keyboard>/f",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Interactive",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

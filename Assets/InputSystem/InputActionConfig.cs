@@ -64,6 +64,24 @@ namespace Xi.Config
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""TacticsReload"",
+                    ""type"": ""Button"",
+                    ""id"": ""0be0c4b8-062d-40d8-8b6c-7a05cb6edd98"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""MultiTap"",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Sprint"",
+                    ""type"": ""Button"",
+                    ""id"": ""a9f09365-e5d9-42e8-b726-c68797a135aa"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -295,6 +313,56 @@ namespace Xi.Config
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""Reload"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""34201247-4aae-49d6-8aef-d8185a31a226"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""TacticsReload"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""943e900b-20d9-4c4b-a614-0471a28decf7"",
+                    ""path"": ""<Keyboard>/leftShift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Sprint"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
+            ""name"": ""HUD"",
+            ""id"": ""08708497-4b8b-43fb-9cfb-38e4aee4fc55"",
+            ""actions"": [
+                {
+                    ""name"": ""Interactive"",
+                    ""type"": ""Button"",
+                    ""id"": ""5f71eaf5-a5a2-4ea9-8cd7-66e4bf770780"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""3f4824e3-d0b1-4312-b1b5-6915ca071631"",
+                    ""path"": ""<Keyboard>/f"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Interactive"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -886,6 +954,11 @@ namespace Xi.Config
             m_Player_Look = m_Player.FindAction("Look", throwIfNotFound: true);
             m_Player_Fire = m_Player.FindAction("Fire", throwIfNotFound: true);
             m_Player_Reload = m_Player.FindAction("Reload", throwIfNotFound: true);
+            m_Player_TacticsReload = m_Player.FindAction("TacticsReload", throwIfNotFound: true);
+            m_Player_Sprint = m_Player.FindAction("Sprint", throwIfNotFound: true);
+            // HUD
+            m_HUD = asset.FindActionMap("HUD", throwIfNotFound: true);
+            m_HUD_Interactive = m_HUD.FindAction("Interactive", throwIfNotFound: true);
             // UI
             m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
             m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -961,6 +1034,8 @@ namespace Xi.Config
         private readonly InputAction m_Player_Look;
         private readonly InputAction m_Player_Fire;
         private readonly InputAction m_Player_Reload;
+        private readonly InputAction m_Player_TacticsReload;
+        private readonly InputAction m_Player_Sprint;
         public struct PlayerActions
         {
             private @InputActionConfig m_Wrapper;
@@ -969,6 +1044,8 @@ namespace Xi.Config
             public InputAction @Look => m_Wrapper.m_Player_Look;
             public InputAction @Fire => m_Wrapper.m_Player_Fire;
             public InputAction @Reload => m_Wrapper.m_Player_Reload;
+            public InputAction @TacticsReload => m_Wrapper.m_Player_TacticsReload;
+            public InputAction @Sprint => m_Wrapper.m_Player_Sprint;
             public InputActionMap Get() { return m_Wrapper.m_Player; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -990,6 +1067,12 @@ namespace Xi.Config
                     @Reload.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnReload;
                     @Reload.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnReload;
                     @Reload.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnReload;
+                    @TacticsReload.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTacticsReload;
+                    @TacticsReload.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTacticsReload;
+                    @TacticsReload.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTacticsReload;
+                    @Sprint.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSprint;
+                    @Sprint.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSprint;
+                    @Sprint.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSprint;
                 }
                 m_Wrapper.m_PlayerActionsCallbackInterface = instance;
                 if (instance != null)
@@ -1006,10 +1089,49 @@ namespace Xi.Config
                     @Reload.started += instance.OnReload;
                     @Reload.performed += instance.OnReload;
                     @Reload.canceled += instance.OnReload;
+                    @TacticsReload.started += instance.OnTacticsReload;
+                    @TacticsReload.performed += instance.OnTacticsReload;
+                    @TacticsReload.canceled += instance.OnTacticsReload;
+                    @Sprint.started += instance.OnSprint;
+                    @Sprint.performed += instance.OnSprint;
+                    @Sprint.canceled += instance.OnSprint;
                 }
             }
         }
         public PlayerActions @Player => new PlayerActions(this);
+
+        // HUD
+        private readonly InputActionMap m_HUD;
+        private IHUDActions m_HUDActionsCallbackInterface;
+        private readonly InputAction m_HUD_Interactive;
+        public struct HUDActions
+        {
+            private @InputActionConfig m_Wrapper;
+            public HUDActions(@InputActionConfig wrapper) { m_Wrapper = wrapper; }
+            public InputAction @Interactive => m_Wrapper.m_HUD_Interactive;
+            public InputActionMap Get() { return m_Wrapper.m_HUD; }
+            public void Enable() { Get().Enable(); }
+            public void Disable() { Get().Disable(); }
+            public bool enabled => Get().enabled;
+            public static implicit operator InputActionMap(HUDActions set) { return set.Get(); }
+            public void SetCallbacks(IHUDActions instance)
+            {
+                if (m_Wrapper.m_HUDActionsCallbackInterface != null)
+                {
+                    @Interactive.started -= m_Wrapper.m_HUDActionsCallbackInterface.OnInteractive;
+                    @Interactive.performed -= m_Wrapper.m_HUDActionsCallbackInterface.OnInteractive;
+                    @Interactive.canceled -= m_Wrapper.m_HUDActionsCallbackInterface.OnInteractive;
+                }
+                m_Wrapper.m_HUDActionsCallbackInterface = instance;
+                if (instance != null)
+                {
+                    @Interactive.started += instance.OnInteractive;
+                    @Interactive.performed += instance.OnInteractive;
+                    @Interactive.canceled += instance.OnInteractive;
+                }
+            }
+        }
+        public HUDActions @HUD => new HUDActions(this);
 
         // UI
         private readonly InputActionMap m_UI;
@@ -1166,6 +1288,12 @@ namespace Xi.Config
             void OnLook(InputAction.CallbackContext context);
             void OnFire(InputAction.CallbackContext context);
             void OnReload(InputAction.CallbackContext context);
+            void OnTacticsReload(InputAction.CallbackContext context);
+            void OnSprint(InputAction.CallbackContext context);
+        }
+        public interface IHUDActions
+        {
+            void OnInteractive(InputAction.CallbackContext context);
         }
         public interface IUIActions
         {
