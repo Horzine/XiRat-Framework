@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using UnityEditor;
 using Type = System.Type;
 
 namespace Xi.Config.Editor
@@ -24,6 +25,7 @@ namespace Xi.Config.Editor
 
             string code = GenerateCollectionCode(Path.GetFileNameWithoutExtension(outputFilePath), configDataTypes);
             File.WriteAllText(outputFilePath, code);
+            AssetDatabase.ImportAsset(outputFilePath);
         }
         private static string GenerateCollectionCode(string className, List<Type> configDataTypes)
         {

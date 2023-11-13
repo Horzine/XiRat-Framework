@@ -7,6 +7,7 @@ namespace Xi.Config.Editor
     {
         private const string kTxtOriginFolder = ConfigUtils.kTxtOriginFolder;
         private const string kCSharpOutputFolder = ConfigUtils.kCSharpOutputFolder;
+        private const string kGenerateConfigDataChanged = "GenerateConfigDataChanged";
 
         [MenuItem("Xi/Config Tool/Generate ConfigData")]
         public static void GenerateAllConfigData()
@@ -31,8 +32,10 @@ namespace Xi.Config.Editor
                 AssetDatabase.ImportAsset(outputPath);
             }
 
-            UnityEditor.Compilation.CompilationPipeline.RequestScriptCompilation();
             AssetDatabase.Refresh();
+            UnityEditor.Compilation.CompilationPipeline.RequestScriptCompilation();
+
+            EditorPrefs.SetBool(kGenerateConfigDataChanged, true);
         }
 
         [MenuItem("Xi/Config Tool/Generate ConfigCollection")]
@@ -45,8 +48,9 @@ namespace Xi.Config.Editor
 
             string outputFilePath = Path.Combine(kCSharpOutputFolder, "ConfigCollection.cs");
             ConfigCollectionGenerateTool.GenerateCode(outputFilePath);
-            UnityEditor.Compilation.CompilationPipeline.RequestScriptCompilation();
+
             AssetDatabase.Refresh();
+            UnityEditor.Compilation.CompilationPipeline.RequestScriptCompilation();
         }
 
         private static string[] GetTextFiles(string folderPath)
@@ -60,6 +64,17 @@ namespace Xi.Config.Editor
             {
                 UnityEngine.Debug.LogWarning("No text files found.");
                 return null;
+            }
+        }
+
+        [UnityEditor.Callbacks.DidReloadScripts]
+        private static void OnScriptsReloaded()
+        {
+            bool isConfigDataChanged = EditorPrefs.GetBool(kGenerateConfigDataChanged, false);
+            if (isConfigDataChanged)
+            {
+                EditorPrefs.SetBool(kGenerateConfigDataChanged, false);
+                GenerateConfigCollection();
             }
         }
     }
