@@ -42,14 +42,12 @@ namespace Xi.TestCase
             _walkAction.Disable();
         }
 
-        private void Fire(CallbackContext ctx)
-        {
+        private void Fire(CallbackContext ctx) =>
             //...
-        }
+            print(nameof(Fire));
 
-        private void Walk(CallbackContext ctx)
-        {
+        private void Walk(CallbackContext ctx) =>
             //...
-        }
+            print(nameof(Walk) + ctx.ReadValue<Vector2>());
     }
 }
