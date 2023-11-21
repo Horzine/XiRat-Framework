@@ -10,23 +10,24 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
-  m_Name: Built In Data
+  m_Name: SceneInBuild
   m_EditorClassIdentifier: 
-  m_GroupName: Built In Data
+  m_GroupName: SceneInBuild
   m_Data:
     m_SerializedData: []
-  m_GUID: 6f0996fc8dca60b44b38ed68b01e5e5a
+  m_GUID: de0bfb2b4fa3d7d4a90287d0f26c07d2
   m_SerializeEntries:
-  - m_GUID: Resources
-    m_Address: Built In Data/
-    m_ReadOnly: 1
+  - m_GUID: 2cda990e2423bbf4892e6590ba056729
+    m_Address: SceneInBuild/Boost
+    m_ReadOnly: 0
     m_SerializedLabels: []
-  - m_GUID: EditorSceneList
-    m_Address: Built In Data/Scenes In Build
-    m_ReadOnly: 1
+  - m_GUID: 67a3335df17909e49b643dcfbfb6c445
+    m_Address: SceneInBuild/MainScene
+    m_ReadOnly: 0
     m_SerializedLabels: []
-  m_ReadOnly: 1
+  m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 8042148cea2bc6b4ab65d6a496f33735, type: 2}
   m_SchemaSet:
     m_Schemas:
-    - {fileID: 11400000, guid: 33210b0396ba3b242b79a66d01a4b016, type: 2}
+    - {fileID: 11400000, guid: 5a7d1da566dd75d44a2be184c05a3394, type: 2}
+    - {fileID: 11400000, guid: 5ac0cf597e8297a45acf5aca39e2795a, type: 2}

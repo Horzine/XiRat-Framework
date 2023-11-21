@@ -18,7 +18,7 @@ MonoBehaviour:
   m_GUID: 29ab6eba62ffbf34e823abdb7effe82f
   m_SerializeEntries:
   - m_GUID: 427d54b910dd2034ba2c424cb838f1f0
-    m_Address: AssetMgr
+    m_Address: Test Case/AssetMgr
     m_ReadOnly: 0
     m_SerializedLabels: []
   m_ReadOnly: 0

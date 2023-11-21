@@ -1,15 +1,19 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEditor;
 using UnityEditor.AddressableAssets;
 using UnityEditor.AddressableAssets.Settings;
+using UnityEditor.AddressableAssets.Settings.GroupSchemas;
 using UnityEngine;
+using Xi.Framework;
 
 namespace Xi.EditorExtend
 {
     public class AddressableExtendTool
     {
-        private static readonly List<string> _folderPath = new()
+        private const string kShouldBuildSceneFolderPath = "Assets/Scenes/Build";
+        private static readonly List<string> _autoGroupingFolders = new()
         {// Folder path here 
 
         };
@@ -17,7 +21,13 @@ namespace Xi.EditorExtend
         [MenuItem("Xi/Addressable Extend Tool/Auto Grouping Folder")]
         public static void AutoGroupingAllFolder()
         {
-            foreach (string item in _folderPath)
+            if (_autoGroupingFolders.Count == 0)
+            {
+                Debug.LogWarning($"[{nameof(AddressableExtendTool)}]<{nameof(AutoGroupingAllFolder)}>: _autoGroupingFolders is Empty !");
+                return;
+            }
+
+            foreach (string item in _autoGroupingFolders)
             {
                 DoAutoGroupingFolder(item);
             }
@@ -38,11 +48,12 @@ namespace Xi.EditorExtend
                 string folderName = Path.GetFileName(subFolder);
                 string groupName = string.Concat(groupStartWith, folderName);
                 var group = settings.FindGroup(groupName);
-                if (!group)
+                if (group)
                 {
-                    group = settings.CreateGroup(groupName, false, false, false, defaultSchemas);
+                    settings.RemoveGroup(group);
                 }
 
+                group = settings.CreateGroup(groupName, false, false, false, defaultSchemas);
                 var entry = settings.CreateOrMoveEntry(AssetDatabase.AssetPathToGUID(subFolder), group);
                 entry.SetAddress(string.Concat(group.name, "/", folderName), false);
             }
@@ -81,6 +92,36 @@ namespace Xi.EditorExtend
                 settings.SetDirty(AddressableAssetSettings.ModificationEvent.EntryMoved, null, true, true);
 
             }
+
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+        }
+
+        [MenuItem("Xi/Addressable Extend Tool/Auto Grouping Scene")]
+        public static void AutoGroupingScene()
+        {
+            var settings = AddressableAssetSettingsDefaultObject.Settings;
+            string groupName = SceneNameConst.kAddressableGroupName;
+            var group = settings.FindGroup(groupName);
+            if (group)
+            {
+                settings.RemoveGroup(group);
+            }
+
+            group = settings.CreateGroup(groupName, false, false, false, settings.DefaultGroup.Schemas);
+            var schema = group.GetSchema<BundledAssetGroupSchema>();
+            schema.BundleMode = BundledAssetGroupSchema.BundlePackingMode.PackSeparately;
+
+            string[] scenePaths = AssetDatabase.FindAssets("t:Scene", new string[] { kShouldBuildSceneFolderPath }).Select(AssetDatabase.GUIDToAssetPath).ToArray();
+
+            foreach (string scenePath in scenePaths)
+            {
+                var scene = AssetDatabase.LoadAssetAtPath<SceneAsset>(scenePath);
+                var entry = settings.CreateOrMoveEntry(AssetDatabase.AssetPathToGUID(scenePath), group);
+                entry.SetAddress(SceneNameConst.AddressableName(scene.name), false);
+            }
+
+            settings.SetDirty(AddressableAssetSettings.ModificationEvent.GroupAdded, group, true, true);
 
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
