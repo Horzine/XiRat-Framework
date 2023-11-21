@@ -18,8 +18,8 @@ namespace Xi.Framework
     public class GameObjectPool<T> : IDisposable, IGameObjectPool where T : MonoBehaviour, IGameObjectPoolEntry
     {
         private readonly ObjectPool<T> _pool;
-        private T _template;
-        private Transform _parentTsf;
+        private readonly T _template;
+        private readonly Transform _parentTsf;
         private readonly Action<T> _actionAfterCreate;
 
         public GameObjectPool(T template,
@@ -62,9 +62,7 @@ namespace Xi.Framework
         private void Clear()
         {
             _template.DestroySelfGameObject();
-            _template = null;
             _parentTsf.DestroySelfGameObject();
-            _parentTsf = null;
             _pool.Clear();
         }
         void IDisposable.Dispose() => Clear();
