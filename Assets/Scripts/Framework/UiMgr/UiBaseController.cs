@@ -1,4 +1,5 @@
 ﻿using Cysharp.Threading.Tasks;
+using Xi.Extend.UnityExtend;
 
 namespace Xi.Framework
 {
@@ -10,19 +11,68 @@ namespace Xi.Framework
     }
     public abstract class UiBaseController<TWindow> : IUiController where TWindow : UiBaseWindow
     {
+        private enum WindowState
+        {
+            None,
+            Opening,
+            OnDisplay,
+            Closing,
+        }
         protected TWindow _windowObject;
-        public abstract UiEnum UiEnum { get; }
+        private WindowState _windowState = WindowState.None;
         private UiRootObject _uiRootObject;
+        public abstract UiEnum UiEnum { get; }
+
+        public abstract void BeforeClose();
+
+        protected async UniTask OpenAsync()
+        {
+            if (!CanOpen)
+            {
+                return;
+            }
+
+            _windowState = WindowState.Opening;
+            await _windowObject.OpenAsync();
+            _windowState = WindowState.OnDisplay;
+        }
+
+        public async UniTask CloseAsync()
+        {
+            if (!CanClose)
+            {
+                return;
+            }
+
+            BeforeClose();
+            _windowState = WindowState.Closing;
+            await _windowObject.CloseAsync();
+            DestroyWindow();
+        }
+
+        protected void DestroyWindow()
+        {
+            if (_windowObject)
+            {
+                _windowObject.DestroySelfGameObject();
+            }
+
+            _windowObject = null;
+            _windowState = WindowState.None;
+        }
+
+        protected bool CanOpen => _windowState == WindowState.None;
+
+        protected bool CanClose => _windowState == WindowState.OnDisplay;
+
+        #region Interface IUiController
         UiEnum IUiController.UiEnum => UiEnum;
         UiRootObject IUiController.UiRootObject { set => _uiRootObject = value; }
-        public abstract void ForceReleaseWindow();
-        protected async UniTask ShowAsync()
+        void IUiController.ForceReleaseWindow()
         {
-
+            BeforeClose();
+            DestroyWindow();
         }
-        protected async UniTask CloseAsync()
-        {
-
-        }
+        #endregion
     }
 }
