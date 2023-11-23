@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿using Cysharp.Threading.Tasks;
+using UnityEditor;
 using UnityEditor.Callbacks;
 using UnityEngine;
 
@@ -46,7 +47,7 @@ namespace Xi.EditorExtend
                 EditorApplication.playModeStateChanged += HandleOnPlayModeChanged;
                 _inited = true;
 
-                CreateDebugGameObjects();
+                CreateDebugGameObjects().Forget();
             }
         }
 
@@ -59,10 +60,11 @@ namespace Xi.EditorExtend
             }
         }
 
-        private static void CreateDebugGameObjects()
+        private static async UniTaskVoid CreateDebugGameObjects()
         {
             // Add GameObject Here
             var go = new GameObject($"{nameof(LocalTestMode)}");
+            await UniTask.Yield();
         }
     }
 }

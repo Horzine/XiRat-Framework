@@ -10,35 +10,35 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
-  m_Name: SceneInBuild
+  m_Name: Scene In Build
   m_EditorClassIdentifier: 
-  m_GroupName: SceneInBuild
+  m_GroupName: Scene In Build
   m_Data:
     m_SerializedData: []
-  m_GUID: 9713b2d18a9bdb64bae4f9a495c91099
+  m_GUID: d25157a9592290c4fa7eeb86f99c2952
   m_SerializeEntries:
   - m_GUID: 2cda990e2423bbf4892e6590ba056729
-    m_Address: SceneInBuild/Boost
+    m_Address: Scene In Build/Boost
     m_ReadOnly: 0
     m_SerializedLabels: []
   - m_GUID: 67a3335df17909e49b643dcfbfb6c445
-    m_Address: SceneInBuild/MainScene
+    m_Address: Scene In Build/MainScene
     m_ReadOnly: 0
     m_SerializedLabels: []
   - m_GUID: f09417fd839f0f44ba0b2435a60e84a2
-    m_Address: SceneInBuild/Map_1
+    m_Address: Scene In Build/Map_1
     m_ReadOnly: 0
     m_SerializedLabels: []
   - m_GUID: 0f1114d7640d1af44bd2c13e6de12f23
-    m_Address: SceneInBuild/Map_2
+    m_Address: Scene In Build/Map_2
     m_ReadOnly: 0
     m_SerializedLabels: []
   - m_GUID: 9e19d044617906642a2e8ecd1b75c7dd
-    m_Address: SceneInBuild/Map_3
+    m_Address: Scene In Build/Map_3
     m_ReadOnly: 0
     m_SerializedLabels: []
   - m_GUID: a544870227298df4aa3dba00137bd92e
-    m_Address: SceneInBuild/Map_4
+    m_Address: Scene In Build/Map_4
     m_ReadOnly: 0
     m_SerializedLabels: []
   m_ReadOnly: 0

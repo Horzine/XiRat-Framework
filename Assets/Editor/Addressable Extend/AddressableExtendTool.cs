@@ -101,7 +101,7 @@ namespace Xi.EditorExtend
         public static void AutoGroupingScene()
         {
             var settings = AddressableAssetSettingsDefaultObject.Settings;
-            string groupName = SceneNameConst.kAddressableGroupName;
+            string groupName = AssetNameConst.kAddressableGroupName_Scene;
             var group = settings.FindGroup(groupName);
             if (group)
             {
@@ -118,7 +118,7 @@ namespace Xi.EditorExtend
             {
                 var scene = AssetDatabase.LoadAssetAtPath<SceneAsset>(scenePath);
                 var entry = settings.CreateOrMoveEntry(AssetDatabase.AssetPathToGUID(scenePath), group);
-                entry.SetAddress(SceneNameConst.AddressableName(scene.name), false);
+                entry.SetAddress(SceneNameConst.SceneAddressableName(scene.name), false);
             }
 
             settings.SetDirty(AddressableAssetSettings.ModificationEvent.GroupAdded, group, true, true);
