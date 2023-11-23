@@ -19,7 +19,7 @@ namespace Xi.EditorExtend
     [InitializeOnLoad]
     internal static class SceneAutoLoaderButton
     {
-        private const string kMasterSceneName = "Assets/Scenes/Boost.unity";
+        private static readonly string kMasterSceneName = $"Assets/Scenes/Build/{Framework.SceneNameConst.kBoost}.unity";
 
         // Static constructor binds a playmode-changed callback.
         // [InitializeOnLoad] above makes sure this gets executed.
