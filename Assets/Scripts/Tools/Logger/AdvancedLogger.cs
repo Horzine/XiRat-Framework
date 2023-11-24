@@ -12,24 +12,32 @@ namespace Xi.Tools
         Warning,
         Error
     }
+
     public class AdvancedLogger : IDisposable
     {
+        private readonly string _logFolderPath;
         private readonly string _logFilePath;
+        private readonly string _warningErrorLogFilePath;
         private readonly Queue<LogData> _logQueue = new();
+        private readonly Queue<LogData> _warningErrorLogQueue = new();
         private bool _isWriting = false;
-        private const int kMaxLogQueueSize = 100;
-        private const int kMaxLogFileSizeInMB = 5;
+        private bool _isWritingWarningError = false;
+        private const int kMaxLogFileSizeInMB = 25;
 
         public AdvancedLogger()
         {
-            // 创建日志文件路径
-            _logFilePath = LogUtils.GetLogFilePath("log.txt");
+            _logFolderPath = LoggerUtils.GetLogFolderPath();
+            _logFilePath = LoggerUtils.GetLogFilePath("log_all.txt");
+            _warningErrorLogFilePath = LoggerUtils.GetLogFilePath("warning_error.txt");
 
-            // 绑定 Application 的生命周期事件
+            if (!Directory.Exists(_logFolderPath))
+            {
+                Directory.CreateDirectory(_logFolderPath);
+            }
+
             Application.logMessageReceivedThreaded += HandleLog;
             Application.quitting += OnApplicationQuit;
 
-            // 开启一个后台线程来写入日志文件
             ThreadPool.QueueUserWorkItem(state =>
             {
                 while (true)
@@ -38,30 +46,42 @@ namespace Xi.Tools
                     {
                         _isWriting = true;
                         var logData = _logQueue.Dequeue();
-                        WriteLogToFile(logData);
+                        WriteLogToFile(logData, _logFilePath);
                         _isWriting = false;
                     }
 
-                    Thread.Sleep(20); // 控制写入频率，避免过于频繁
+                    if (_warningErrorLogQueue.Count > 0 && !_isWritingWarningError)
+                    {
+                        _isWritingWarningError = true;
+                        var logData = _warningErrorLogQueue.Dequeue();
+                        WriteLogToFile(logData, _warningErrorLogFilePath);
+                        _isWritingWarningError = false;
+                    }
+
+                    Thread.Sleep(20);
                 }
             });
         }
 
-        private void WriteLogToFile(LogData logData)
+        private void WriteLogToFile(LogData logData, string filePath)
         {
             try
             {
-                using (var writer = File.AppendText(_logFilePath))
+                using (var writer = File.AppendText(filePath))
                 {
-                    writer.WriteLine($"{logData.LogTime} [{logData.Level}] {logData.Message}");
+                    writer.WriteLine($"{logData.LogTime:HH:mm:ss.fff} [{logData.Level}] {logData.Message}");
+
+                    if (!string.IsNullOrEmpty(logData.StackTrace))
+                    {
+                        writer.WriteLine(logData.StackTrace);
+                    }
                 }
 
-                if (new FileInfo(_logFilePath).Length > kMaxLogFileSizeInMB * 1024 * 1024)
+                if (new FileInfo(filePath).Length > kMaxLogFileSizeInMB * 1024 * 1024)
                 {
-                    // 如果日志文件大小超过限制，备份日志文件并清空
-                    string backupFilePath = Path.Combine(Application.dataPath, "log_backup.txt");
-                    File.Copy(_logFilePath, backupFilePath, true);
-                    File.WriteAllText(_logFilePath, string.Empty);
+                    string archiveFilePath = filePath.Replace(".txt", $"_archive_{LoggerUtils.GetTimeNowName()}.txt");
+                    File.Copy(filePath, archiveFilePath, true);
+                    File.WriteAllText(filePath, string.Empty);
                 }
             }
             catch (Exception e)
@@ -73,40 +93,44 @@ namespace Xi.Tools
         private void HandleLog(string logString, string stackTrace, LogType type)
         {
             var level = LogLevel.Info;
+
             switch (type)
             {
                 case LogType.Warning:
                     level = LogLevel.Warning;
+                    _warningErrorLogQueue.Enqueue(new LogData(logString, level, stackTrace));
+                    _logQueue.Enqueue(new LogData(logString, level));
                     break;
                 case LogType.Error:
                 case LogType.Exception:
                     level = LogLevel.Error;
+                    _warningErrorLogQueue.Enqueue(new LogData(logString, level, stackTrace));
+                    _logQueue.Enqueue(new LogData(logString, level));
                     break;
-            }
-
-            if (_logQueue.Count < kMaxLogQueueSize)
-            {
-                _logQueue.Enqueue(new LogData(logString, level));
+                default:
+                    _logQueue.Enqueue(new LogData(logString, level));
+                    break;
             }
         }
 
         private void OnApplicationQuit()
         {
-            // 解绑 Application 的生命周期事件
             Application.logMessageReceivedThreaded -= HandleLog;
             Application.quitting -= OnApplicationQuit;
 
-            // 等待后台线程写入完毕
-            while (_isWriting)
+            while (_isWriting || _isWritingWarningError)
             {
                 Thread.Sleep(10);
             }
 
-            // 释放资源
             Dispose();
         }
 
-        public void Dispose() => _logQueue.Clear();   // 清空日志队列
+        public void Dispose()
+        {
+            _logQueue.Clear();
+            _warningErrorLogQueue.Clear();
+        }
     }
 
     public struct LogData
@@ -114,41 +138,37 @@ namespace Xi.Tools
         public string Message;
         public LogLevel Level;
         public DateTime LogTime;
+        public string StackTrace;
 
-        public LogData(string message, LogLevel level)
+        public LogData(string message, LogLevel level, string stackTrace = "")
         {
             Message = message;
             Level = level;
             LogTime = DateTime.Now;
+            StackTrace = stackTrace;
         }
     }
 
-    public static class LogUtils
+    public static class LoggerUtils
     {
         private const string kFolderName = "RuntimeLogs";
-        public static string GetLogFilePath(string fileName)
-        {
-            string logFolderPath = GetLogFolderPath();
-            return Path.Combine(logFolderPath, fileName);
-        }
-        private static string GetLogFolderPath()
+
+        public static string GetLogFilePath(string fileName) => Path.Combine(GetLogFolderPath(), fileName);
+
+        public static string GetLogFolderPath()
         {
             string logFolderPath = string.Empty;
 
 #if UNITY_EDITOR
-            logFolderPath = Path.Combine(Application.dataPath, $"../{kFolderName}");
+            logFolderPath = Path.Combine(Application.dataPath, $"../{kFolderName}/{GetTimeNowName()}");
 #elif UNITY_STANDALONE_WIN
-            logFolderPath = Path.Combine(Application.dataPath, $"../{kFolderName}");
+            logFolderPath = Path.Combine(Application.dataPath, $"../{kFolderName}/{GetTimeNowName()}");
 #else
-            logFolderPath = Path.Combine(Application.persistentDataPath, kFolderName);
+            logFolderPath = Path.Combine(Application.persistentDataPath, kFolderName, GetTimeNowName());
 #endif
-
-            if (!Directory.Exists(logFolderPath))
-            {
-                Directory.CreateDirectory(logFolderPath);
-            }
-
             return logFolderPath;
         }
+
+        public static string GetTimeNowName() => DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss");
     }
 }
