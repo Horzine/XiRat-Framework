@@ -3,9 +3,11 @@ using Xi.Framework;
 
 namespace Xi.TestCase
 {
-    public class Test_UiController_B : UiBaseController<Test_UIWindow>
+    public class Test_UiController_B : UiBaseController<Test_UiWindow>
     {
-        public override UiEnum UiEnum => UiEnum.TestCase_B;
+        protected override (string groupName, string uiFeatureName, string uiPrefabName) PrefabAssetPath
+            => (AssetGroupNameConst.kAddressableGroupName_GameplayUi, UiFeatureNameConst.kSystem_B, UiPrefabNameConst.kSystem_B_name);
+        protected override UiEnum UiEnum => UiEnum.TestCase_B;
         public override void BeforeClose() { }
         public void Init_B() => Debug.Log(nameof(Test_UiController_B));
     }

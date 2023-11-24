@@ -15,7 +15,7 @@ namespace Xi.EditorExtend
         private const string kShouldBuildSceneFolderPath = "Assets/Scenes/Build";
         private static readonly List<string> _autoGroupingFolders = new()
         {// Folder path here 
-
+            "Assets/Prefabs/Ui",
         };
 
         [MenuItem("Xi/Addressable Extend Tool/Auto Grouping Folder")]
@@ -101,7 +101,7 @@ namespace Xi.EditorExtend
         public static void AutoGroupingScene()
         {
             var settings = AddressableAssetSettingsDefaultObject.Settings;
-            string groupName = AssetNameConst.kAddressableGroupName_Scene;
+            string groupName = AssetGroupNameConst.kAddressableGroupName_Scene;
             var group = settings.FindGroup(groupName);
             if (group)
             {
@@ -118,7 +118,7 @@ namespace Xi.EditorExtend
             {
                 var scene = AssetDatabase.LoadAssetAtPath<SceneAsset>(scenePath);
                 var entry = settings.CreateOrMoveEntry(AssetDatabase.AssetPathToGUID(scenePath), group);
-                entry.SetAddress(SceneNameConst.SceneAddressableName(scene.name), false);
+                entry.SetAddress(SceneNameConst_Extend.SceneAddressableName(scene.name), false);
             }
 
             settings.SetDirty(AddressableAssetSettings.ModificationEvent.GroupAdded, group, true, true);

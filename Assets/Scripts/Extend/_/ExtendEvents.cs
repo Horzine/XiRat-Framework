@@ -22,27 +22,15 @@ public static class ExtendEvents
     /// </summary>
     public class PublisherSendMessage
     {
-        public ForeachMutableList<System.Object> Subscribes = new ForeachMutableList<object>();
+        public ForeachMutableList<object> Subscribes = new();
 
-        public void Subscribe(object subscribe)
-        {
-            Subscribes.Add(subscribe);
-        }
+        public void Subscribe(object subscribe) => Subscribes.Add(subscribe);
 
-        public void UnSubscribe(object subscribe)
-        {
-            Subscribes.Remove(subscribe);
-        }
+        public void UnSubscribe(object subscribe) => Subscribes.Remove(subscribe);
 
-        public void Notify(string name, params object[] args)
-        {
-            SendMessage(Subscribes, name, args);
-        }
+        public void Notify(string name, params object[] args) => SendMessage(Subscribes, name, args);
 
-        public void Notify(string name)
-        {
-            SendMessage(Subscribes, name);
-        }
+        public void Notify(string name) => SendMessage(Subscribes, name);
 
         //public void Notify<T>(string name,T arg)
         //{
@@ -64,10 +52,7 @@ public static class ExtendEvents
         //{
         //    SendMessage(Subscribes, name, arg1, arg2, arg3, arg4,arg5);
         //}
-        public void UnSubscribeAll()
-        {
-            Subscribes.Clear();
-        }
+        public void UnSubscribeAll() => Subscribes.Clear();
     }
 
     /// <summary>
@@ -77,12 +62,11 @@ public static class ExtendEvents
 
     public class Publisher<K> where K : IConvertible
     {
-        Dictionary<K, ForeachMutableList<Delegate>> EventMap = new Dictionary<K, ForeachMutableList<Delegate>>();
+        private Dictionary<K, ForeachMutableList<Delegate>> EventMap = new();
 
         private ForeachMutableList<Delegate> _GetOrAddCallList(K name)
         {
-            ForeachMutableList<Delegate> cbList;
-            if (!EventMap.TryGetValue(name, out cbList))
+            if (!EventMap.TryGetValue(name, out var cbList))
             {
                 cbList = new ForeachMutableList<Delegate>();
                 EventMap.Add(name, cbList);
@@ -91,30 +75,17 @@ public static class ExtendEvents
             return cbList;
         }
 
-        private bool _TryGetCallList(K name, out ForeachMutableList<Delegate> cbList)
-        {
-            return EventMap.TryGetValue(name, out cbList);
-        }
+        private bool _TryGetCallList(K name, out ForeachMutableList<Delegate> cbList) => EventMap.TryGetValue(name, out cbList);
 
-        public void UnSubscribeAll()
-        {
-            EventMap.Clear();
-        }
+        public void UnSubscribeAll() => EventMap.Clear();
 
-        public void Subscribe(K name, Action cb)
-        {
-            _GetOrAddCallList(name).Add(cb);
-        }
+        public void Subscribe(K name, Action cb) => _GetOrAddCallList(name).Add(cb);
 
-        public void UnSubscribe(K name, Action cb)
-        {
-            _GetOrAddCallList(name).Remove(cb);
-        }
+        public void UnSubscribe(K name, Action cb) => _GetOrAddCallList(name).Remove(cb);
 
         public void Notify(K name)
         {
-            ForeachMutableList<Delegate> cbList;
-            if (_TryGetCallList(name, out cbList))
+            if (_TryGetCallList(name, out var cbList))
             {
                 Action callback;
                 foreach (var cb in cbList)
@@ -139,20 +110,13 @@ public static class ExtendEvents
             }
         }
 
-        public void Subscribe<T>(K name, Action<T> cb)
-        {
-            _GetOrAddCallList(name).Add(cb);
-        }
+        public void Subscribe<T>(K name, Action<T> cb) => _GetOrAddCallList(name).Add(cb);
 
-        public void UnSubscribe<T>(K name, Action<T> cb)
-        {
-            _GetOrAddCallList(name).Remove(cb);
-        }
+        public void UnSubscribe<T>(K name, Action<T> cb) => _GetOrAddCallList(name).Remove(cb);
 
         public void Notify<T>(K name, T arg)
         {
-            ForeachMutableList<Delegate> cbList;
-            if (_TryGetCallList(name, out cbList))
+            if (_TryGetCallList(name, out var cbList))
             {
                 Action<T> callback;
                 foreach (var cb in cbList)
@@ -177,20 +141,13 @@ public static class ExtendEvents
             }
         }
 
-        public void Subscribe<T1, T2>(K name, Action<T1, T2> cb)
-        {
-            _GetOrAddCallList(name).Add(cb);
-        }
+        public void Subscribe<T1, T2>(K name, Action<T1, T2> cb) => _GetOrAddCallList(name).Add(cb);
 
-        public void UnSubscribe<T1, T2>(K name, Action<T1, T2> cb)
-        {
-            _GetOrAddCallList(name).Remove(cb);
-        }
+        public void UnSubscribe<T1, T2>(K name, Action<T1, T2> cb) => _GetOrAddCallList(name).Remove(cb);
 
         public void Notify<T1, T2>(K name, T1 arg1, T2 arg2)
         {
-            ForeachMutableList<Delegate> cbList;
-            if (_TryGetCallList(name, out cbList))
+            if (_TryGetCallList(name, out var cbList))
             {
                 Action<T1, T2> callback;
                 foreach (var cb in cbList)
@@ -215,20 +172,13 @@ public static class ExtendEvents
             }
         }
 
-        public void Subscribe<T1, T2, T3>(K name, Action<T1, T2, T3> cb)
-        {
-            _GetOrAddCallList(name).Add(cb);
-        }
+        public void Subscribe<T1, T2, T3>(K name, Action<T1, T2, T3> cb) => _GetOrAddCallList(name).Add(cb);
 
-        public void UnSubscribe<T1, T2, T3>(K name, Action<T1, T2, T3> cb)
-        {
-            _GetOrAddCallList(name).Remove(cb);
-        }
+        public void UnSubscribe<T1, T2, T3>(K name, Action<T1, T2, T3> cb) => _GetOrAddCallList(name).Remove(cb);
 
         public void Notify<T1, T2, T3>(K name, T1 arg1, T2 arg2, T3 arg3)
         {
-            ForeachMutableList<Delegate> cbList;
-            if (_TryGetCallList(name, out cbList))
+            if (_TryGetCallList(name, out var cbList))
             {
                 Action<T1, T2, T3> callback;
                 foreach (var cb in cbList)
@@ -253,20 +203,13 @@ public static class ExtendEvents
             }
         }
 
-        public void Subscribe<T1, T2, T3, T4>(K name, Action<T1, T2, T3, T4> cb)
-        {
-            _GetOrAddCallList(name).Add(cb);
-        }
+        public void Subscribe<T1, T2, T3, T4>(K name, Action<T1, T2, T3, T4> cb) => _GetOrAddCallList(name).Add(cb);
 
-        public void UnSubscribe<T1, T2, T3, T4>(K name, Action<T1, T2, T3, T4> cb)
-        {
-            _GetOrAddCallList(name).Remove(cb);
-        }
+        public void UnSubscribe<T1, T2, T3, T4>(K name, Action<T1, T2, T3, T4> cb) => _GetOrAddCallList(name).Remove(cb);
 
         public void Notify<T1, T2, T3, T4>(K name, T1 arg1, T2 arg2, T3 arg3, T4 arg4)
         {
-            ForeachMutableList<Delegate> cbList;
-            if (_TryGetCallList(name, out cbList))
+            if (_TryGetCallList(name, out var cbList))
             {
                 Action<T1, T2, T3, T4> callback;
                 foreach (var cb in cbList)
@@ -291,20 +234,13 @@ public static class ExtendEvents
             }
         }
 
-        public void Subscribe<T1, T2, T3, T4, T5>(K name, Action<T1, T2, T3, T4, T5> cb)
-        {
-            _GetOrAddCallList(name).Add(cb);
-        }
+        public void Subscribe<T1, T2, T3, T4, T5>(K name, Action<T1, T2, T3, T4, T5> cb) => _GetOrAddCallList(name).Add(cb);
 
-        public void UnSubscribe<T1, T2, T3, T4, T5>(K name, Action<T1, T2, T3, T4, T5> cb)
-        {
-            _GetOrAddCallList(name).Remove(cb);
-        }
+        public void UnSubscribe<T1, T2, T3, T4, T5>(K name, Action<T1, T2, T3, T4, T5> cb) => _GetOrAddCallList(name).Remove(cb);
 
         public void Notify<T1, T2, T3, T4, T5>(K name, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5)
         {
-            ForeachMutableList<Delegate> cbList;
-            if (_TryGetCallList(name, out cbList))
+            if (_TryGetCallList(name, out var cbList))
             {
                 Action<T1, T2, T3, T4, T5> callback;
                 foreach (var cb in cbList)
@@ -329,20 +265,13 @@ public static class ExtendEvents
             }
         }
 
-        public void Subscribe<T1, T2, T3, T4, T5, T6>(K name, Action<T1, T2, T3, T4, T5, T6> cb)
-        {
-            _GetOrAddCallList(name).Add(cb);
-        }
+        public void Subscribe<T1, T2, T3, T4, T5, T6>(K name, Action<T1, T2, T3, T4, T5, T6> cb) => _GetOrAddCallList(name).Add(cb);
 
-        public void UnSubscribe<T1, T2, T3, T4, T5, T6>(K name, Action<T1, T2, T3, T4, T5, T6> cb)
-        {
-            _GetOrAddCallList(name).Remove(cb);
-        }
+        public void UnSubscribe<T1, T2, T3, T4, T5, T6>(K name, Action<T1, T2, T3, T4, T5, T6> cb) => _GetOrAddCallList(name).Remove(cb);
 
         public void Notify<T1, T2, T3, T4, T5, T6>(K name, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6)
         {
-            ForeachMutableList<Delegate> cbList;
-            if (_TryGetCallList(name, out cbList))
+            if (_TryGetCallList(name, out var cbList))
             {
                 Action<T1, T2, T3, T4, T5, T6> callback;
                 foreach (var cb in cbList)
@@ -379,130 +308,59 @@ public static class ExtendEvents
     public class SPublisher<K> : Xi.Framework.Singleton<SPublisher<K>> where K : IConvertible
     {
 
-        private Publisher<K> Publisher = new Publisher<K>();
+        private Publisher<K> Publisher = new();
 
+        public void Subscribe(K name, Action cb) => Publisher.Subscribe(name, cb);
 
-        public void Subscribe(K name, Action cb)
-        {
-            Publisher.Subscribe(name, cb);
-        }
+        public void UnSubscribe(K name, Action cb) => Publisher.UnSubscribe(name, cb);
 
-        public void UnSubscribe(K name, Action cb)
-        {
-            Publisher.UnSubscribe(name, cb);
-        }
+        public void Notify(K name) => Publisher.Notify(name);
 
-        public void Notify(K name)
-        {
-            Publisher.Notify(name);
-        }
+        public void Subscribe<T1>(K name, Action<T1> cb) => Publisher.Subscribe(name, cb);
 
-        public void Subscribe<T1>(K name, Action<T1> cb)
-        {
-            Publisher.Subscribe(name, cb);
-        }
+        public void UnSubscribe<T1>(K name, Action<T1> cb) => Publisher.UnSubscribe(name, cb);
 
-        public void UnSubscribe<T1>(K name, Action<T1> cb)
-        {
-            Publisher.UnSubscribe(name, cb);
-        }
+        public void Notify<T1>(K name, T1 arg1) => Publisher.Notify(name, arg1);
 
-        public void Notify<T1>(K name, T1 arg1)
-        {
-            Publisher.Notify(name, arg1);
-        }
+        public void Subscribe<T1, T2>(K name, Action<T1, T2> cb) => Publisher.Subscribe(name, cb);
 
-        public void Subscribe<T1, T2>(K name, Action<T1, T2> cb)
-        {
-            Publisher.Subscribe(name, cb);
-        }
+        public void UnSubscribe<T1, T2>(K name, Action<T1, T2> cb) => Publisher.UnSubscribe(name, cb);
 
-        public void UnSubscribe<T1, T2>(K name, Action<T1, T2> cb)
-        {
-            Publisher.UnSubscribe(name, cb);
-        }
+        public void Notify<T1, T2>(K name, T1 arg1, T2 arg2) => Publisher.Notify(name, arg1, arg2);
 
-        public void Notify<T1, T2>(K name, T1 arg1, T2 arg2)
-        {
-            Publisher.Notify(name, arg1, arg2);
-        }
+        public void Subscribe<T1, T2, T3>(K name, Action<T1, T2, T3> cb) => Publisher.Subscribe(name, cb);
 
-        public void Subscribe<T1, T2, T3>(K name, Action<T1, T2, T3> cb)
-        {
-            Publisher.Subscribe(name, cb);
-        }
+        public void UnSubscribe<T1, T2, T3>(K name, Action<T1, T2, T3> cb) => Publisher.UnSubscribe(name, cb);
 
-        public void UnSubscribe<T1, T2, T3>(K name, Action<T1, T2, T3> cb)
-        {
-            Publisher.UnSubscribe(name, cb);
-        }
+        public void Notify<T1, T2, T3>(K name, T1 arg1, T2 arg2, T3 arg3) => Publisher.Notify(name, arg1, arg2, arg3);
 
-        public void Notify<T1, T2, T3>(K name, T1 arg1, T2 arg2, T3 arg3)
-        {
-            Publisher.Notify(name, arg1, arg2, arg3);
-        }
+        public void Subscribe<T1, T2, T3, T4>(K name, Action<T1, T2, T3, T4> cb) => Publisher.Subscribe(name, cb);
 
-        public void Subscribe<T1, T2, T3, T4>(K name, Action<T1, T2, T3, T4> cb)
-        {
-            Publisher.Subscribe(name, cb);
-        }
+        public void UnSubscribe<T1, T2, T3, T4>(K name, Action<T1, T2, T3, T4> cb) => Publisher.UnSubscribe(name, cb);
 
-        public void UnSubscribe<T1, T2, T3, T4>(K name, Action<T1, T2, T3, T4> cb)
-        {
-            Publisher.UnSubscribe(name, cb);
-        }
+        public void Notify<T1, T2, T3, T4>(K name, T1 arg1, T2 arg2, T3 arg3, T4 arg4) => Publisher.Notify(name, arg1, arg2, arg3, arg4);
 
-        public void Notify<T1, T2, T3, T4>(K name, T1 arg1, T2 arg2, T3 arg3, T4 arg4)
-        {
-            Publisher.Notify(name, arg1, arg2, arg3, arg4);
-        }
+        public void Subscribe<T1, T2, T3, T4, T5>(K name, Action<T1, T2, T3, T4, T5> cb) => Publisher.Subscribe(name, cb);
 
-        public void Subscribe<T1, T2, T3, T4, T5>(K name, Action<T1, T2, T3, T4, T5> cb)
-        {
-            Publisher.Subscribe(name, cb);
-        }
+        public void UnSubscribe<T1, T2, T3, T4, T5>(K name, Action<T1, T2, T3, T4, T5> cb) => Publisher.UnSubscribe(name, cb);
 
-        public void UnSubscribe<T1, T2, T3, T4, T5>(K name, Action<T1, T2, T3, T4, T5> cb)
-        {
-            Publisher.UnSubscribe(name, cb);
-        }
+        public void Notify<T1, T2, T3, T4, T5>(K name, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5) => Publisher.Notify(name, arg1, arg2, arg3, arg4, arg5);
 
-        public void Notify<T1, T2, T3, T4, T5>(K name, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5)
-        {
-            Publisher.Notify(name, arg1, arg2, arg3, arg4, arg5);
-        }
+        public void Subscribe<T1, T2, T3, T4, T5, T6>(K name, Action<T1, T2, T3, T4, T5, T6> cb) => Publisher.Subscribe(name, cb);
 
-        public void Subscribe<T1, T2, T3, T4, T5, T6>(K name, Action<T1, T2, T3, T4, T5, T6> cb)
-        {
-            Publisher.Subscribe(name, cb);
-        }
+        public void UnSubscribe<T1, T2, T3, T4, T5, T6>(K name, Action<T1, T2, T3, T4, T5, T6> cb) => Publisher.UnSubscribe(name, cb);
 
-        public void UnSubscribe<T1, T2, T3, T4, T5, T6>(K name, Action<T1, T2, T3, T4, T5, T6> cb)
-        {
-            Publisher.UnSubscribe(name, cb);
-        }
+        public void Notify<T1, T2, T3, T4, T5, T6>(K name, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6) => Publisher.Notify(name, arg1, arg2, arg3, arg4, arg5, arg6);
 
-        public void Notify<T1, T2, T3, T4, T5, T6>(K name, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6)
-        {
-            Publisher.Notify(name, arg1, arg2, arg3, arg4, arg5, arg6);
-        }
-
-
-        public void UnSubscribeAll()
-        {
-            Publisher.UnSubscribeAll();
-        }
-        protected void OnDispose()
-        {
-            Publisher.UnSubscribeAll();
-        }
+        public void UnSubscribeAll() => Publisher.UnSubscribeAll();
+        protected void OnDispose() => Publisher.UnSubscribeAll();
     }
 
     #region 模拟Unity SendMessage
 
     public static void SendMessage(System.Collections.IEnumerable subscribes, string messgae, object[] args)
     {
-        foreach (var it in subscribes)
+        foreach (object it in subscribes)
         {
             SendMessage(it, messgae, args);
         }
@@ -521,21 +379,16 @@ public static class ExtendEvents
         }
     }
 
-    static MethodInfo _GetMethod(Type type, string messgae)
+    private static MethodInfo _GetMethod(Type type, string messgae)
     {
         //TODO::缓存对象获取的方法 进行反射优化
         var method = type.GetMethod(messgae,
           System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic |
           System.Reflection.BindingFlags.Instance);
-        if (method == null && type.BaseType != typeof(object))
-        {
-            return _GetMethod(type.BaseType, messgae);
-        }
-
-        return method;
+        return method == null && type.BaseType != typeof(object) ? _GetMethod(type.BaseType, messgae) : method;
     }
 
-    static void _Invoke(object obj, string messgae, MethodInfo fun, params object[] args)
+    private static void _Invoke(object obj, string messgae, MethodInfo fun, params object[] args)
     {
         var parameters = fun.GetParameters();
         if (parameters.Length == args.Length)
@@ -549,7 +402,7 @@ public static class ExtendEvents
                 }
             }
 
-            if (fun != null) fun.Invoke(obj, args);
+            fun?.Invoke(obj, args);
         }
         else
         {

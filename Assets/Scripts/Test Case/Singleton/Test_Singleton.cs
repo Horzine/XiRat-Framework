@@ -21,7 +21,7 @@ namespace Xi.TestCase
 
     public class SimpleSingleton : Singleton<SimpleSingleton>
     {
-        
+
     }
 
     public class SimpleAppSingleton : AppSingleton<SimpleAppSingleton>

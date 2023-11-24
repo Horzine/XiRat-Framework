@@ -51,10 +51,12 @@ namespace Xi.TestCase
                     fList.Add(1000);
                 }
             }
-            foreach (var item in fList)
+
+            foreach (int item in fList)
             {
                 Debug.Log(item);
             }
+
             foreach (int item in fList)
             {
                 if (item == 1)
@@ -73,7 +75,7 @@ namespace Xi.TestCase
                 }
             }
 
-            foreach (var item in fList)
+            foreach (int item in fList)
             {
                 Debug.Log(item);
             }

@@ -7,15 +7,15 @@
         ________Default_Above____,// This Above SortOrder = kDefaultOrder(0), No sorting
         ________SortOrder_Below____,// This Below will sort by Enum number value
 
-        TestCase_C,
-        ________SortOrder_Default____,// This mean SortOrder is kDefaultOrder(0);
         TestCase_D,
+        ________SortOrder_Default____,// This mean SortOrder is kDefaultOrder(0);
+        TestCase_C,
 
     }
 
     public static class UiEnum_Extend
     {
-        private const int kDefaultOrder = 0;
+        public const int kDefaultOrder = 0;
         public static int GetSortingOrder(UiEnum uiEnum)
         {
             int uiInt = (int)uiEnum;

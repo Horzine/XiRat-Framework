@@ -17,7 +17,6 @@ namespace Xi.TestCase
             => print($"{nameof(InputActionConfig.IPlayerActions.OnTacticsReload)}, Started: {context.started}, Performed: {context.performed}, Canceled: {context.canceled}");
         void InputActionConfig.IHUDActions.OnInteractive(CallbackContext context) { }
 
-
         private void Awake()
         {
             _inputObj = new InputActionConfig();

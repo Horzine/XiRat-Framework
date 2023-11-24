@@ -5,10 +5,7 @@ namespace Xi.TestCase
 {
     public class Test_ALINE : MonoBehaviour
     {
-        private void Start()
-        {
-            DrawWithDuration();
-        }
+        private void Start() => DrawWithDuration();
 
         private void Update()
         {

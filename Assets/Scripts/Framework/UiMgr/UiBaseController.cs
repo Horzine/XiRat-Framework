@@ -1,4 +1,5 @@
 ﻿using Cysharp.Threading.Tasks;
+using UnityEngine;
 using Xi.Extend.UnityExtend;
 
 namespace Xi.Framework
@@ -21,7 +22,8 @@ namespace Xi.Framework
         protected TWindow _windowObject;
         private WindowState _windowState = WindowState.None;
         private UiRootObject _uiRootObject;
-        public abstract UiEnum UiEnum { get; }
+        protected abstract UiEnum UiEnum { get; }
+        protected abstract (string groupName, string uiFeatureName, string uiPrefabName) PrefabAssetPath { get; }
 
         public abstract void BeforeClose();
 
@@ -33,6 +35,12 @@ namespace Xi.Framework
             }
 
             _windowState = WindowState.Opening;
+            _windowObject = await AssetManager.Instance.InstantiateScriptAsync<TWindow>(UiNameConst_Extend.AddressableName(PrefabAssetPath),
+                Vector3.zero,
+                Quaternion.identity,
+                _uiRootObject.OverlayModeCanvasTsf);
+            _windowObject.GetRectTransform().anchoredPosition = Vector3.zero;
+            _windowObject.SetCanvasSortOrder(UiEnum_Extend.GetSortingOrder(UiEnum));
             await _windowObject.OpenAsync();
             _windowState = WindowState.OnDisplay;
         }

@@ -5,10 +5,7 @@ namespace Xi.TestCase
 {
     public class Test_DOTween : MonoBehaviour
     {
-        private void Awake()
-        {
-            DOTween.Init();
-        }
+        private void Awake() => DOTween.Init();
 
         // Start is called before the first frame update
         private void Start() => transform.DOMove(new Vector3(1, 2, 3), 3);
