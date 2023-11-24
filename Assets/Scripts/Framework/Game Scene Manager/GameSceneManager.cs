@@ -93,6 +93,6 @@ namespace Xi.Framework
         }
 
         private void LoadSceneAsyncOnCompleted(string sceneName, bool isAdditive, AsyncOperationHandle<SceneInstance> op, float startTime)
-            => Debug.Log($"[{nameof(GameSceneManager)}]<{nameof(LoadSceneAsyncOnCompleted)}>:SceneName: {sceneName}, IsAdditive: {isAdditive}, TimePassed: {Time.realtimeSinceStartup - startTime}");
+            => Debug.Log($"[{nameof(GameSceneManager)}]<{nameof(LoadSceneAsyncOnCompleted)}>: SceneName: {sceneName}, IsAdditive: {isAdditive}, TimePassed: {Time.realtimeSinceStartup - startTime}");
     }
 }

@@ -6,15 +6,14 @@ using UnityEngine;
 
 namespace Xi.Tools
 {
-    public enum LogLevel
+    public class AdvancedLoggerTool : IDisposable
     {
-        Info,
-        Warning,
-        Error
-    }
-
-    public class AdvancedLogger : IDisposable
-    {
+        private enum LogLevel
+        {
+            Info,
+            Warning,
+            Error
+        }
         private readonly string _logFolderPath;
         private readonly string _logFilePath;
         private readonly string _warningErrorLogFilePath;
@@ -24,7 +23,7 @@ namespace Xi.Tools
         private bool _isWritingWarningError = false;
         private const int kMaxLogFileSizeInMB = 25;
 
-        public AdvancedLogger()
+        public AdvancedLoggerTool()
         {
             _logFolderPath = LoggerUtils.GetLogFolderPath();
             _logFilePath = LoggerUtils.GetLogFilePath("log_all.txt");
@@ -131,44 +130,44 @@ namespace Xi.Tools
             _logQueue.Clear();
             _warningErrorLogQueue.Clear();
         }
-    }
 
-    public struct LogData
-    {
-        public string Message;
-        public LogLevel Level;
-        public DateTime LogTime;
-        public string StackTrace;
-
-        public LogData(string message, LogLevel level, string stackTrace = "")
+        private struct LogData
         {
-            Message = message;
-            Level = level;
-            LogTime = DateTime.Now;
-            StackTrace = stackTrace;
+            public string Message;
+            public LogLevel Level;
+            public DateTime LogTime;
+            public string StackTrace;
+
+            public LogData(string message, LogLevel level, string stackTrace = "")
+            {
+                Message = message;
+                Level = level;
+                LogTime = DateTime.Now;
+                StackTrace = stackTrace;
+            }
         }
-    }
 
-    public static class LoggerUtils
-    {
-        private const string kFolderName = "RuntimeLogs";
-
-        public static string GetLogFilePath(string fileName) => Path.Combine(GetLogFolderPath(), fileName);
-
-        public static string GetLogFolderPath()
+        private static class LoggerUtils
         {
-            string logFolderPath = string.Empty;
+            private const string kFolderName = "RuntimeLogs";
+
+            public static string GetLogFilePath(string fileName) => Path.Combine(GetLogFolderPath(), fileName);
+
+            public static string GetLogFolderPath()
+            {
+                string logFolderPath = string.Empty;
 
 #if UNITY_EDITOR
-            logFolderPath = Path.Combine(Application.dataPath, $"../{kFolderName}/{GetTimeNowName()}");
+                logFolderPath = Path.Combine(Application.dataPath, $"../{kFolderName}/{GetTimeNowName()}");
 #elif UNITY_STANDALONE_WIN
             logFolderPath = Path.Combine(Application.dataPath, $"../{kFolderName}/{GetTimeNowName()}");
 #else
             logFolderPath = Path.Combine(Application.persistentDataPath, kFolderName, GetTimeNowName());
 #endif
-            return logFolderPath;
-        }
+                return logFolderPath;
+            }
 
-        public static string GetTimeNowName() => DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss");
+            public static string GetTimeNowName() => DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss");
+        }
     }
 }

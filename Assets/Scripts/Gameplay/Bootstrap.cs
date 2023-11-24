@@ -7,8 +7,8 @@ namespace Xi.Gameplay
 {
     public class Bootstrap : MonoBehaviour
     {
-        private AdvancedLogger _logger;
-        private void Awake() => _logger = new AdvancedLogger();
+        private AdvancedLoggerTool _logger;
+        private void Awake() => _logger = new AdvancedLoggerTool();
 
         private void Start()
         {
