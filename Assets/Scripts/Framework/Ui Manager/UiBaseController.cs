@@ -24,6 +24,7 @@ namespace Xi.Framework
         private UiRootObject _uiRootObject;
         protected abstract UiEnum UiEnum { get; }
         protected abstract (string groupName, string uiFeatureName, string uiPrefabName) PrefabAssetPath { get; }
+        protected abstract bool IsOverlayMode { get; }
 
         public abstract void BeforeClose();
 
@@ -38,9 +39,9 @@ namespace Xi.Framework
             _windowObject = await AssetManager.Instance.InstantiateScriptAsync<TWindow>(UiNameConst_Extend.AddressableName(PrefabAssetPath),
                 Vector3.zero,
                 Quaternion.identity,
-                _uiRootObject.OverlayModeCanvasTsf);
-            _windowObject.GetRectTransform().anchoredPosition = Vector3.zero;
-            _windowObject.SetCanvasSortOrder(UiEnum_Extend.GetSortingOrder(UiEnum));
+                IsOverlayMode ? _uiRootObject.OverlayModeCanvasTsf : _uiRootObject.CameraModeCanvasTsf);
+            _windowObject.GetRectTransform().anchoredPosition3D = Vector3.zero;
+            _windowObject.Init(UiEnum_Extend.GetSortingOrder(UiEnum));
             await _windowObject.OpenAsync();
             _windowState = WindowState.OnDisplay;
         }
@@ -63,6 +64,7 @@ namespace Xi.Framework
             if (_windowObject)
             {
                 _windowObject.DestroySelfGameObject();
+                Debug.Log($"[{nameof(UiBaseController<TWindow>)}]<{nameof(DestroyWindow)}>: Destroy {UiEnum} Window");
             }
 
             _windowObject = null;

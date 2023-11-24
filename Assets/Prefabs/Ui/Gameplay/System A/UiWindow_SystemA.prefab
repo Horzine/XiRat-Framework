@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1557913575757693086}
   - component: {fileID: -3002040636896437741}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: UiWindow_SystemA
   m_TagString: Untagged
   m_Icon: {fileID: 0}

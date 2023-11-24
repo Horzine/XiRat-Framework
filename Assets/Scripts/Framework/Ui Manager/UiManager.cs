@@ -20,7 +20,6 @@ namespace Xi.Framework
         public async UniTask InitAsync()
         {
             _uiRootObject = await AssetManager.Instance.InstantiateScriptAsync<UiRootObject>($"{AssetGroupNameConst.kAddressableGroupName_Manager}/{kUiManagerPrefabName}", Vector3.zero, Quaternion.identity, transform);
-
             CreateAllUiControllerInstance();
         }
 
@@ -28,7 +27,6 @@ namespace Xi.Framework
         {
             var assembly = Assembly.GetExecutingAssembly();
             var types = assembly.GetTypes();
-
             foreach (var type in types)
             {
                 if (typeof(IUiController).IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract)

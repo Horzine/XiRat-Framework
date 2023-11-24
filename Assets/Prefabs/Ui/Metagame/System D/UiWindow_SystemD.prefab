@@ -10,7 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 6041779815841917001}
   - component: {fileID: -8033852557040324038}
-  m_Layer: 0
+  - component: {fileID: -5105905606060474063}
+  m_Layer: 5
   m_Name: UiWindow_SystemD
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -49,3 +50,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b628cbb6584d86345ad1513514341b0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!225 &-5105905606060474063
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6701654963522893877}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0

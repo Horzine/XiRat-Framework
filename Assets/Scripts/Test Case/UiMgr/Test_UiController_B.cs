@@ -8,6 +8,7 @@ namespace Xi.TestCase
         protected override (string groupName, string uiFeatureName, string uiPrefabName) PrefabAssetPath
             => (AssetGroupNameConst.kAddressableGroupName_GameplayUi, UiFeatureNameConst.kSystem_B, UiPrefabNameConst.kSystem_B_name);
         protected override UiEnum UiEnum => UiEnum.TestCase_B;
+        protected override bool IsOverlayMode => true;
         public override void BeforeClose() { }
         public void Init_B() => Debug.Log(nameof(Test_UiController_B));
     }
