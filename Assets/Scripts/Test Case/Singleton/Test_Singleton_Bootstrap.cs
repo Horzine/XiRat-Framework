@@ -2,7 +2,7 @@
 
 namespace Xi.TestCase
 {
-    public class Test_Singleton_Boost : MonoBehaviour
+    public class Test_Singleton_Bootstrap : MonoBehaviour
     {
         // Start is called before the first frame update
         private void Start()

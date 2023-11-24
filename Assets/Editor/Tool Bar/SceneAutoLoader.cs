@@ -19,7 +19,7 @@ namespace Xi.EditorExtend
     [InitializeOnLoad]
     internal static class SceneAutoLoaderButton
     {
-        private static readonly string kMasterSceneName = $"Assets/Scenes/Build/{Framework.SceneNameConst.kBoost}.unity";
+        private static readonly string kMasterSceneName = $"Assets/Scenes/Build/{Framework.SceneNameConst.kBootstrap}.unity";
 
         // Static constructor binds a playmode-changed callback.
         // [InitializeOnLoad] above makes sure this gets executed.
@@ -31,7 +31,7 @@ namespace Xi.EditorExtend
 
         private static void OnToolbarGUI()
         {
-            if (!EditorApplication.isPlayingOrWillChangePlaymode && GUILayout.Button(new GUIContent("► Boost", "Play from Boost"), new GUILayoutOption[0]))
+            if (!EditorApplication.isPlayingOrWillChangePlaymode && GUILayout.Button(new GUIContent("► Bootstrap", "Play from Bootstrap"), new GUILayoutOption[0]))
             {
                 LoadMasterOnPlay = true;
                 EditorApplication.isPlaying = true;
