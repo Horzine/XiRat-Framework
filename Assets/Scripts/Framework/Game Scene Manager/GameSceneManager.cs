@@ -5,6 +5,7 @@ using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.ResourceManagement.ResourceProviders;
 using UnityEngine.SceneManagement;
+using Xi.Tools;
 
 namespace Xi.Framework
 {
@@ -92,7 +93,7 @@ namespace Xi.Framework
             }
         }
 
-        private void LoadSceneAsyncOnCompleted(string sceneName, bool isAdditive, AsyncOperationHandle<SceneInstance> op, float startTime)
-            => Debug.Log($"[{nameof(GameSceneManager)}]<{nameof(LoadSceneAsyncOnCompleted)}>: SceneName: {sceneName}, IsAdditive: {isAdditive}, TimePassed: {Time.realtimeSinceStartup - startTime}");
+        private void LoadSceneAsyncOnCompleted(string sceneName, bool isAdditive, AsyncOperationHandle<SceneInstance> _, float startTime)
+            => XiLogger.Log($"SceneName: {sceneName}, IsAdditive: {isAdditive}, TimePassed: {Time.realtimeSinceStartup - startTime}");
     }
 }

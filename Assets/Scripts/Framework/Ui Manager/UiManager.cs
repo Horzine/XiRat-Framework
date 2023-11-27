@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Reflection;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
+using Xi.Tools;
 
 namespace Xi.Framework
 {
     public class UiManager : MonoSingleton<UiManager>, ISingleton
     {
         private const string kUiManagerPrefabName = "UiRootObject";
+
         private UiRootObject _uiRootObject;
         private readonly Dictionary<int, IUiController> _allUiControllers = new();
 
@@ -36,7 +38,7 @@ namespace Xi.Framework
                     var uiEnum = uiController.UiEnum;
                     if (!_allUiControllers.TryAdd((int)uiEnum, uiController))
                     {
-                        Debug.LogError($"[{nameof(UiManager)}]<{nameof(CreateAllUiControllerInstance)}>: UiEnum {uiEnum} already has instance!");
+                        XiLogger.LogError($"UiEnum {uiEnum} already has instance!");
                     }
                 }
             }

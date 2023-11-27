@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Xi.Tools;
 
 namespace Xi.Framework
 {
@@ -19,7 +20,7 @@ namespace Xi.Framework
             {
                 if (_applicationIsQuitting)
                 {
-                    Debug.LogWarning($"[Singleton] Instance '{typeof(T)}' already destroyed on application quit. Won't create again - returning null.");
+                    XiLogger.LogWarning($"Instance '{typeof(T)}' already destroyed on application quit. Won't create again - returning null.");
                     return null;
                 }
 
@@ -37,11 +38,11 @@ namespace Xi.Framework
                                 singleton.name = typeof(T).Name;
                                 _instance.OnCreate();
                                 DontDestroyOnLoad(singleton);
-                                Debug.Log($"[Singleton][{typeof(T)}]{singleton} was created with DontDestroyOnLoad.");
+                                XiLogger.Log($"[{singleton.name}] was created with DontDestroyOnLoad.");
                             }
                             else
                             {
-                                Debug.Log($"[Singleton] Using instance already created: {_instance.gameObject.name}");
+                                XiLogger.Log($"Using instance already created: {_instance.gameObject.name}");
                             }
                         }
                     }

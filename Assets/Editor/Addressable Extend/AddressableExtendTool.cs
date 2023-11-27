@@ -7,6 +7,7 @@ using UnityEditor.AddressableAssets.Settings;
 using UnityEditor.AddressableAssets.Settings.GroupSchemas;
 using UnityEngine;
 using Xi.Framework;
+using Xi.Tools;
 
 namespace Xi.EditorExtend
 {
@@ -23,7 +24,7 @@ namespace Xi.EditorExtend
         {
             if (_autoGroupingFolders.Count == 0)
             {
-                Debug.LogWarning($"[{nameof(AddressableExtendTool)}]<{nameof(AutoGroupingAllFolder)}>: _autoGroupingFolders is Empty !");
+                XiLogger.LogWarning($"_autoGroupingFolders is Empty !");
                 return;
             }
 
@@ -84,7 +85,7 @@ namespace Xi.EditorExtend
                         if (oldAddress != newAddress)
                         {
                             entry.SetAddress(newAddress, false);
-                            Debug.Log(string.Concat("Renamed Address: ", oldAddress, " to ", newAddress));
+                            XiLogger.Log(string.Concat("Renamed Address: ", oldAddress, " to ", newAddress));
                         }
                     }
                 }

@@ -6,6 +6,7 @@ using System.IO;
 using System;
 using Xi.Config;
 using Xi.Extend.Attribute;
+using Xi.Tools;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -75,19 +76,19 @@ namespace Xi.Data
 
             m_So_Info.Sort((x, y) => x.configId.CompareTo(y.configId));
 
-            Debug.Log($"[{nameof(SoCollection_SO)}] <{nameof(CheckItemConfigId)}> logStr: General Item ConfigId success");
+            XiLogger.Log($"General Item ConfigId success");
         }
         private void ExportTxtFile()
         {
             if (m_So_Info.Count == 0)
             {
-                Debug.LogError($"[{nameof(SoCollection_SO)}] <{nameof(ExportTxtFile)}> logStr: List No Entry");
+                XiLogger.LogWarning("List is empty");
                 return;
             }
 
             if (string.IsNullOrEmpty(ExportTxtFileName))
             {
-                Debug.LogError($"[{nameof(SoCollection_SO)}] <{nameof(ExportTxtFile)}> logStr: m_ExportTxtFileName is Empty");
+                XiLogger.LogError($"m_ExportTxtFileName is Empty");
                 return;
             }
 
@@ -104,14 +105,14 @@ namespace Xi.Data
             }
 
             File.WriteAllText(FileOutputFullName, sb.ToString());
-            Debug.Log($"[{nameof(SoCollection_SO)}] <{nameof(ExportTxtFile)}> logStr: Export File Success! Path: {FileOutputFullName}");
+            XiLogger.Log($"Export File Success! Path: {FileOutputFullName}");
         }
         public void DoExport()
         {
             CollectionAllEntry();
             if (m_So_Info.Count == 0)
             {
-                Debug.LogWarning($"[{nameof(SoCollection_SO)}] <{nameof(ExportTxtFile)}> No So_Info Entry");
+                XiLogger.LogWarning($"No So_Info Entry");
                 return;
             }
 

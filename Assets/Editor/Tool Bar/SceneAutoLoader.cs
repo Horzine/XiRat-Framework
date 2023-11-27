@@ -1,6 +1,7 @@
 ﻿using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using Xi.Tools;
 
 /// <summary>
 /// Scene auto loader.
@@ -65,7 +66,7 @@ namespace Xi.EditorExtend
                     }
                     catch
                     {
-                        Debug.LogError(string.Format("error: scene not found: {0}", MasterScene));
+                        XiLogger.LogError(string.Format("error: scene not found: {0}", MasterScene));
                         EditorApplication.isPlaying = false;
                     }
                 }
@@ -93,7 +94,7 @@ namespace Xi.EditorExtend
                 }
                 catch
                 {
-                    Debug.LogError(string.Format("error: scene not found: {0}", PreviousScene));
+                    XiLogger.LogError(string.Format("error: scene not found: {0}", PreviousScene));
                 }
             }
         }

@@ -1,6 +1,7 @@
 ﻿using Cysharp.Threading.Tasks;
 using UnityEngine;
 using Xi.Extend.UnityExtend;
+using Xi.Tools;
 
 namespace Xi.Framework
 {
@@ -64,7 +65,7 @@ namespace Xi.Framework
             if (_windowObject)
             {
                 _windowObject.DestroySelfGameObject();
-                Debug.Log($"[{nameof(UiBaseController<TWindow>)}]<{nameof(DestroyWindow)}>: Destroy {UiEnum} Window");
+                XiLogger.Log($"Destroy {UiEnum} Window");
             }
 
             _windowObject = null;

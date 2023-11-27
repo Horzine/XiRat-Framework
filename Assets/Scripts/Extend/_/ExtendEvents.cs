@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 using Xi.Extend.Collection;
+using Xi.Tools;
 
 public delegate void Action<in T1, in T2, in T3, in T4, in T5>(T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5);
 public delegate void Action<in T1, in T2, in T3, in T4, in T5, in T6>(T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6);
@@ -371,7 +372,7 @@ public static class ExtendEvents
         var fun = _GetMethod(subscribe.GetType(), messgae);
         if (fun == null)
         {
-            Debug.LogWarning(" not found method" + subscribe.GetType() + " -> " + messgae);
+            XiLogger.LogWarning(" not found method" + subscribe.GetType() + " -> " + messgae);
         }
         else
         {
@@ -397,7 +398,7 @@ public static class ExtendEvents
             {
                 if (parameters[i].ParameterType != args[i].GetType())
                 {
-                    Debug.LogWarning("" + obj.GetType() + "->" + messgae + ":the " + i + " argument type not match!!");
+                    XiLogger.LogWarning("" + obj.GetType() + "->" + messgae + ":the " + i + " argument type not match!!");
                     return;
                 }
             }
@@ -406,7 +407,7 @@ public static class ExtendEvents
         }
         else
         {
-            Debug.LogWarning("" + obj.GetType() + "->" + messgae + ":argument length not match!!");
+            XiLogger.LogWarning("" + obj.GetType() + "->" + messgae + ":argument length not match!!");
         }
     }
 

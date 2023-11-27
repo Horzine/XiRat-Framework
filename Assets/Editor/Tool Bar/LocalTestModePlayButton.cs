@@ -1,5 +1,6 @@
 ﻿using UnityEditor;
 using UnityEngine;
+using Xi.Tools;
 
 namespace Xi.EditorExtend
 {
@@ -14,7 +15,7 @@ namespace Xi.EditorExtend
 
             if (!EditorApplication.isPlayingOrWillChangePlaymode && GUILayout.Button(new GUIContent("► Local Test", "Start in local test mode"), new GUILayoutOption[0]))
             {
-                Debug.Log($"[{nameof(LocalTestModePlayButton)}]<{nameof(OnToolbarGUI)}>: Playing local test mode");
+                XiLogger.Log($"Playing local test mode");
                 LocalTestMode.IsLocalTestMode = true;
                 EditorApplication.isPlaying = true;
             }

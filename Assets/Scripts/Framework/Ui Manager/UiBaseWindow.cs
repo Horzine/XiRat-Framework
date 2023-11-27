@@ -1,6 +1,7 @@
 ﻿using Cysharp.Threading.Tasks;
 using UnityEngine;
 using Xi.Extend.UnityExtend;
+using Xi.Tools;
 
 namespace Xi.Framework
 {
@@ -10,20 +11,20 @@ namespace Xi.Framework
 
         public async UniTask OpenAsync()
         {
-            Debug.Log($"[{GetType().Name}]<{nameof(OpenAsync)}>: Begin Open");
+            XiLogger.Log($"[{GetType().Name}]: Begin Open");
             SetCanvasGroupInteractable(false);
             await UniTask.Yield();
             SetCanvasGroupInteractable(true);
-            Debug.Log($"[{GetType().Name}]<{nameof(OpenAsync)}>: End Open");
+            XiLogger.Log($"[{GetType().Name}]: End Open");
         }
 
         public async UniTask CloseAsync()
         {
-            Debug.Log($"[{GetType().Name}]<{nameof(CloseAsync)}>: Begin Close");
+            XiLogger.Log($"[{GetType().Name}]: Begin Close");
             SetCanvasGroupInteractable(false);
             await UniTask.Yield();
             SetCanvasGroupInteractable(false);
-            Debug.Log($"[{GetType().Name}]<{nameof(CloseAsync)}>: End Close");
+            XiLogger.Log($"[{GetType().Name}]: End Close");
         }
 
         public void Init(int sortOrder)
