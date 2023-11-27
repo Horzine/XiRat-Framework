@@ -160,9 +160,9 @@ namespace Xi.Tools
 #if UNITY_EDITOR
                 logFolderPath = Path.Combine(Application.dataPath, $"../{kFolderName}/{GetTimeNowName()}");
 #elif UNITY_STANDALONE_WIN
-            logFolderPath = Path.Combine(Application.dataPath, $"../{kFolderName}/{GetTimeNowName()}");
+                logFolderPath = Path.Combine(Application.dataPath, $"../{kFolderName}/{GetTimeNowName()}");
 #else
-            logFolderPath = Path.Combine(Application.persistentDataPath, kFolderName, GetTimeNowName());
+                logFolderPath = Path.Combine(Application.persistentDataPath, kFolderName, GetTimeNowName());
 #endif
                 return logFolderPath;
             }

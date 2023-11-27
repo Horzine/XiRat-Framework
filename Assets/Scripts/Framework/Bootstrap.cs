@@ -10,7 +10,7 @@ namespace Xi.Framework
     public class Bootstrap : MonoBehaviour
     {
         private static IReadOnlyCollection<Type> _cachedTypes;
-        private static AdvancedLoggerTool _logger;
+        private static AdvancedLoggerTool _loggerTool;
 
         public static IReadOnlyCollection<Type> GetTypesFromAssembly()
         {
@@ -27,7 +27,7 @@ namespace Xi.Framework
 
         private async UniTaskVoid InitAllManager()
         {
-            _logger ??= new AdvancedLoggerTool();
+            _loggerTool ??= new AdvancedLoggerTool();
 
             await AssetManager.Instance.InitAsync();
             await GameObjectPoolManager.Instance.InitAsync();
@@ -38,6 +38,6 @@ namespace Xi.Framework
             OnInitAllManagerAccomplish();
         }
 
-        private void OnInitAllManagerAccomplish() => GameSceneManager.Instance.LoadActiveSceneAsync(SceneNameConst.kMainScene, true).Forget();
+        private async void OnInitAllManagerAccomplish() => await GameSceneManager.Instance.LoadActiveSceneAsync(SceneNameConst.kMainScene, true);
     }
 }

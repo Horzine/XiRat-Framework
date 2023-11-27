@@ -20,18 +20,18 @@ namespace Xi.TestCase
 
         void IEventListener<Event1Event>.OnEventFire(Event1Event eventArgs)
         {
-            Debug.Log($"{GetHashCode()}: Event1 EventArgs received");// 处理 Event1 事件的逻辑
+            Debug.Log($"{GetHashCode()}: Event1 EventArgs received");
             EventCenter.Instance.AddListener<Event1Event>(new MyEventListener());
         }
 
-        void IEventListener<Event2Event>.OnEventFire(Event2Event eventArgs) => Debug.Log($"{GetHashCode()}: Event2 EventArgs received");// 处理 Event2 事件的逻辑
+        void IEventListener<Event2Event>.OnEventFire(Event2Event eventArgs) => Debug.Log($"{GetHashCode()}: Event2 EventArgs received");
     }
 
     public class Test_EventCenter : MonoBehaviour
     {
-        private void Start()
+        private async void Start()
         {
-            EventCenter.Instance.InitAsync(Bootstrap.GetTypesFromAssembly());
+            await EventCenter.Instance.InitAsync(Bootstrap.GetTypesFromAssembly());
 
             var obj = new MyEventListener();
             obj.Start();
