@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Pool;
 using Xi.Extend.UnityExtend;
@@ -76,6 +77,8 @@ namespace Xi.Framework
         public Transform RootTsf { get; private set; }
 
         void ISingleton.OnCreate() { }
+
+        public async UniTask InitAsync() => await UniTask.Yield();
 
         // ------TEMP------
         private void OnSceneEnter(string sceneName)

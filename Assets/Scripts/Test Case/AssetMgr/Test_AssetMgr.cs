@@ -14,18 +14,19 @@ namespace Xi.TestCase
         private async void Start()
         {
             //await TestLoadAsset();
+            await AssetManager.Instance.InitAsync();
             var cube = await TestInstantiateScript();
             cube.Test();
         }
 
         private async UniTaskVoid TestLoadAsset()
         {
-            var (asset, operationHandle) = await AssetManager.Instance.LoadAssetAsync<GameObject>($"AssetMgr/Cube.prefab");
+            var (asset, operationHandle) = await AssetManager.Instance.LoadAssetAsync<GameObject>($"Test Case/AssetMgr/Cube.prefab");
             _operationHandle = operationHandle;
             print(asset.name);
         }
 
-        private async UniTask<Test_AssetMgr_Cube> TestInstantiateScript() => await AssetManager.Instance.InstantiateScriptAsync<Test_AssetMgr_Cube>($"AssetMgr/Cube.prefab", Vector3.zero, Quaternion.identity);
+        private async UniTask<Test_AssetMgr_Cube> TestInstantiateScript() => await AssetManager.Instance.InstantiateScriptAsync<Test_AssetMgr_Cube>($"Test Case/AssetMgr/Cube.prefab", Vector3.zero, Quaternion.identity);
 
         private void OnDestroy()
         {

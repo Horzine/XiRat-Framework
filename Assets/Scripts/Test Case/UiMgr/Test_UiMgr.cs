@@ -10,7 +10,7 @@ namespace Xi.TestCase
 
         private async UniTask Test_1()
         {
-            await UiManager.Instance.InitAsync();
+            await UiManager.Instance.InitAsync(Bootstrap.GetTypesFromAssembly(), AssetManager.Instance);
             await UniTask.Delay(1000);
 
             UiManager.Instance.GetController<Test_UiController_A>(UiEnum.TestCase_A).Init_A();
@@ -36,7 +36,7 @@ namespace Xi.TestCase
 
         private async UniTask Test_2()
         {
-            await UiManager.Instance.InitAsync();
+            await UiManager.Instance.InitAsync(Bootstrap.GetTypesFromAssembly(), AssetManager.Instance);
 
             var ctrlA = UiManager.Instance.GetController<Test_UiController_A>(UiEnum.TestCase_A);
             var ctrlB = UiManager.Instance.GetController<Test_UiController_B>(UiEnum.TestCase_B);

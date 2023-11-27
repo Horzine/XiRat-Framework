@@ -29,6 +29,8 @@ namespace Xi.Framework
             SceneManager.sceneUnloaded -= OnSceneUnloaded;
         }
 
+        public async UniTask InitAsync() => await UniTask.Yield();
+
         private void OnSceneUnloaded(Scene scene)
         {
             if (_subScenes.ContainsKey(scene.name))

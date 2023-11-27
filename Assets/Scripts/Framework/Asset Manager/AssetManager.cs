@@ -8,7 +8,9 @@ namespace Xi.Framework
 {
     public class AssetManager : MonoSingleton<AssetManager>, ISingleton
     {
-        void ISingleton.OnCreate() => Addressables.InitializeAsync(true);
+        void ISingleton.OnCreate() { }
+
+        public async UniTask InitAsync() => await Addressables.InitializeAsync(true);
 
         public async UniTask<(TObject asset, AsyncOperationHandle operationHandle)> LoadAssetAsync<TObject>(string key)
         {

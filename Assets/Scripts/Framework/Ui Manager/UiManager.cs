@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using Xi.Extend.Collection;
@@ -20,19 +19,15 @@ namespace Xi.Framework
 
         }
 
-        public async UniTask InitAsync()
+        public async UniTask InitAsync(IReadOnlyCollection<Type> allTypeInAssembly, AssetManager assetManager)
         {
-            _uiRootObject = await AssetManager.Instance.InstantiateScriptAsync<UiRootObject>($"{AssetGroupNameConst.kAddressableGroupName_Manager}/{kUiManagerPrefabName}", Vector3.zero, Quaternion.identity, transform);
-            CreateAllUiControllerInstance();
+            _uiRootObject = await assetManager.InstantiateScriptAsync<UiRootObject>($"{AssetGroupNameConst.kAddressableGroupName_Manager}/{kUiManagerPrefabName}", Vector3.zero, Quaternion.identity, transform);
+            CreateAllUiControllerInstance(allTypeInAssembly);
         }
 
-        public void ForceReleaseAllWindow() => _allUiController.ForeachValue((item) => item.ForceReleaseWindow());
-
-        private void CreateAllUiControllerInstance()
+        private void CreateAllUiControllerInstance(IReadOnlyCollection<Type> allTypeInAssembly)
         {
-            var assembly = Assembly.GetExecutingAssembly();
-            var types = assembly.GetTypes();
-            foreach (var type in types)
+            foreach (var type in allTypeInAssembly)
             {
                 if (typeof(IUiController).IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract)
                 {
@@ -46,6 +41,8 @@ namespace Xi.Framework
                 }
             }
         }
+
+        public void ForceReleaseAllWindow() => _allUiController.ForeachValue((item) => item.ForceReleaseWindow());
 
         public T GetController<T>(UiEnum uiEnum) where T : IUiController
             => _allUiController.TryGetValue((int)uiEnum, out var uiController) ? uiController is T t ? t : default : default;
