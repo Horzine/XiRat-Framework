@@ -62,7 +62,7 @@ namespace Xi.Config.Editor
             }
             else
             {
-                UnityEngine.Debug.LogWarning("No text files found.");
+                UnityEngine.Debug.LogWarning($"[{nameof(ConfigToolEditor)}] <{nameof(GetTextFiles)}> ===> No text files found.");
                 return null;
             }
         }

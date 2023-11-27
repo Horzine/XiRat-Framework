@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
+using Xi.Extend.Collection;
 using Xi.Tools;
 
 namespace Xi.Framework
@@ -12,7 +13,7 @@ namespace Xi.Framework
         private const string kUiManagerPrefabName = "UiRootObject";
 
         private UiRootObject _uiRootObject;
-        private readonly Dictionary<int, IUiController> _allUiControllers = new();
+        private readonly Dictionary<int, IUiController> _allUiController = new();
 
         void ISingleton.OnCreate()
         {
@@ -25,6 +26,8 @@ namespace Xi.Framework
             CreateAllUiControllerInstance();
         }
 
+        public void ForceReleaseAllWindow() => _allUiController.ForeachValue((item) => item.ForceReleaseWindow());
+
         private void CreateAllUiControllerInstance()
         {
             var assembly = Assembly.GetExecutingAssembly();
@@ -36,7 +39,7 @@ namespace Xi.Framework
                     var uiController = (IUiController)Activator.CreateInstance(type);
                     uiController.UiRootObject = _uiRootObject;
                     var uiEnum = uiController.UiEnum;
-                    if (!_allUiControllers.TryAdd((int)uiEnum, uiController))
+                    if (!_allUiController.TryAdd((int)uiEnum, uiController))
                     {
                         XiLogger.LogError($"UiEnum {uiEnum} already has instance!");
                     }
@@ -45,6 +48,6 @@ namespace Xi.Framework
         }
 
         public T GetController<T>(UiEnum uiEnum) where T : IUiController
-            => _allUiControllers.TryGetValue((int)uiEnum, out var uiController) ? uiController is T t ? t : default : default;
+            => _allUiController.TryGetValue((int)uiEnum, out var uiController) ? uiController is T t ? t : default : default;
     }
 }

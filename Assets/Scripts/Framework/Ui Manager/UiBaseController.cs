@@ -1,4 +1,5 @@
-﻿using Cysharp.Threading.Tasks;
+﻿using System;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using Xi.Extend.UnityExtend;
 using Xi.Tools;
@@ -13,16 +14,18 @@ namespace Xi.Framework
     }
     public abstract class UiBaseController<TWindow> : IUiController where TWindow : UiBaseWindow
     {
-        private enum WindowState
+        public enum WindowState
         {
             None,
             Opening,
             OnDisplay,
             Closing,
         }
+
         protected TWindow _windowObject;
-        private WindowState _windowState = WindowState.None;
         private UiRootObject _uiRootObject;
+        private Action _willRelaseAfterOpening = null;
+        public WindowState CurrentWindowState { get; protected set; } = WindowState.None;
         protected abstract UiEnum UiEnum { get; }
         protected abstract (string groupName, string uiFeatureName, string uiPrefabName) PrefabAssetPath { get; }
         protected abstract bool IsOverlayMode { get; }
@@ -36,7 +39,12 @@ namespace Xi.Framework
                 return;
             }
 
-            _windowState = WindowState.Opening;
+            CurrentWindowState = WindowState.Opening;
+            await DoOpenAsync();
+        }
+
+        protected async UniTask DoOpenAsync()
+        {
             _windowObject = await AssetManager.Instance.InstantiateScriptAsync<TWindow>(UiNameConst_Extend.AddressableName(PrefabAssetPath),
                 Vector3.zero,
                 Quaternion.identity,
@@ -44,10 +52,17 @@ namespace Xi.Framework
             _windowObject.GetRectTransform().anchoredPosition3D = Vector3.zero;
             _windowObject.Init(UiEnum_Extend.GetSortingOrder(UiEnum));
             await _windowObject.OpenAsync();
-            _windowState = WindowState.OnDisplay;
+            if (_willRelaseAfterOpening != null)
+            {
+                _willRelaseAfterOpening.Invoke();
+                _willRelaseAfterOpening = null;
+                return;
+            }
+
+            CurrentWindowState = WindowState.OnDisplay;
         }
 
-        public async UniTask CloseAsync()
+        public virtual async UniTask CloseAsync()
         {
             if (!CanClose)
             {
@@ -55,7 +70,12 @@ namespace Xi.Framework
             }
 
             BeforeClose();
-            _windowState = WindowState.Closing;
+            CurrentWindowState = WindowState.Closing;
+            await DoCloseAsync();
+        }
+
+        protected async UniTask DoCloseAsync()
+        {
             await _windowObject.CloseAsync();
             DestroyWindow();
         }
@@ -69,20 +89,38 @@ namespace Xi.Framework
             }
 
             _windowObject = null;
-            _windowState = WindowState.None;
+            CurrentWindowState = WindowState.None;
         }
 
-        protected bool CanOpen => _windowState == WindowState.None;
+        protected bool CanOpen => CurrentWindowState == WindowState.None;
 
-        protected bool CanClose => _windowState == WindowState.OnDisplay;
+        protected bool CanClose => CurrentWindowState == WindowState.OnDisplay;
 
         #region Interface IUiController
         UiEnum IUiController.UiEnum => UiEnum;
         UiRootObject IUiController.UiRootObject { set => _uiRootObject = value; }
         void IUiController.ForceReleaseWindow()
         {
-            BeforeClose();
-            DestroyWindow();
+            switch (CurrentWindowState)
+            {
+                case WindowState.None:
+                case WindowState.Closing:
+                    return;
+                case WindowState.Opening:
+                    _willRelaseAfterOpening = doDestroyWindow;
+                    return;
+                case WindowState.OnDisplay:
+                    doDestroyWindow();
+                    return;
+                default:
+                    return;
+            }
+
+            void doDestroyWindow()
+            {
+                BeforeClose();
+                DestroyWindow();
+            }
         }
         #endregion
     }

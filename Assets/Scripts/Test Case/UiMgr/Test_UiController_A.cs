@@ -12,14 +12,6 @@ namespace Xi.TestCase
         protected override bool IsOverlayMode => true;
         public override void BeforeClose() { }
         public void Init_A() => Debug.Log(nameof(Test_UiController_A));
-        public new async UniTask OpenAsync()
-        {
-            if (!CanOpen)
-            {
-                return;
-            }
-
-            await base.OpenAsync();
-        }
+        public new async UniTask OpenAsync() => await base.OpenAsync();
     }
 }

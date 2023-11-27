@@ -12,14 +12,20 @@ namespace Xi.TestCase
         protected override bool IsOverlayMode => false;
         public override void BeforeClose() { }
         public void Init_C() => Debug.Log(nameof(Test_UiController_C));
-        public new async UniTask OpenAsync()
+
+        public new async UniTask OpenAsync() => await base.OpenAsync();
+
+        public override async UniTask CloseAsync()
         {
-            if (!CanOpen)
+            if (!CanClose)
             {
                 return;
             }
 
-            await base.OpenAsync();
+            BeforeClose();
+            CurrentWindowState = WindowState.Closing;
+            await UniTask.Delay(15 * 1000);
+            await DoCloseAsync();
         }
     }
 }
