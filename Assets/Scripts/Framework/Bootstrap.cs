@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Reflection;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
+using Xi.Gameplay;
+using Xi.Metagame;
 using Xi.Tools;
 
 namespace Xi.Framework
@@ -29,15 +31,16 @@ namespace Xi.Framework
         {
             _loggerTool ??= new AdvancedLoggerTool();
 
+            await GameSceneManager.Instance.InitAsync();
+            await GameMain.Instance.InitAsync(GameSceneManager.Instance, MetagameGameInstance_Extend.CreateMetagameGameInstance, GameplayGameInstance_Extend.CreateGameplayGameInstance);
             await AssetManager.Instance.InitAsync();
             await GameObjectPoolManager.Instance.InitAsync();
-            await GameSceneManager.Instance.InitAsync();
             await UiManager.Instance.InitAsync(GetTypesFromAssembly(), AssetManager.Instance);
             await EventCenter.Instance.InitAsync(GetTypesFromAssembly());
 
             OnInitAllManagerAccomplish();
         }
 
-        private async void OnInitAllManagerAccomplish() => await GameSceneManager.Instance.LoadActiveSceneAsync(SceneNameConst.kMainScene, true);
+        private void OnInitAllManagerAccomplish() => GameMain.Instance.ChangeSceneToMetagameScene().Forget();
     }
 }

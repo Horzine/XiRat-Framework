@@ -13,6 +13,7 @@ namespace Xi.Framework
     public abstract class SceneObjectReferenceHolder<TSceneObjectReference> : MonoBehaviour, ISceneObjectReferenceHolder where TSceneObjectReference : SceneObjectReference
     {
         protected abstract List<TSceneObjectReference> SceneObjectReferences { get; }
+
         protected T GetSceneObjectReference<T>(string objectEnumName, int intValue) where T : Component
         {
             var reference = SceneObjectReferences.Find(item => item.EnumIntValue == intValue);
