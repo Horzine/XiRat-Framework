@@ -6,14 +6,15 @@ namespace Xi.Framework
 {
     public class GameMain : MonoSingleton<GameMain>, ISingleton
     {
-        void ISingleton.OnCreate()
-        {
-
-        }
         public IGameInstance CurrentGameInstance { get; private set; }
         private Func<IGameInstance> _createMetagameGameInstanceFunc;
         private Func<IGameInstance> _createGameplayGameInstanceFunc;
         private GameSceneManager _gameSceneManager;
+
+        void ISingleton.OnCreate()
+        {
+
+        }
 
         public async UniTask InitAsync(GameSceneManager gameSceneManager,
             Func<IGameInstance> createMetagameGameInstanceFunc,

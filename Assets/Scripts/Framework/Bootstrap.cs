@@ -12,7 +12,9 @@ namespace Xi.Framework
     public class Bootstrap : MonoBehaviour
     {
         private static IReadOnlyCollection<Type> _cachedTypes;
+#pragma warning disable IDE0052 
         private static AdvancedLoggerTool _loggerTool;
+#pragma warning restore IDE0052 
 
         private void Awake() => SelfInit().Forget();
 
