@@ -1,21 +1,10 @@
 ﻿using System;
 using Cysharp.Threading.Tasks;
+using Xi.Tools;
 
 namespace Xi.Framework
 {
-    public interface IGameInstance
-    {
-        string SceneName { get; set; }
-        void OnCreate();
-        void OnSceneActive(IGameInstance oldGameInstance);
-    }
-    public abstract class GameInstance : IGameInstance
-    {
-        public abstract string SceneName { get; set; }
-        public abstract void OnCreate();
-        public abstract void OnSceneActive(IGameInstance oldGameInstance);
-    }
-    public partial class GameMain : MonoSingleton<GameMain>, ISingleton
+    public class GameMain : MonoSingleton<GameMain>, ISingleton
     {
         void ISingleton.OnCreate()
         {
@@ -36,25 +25,34 @@ namespace Xi.Framework
             await UniTask.Yield();
         }
 
-        public async UniTaskVoid ChangeSceneToMetagameScene()
+        public async UniTaskVoid ChangeSceneToMetagameScene() => await ChangeSceneToGameInstance(_createMetagameGameInstanceFunc);
+
+        public async UniTaskVoid ChangeSceneToGameplayScene(string sceneName) => await ChangeSceneToGameInstance(_createGameplayGameInstanceFunc, sceneName);
+
+        public void RunGC()
         {
-            var metagameGameInstance = _createMetagameGameInstanceFunc?.Invoke();
-            metagameGameInstance.OnCreate();
-            var op = await _gameSceneManager.LoadActiveSceneAsync(metagameGameInstance.SceneName, false);
-            await op.Result.ActivateAsync();
-            metagameGameInstance.OnSceneActive(CurrentGameInstance);
-            CurrentGameInstance = metagameGameInstance;
+            GC.Collect();
+            XiLogger.Log(string.Empty);
         }
 
-        public async UniTaskVoid ChangeSceneToGameplayScene(string sceneName)
+        private async UniTask ChangeSceneToGameInstance(Func<IGameInstance> createGameInstanceFunc, string sceneName = null)
         {
-            var gameplayGameInstance = _createGameplayGameInstanceFunc?.Invoke();
-            gameplayGameInstance.SceneName = sceneName;
-            gameplayGameInstance.OnCreate();
-            var op = await _gameSceneManager.LoadActiveSceneAsync(sceneName, false);
+            var newGameInstance = createGameInstanceFunc?.Invoke();
+            if (!string.IsNullOrEmpty(sceneName))
+            {
+                newGameInstance.SceneName = sceneName;
+            }
+
+            newGameInstance.OnCreate();
+
+            var op = await _gameSceneManager.LoadActiveSceneAsync(newGameInstance.SceneName, false);
             await op.Result.ActivateAsync();
-            gameplayGameInstance.OnSceneActive(CurrentGameInstance);
-            CurrentGameInstance = gameplayGameInstance;
+
+            newGameInstance.OnNewSceneActive(CurrentGameInstance);
+            CurrentGameInstance?.WillBeReplaced();
+
+            CurrentGameInstance = newGameInstance;
+            RunGC();
         }
     }
 }

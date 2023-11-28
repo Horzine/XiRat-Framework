@@ -38,9 +38,18 @@ namespace Xi.Framework
             await UiManager.Instance.InitAsync(GetTypesFromAssembly(), AssetManager.Instance);
             await EventCenter.Instance.InitAsync(GetTypesFromAssembly());
 
-            OnInitAllManagerAccomplish();
+            OnInitAllManagerAccomplish().Forget();
         }
 
-        private void OnInitAllManagerAccomplish() => GameMain.Instance.ChangeSceneToMetagameScene().Forget();
+        private async UniTask OnInitAllManagerAccomplish()
+        {
+            await UniTask.Yield();
+
+            GameMain.Instance.ChangeSceneToMetagameScene().Forget();
+
+            await UniTask.Delay(10000);
+
+            GameMain.Instance.ChangeSceneToGameplayScene(SceneNameConst.kMap_1).Forget();
+        }
     }
 }
