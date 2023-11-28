@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -14,6 +15,7 @@ namespace Xi.Framework
         public IReadOnlyDictionary<string, Scene> SubScenes => _subScenes;
         private readonly Dictionary<string, Scene> _subScenes = new();
         public string CurrentActiveSceneName { get; private set; }
+        private event Action<Scene, Scene> OnActiveSceneChangedAction;
 
         void ISingleton.OnCreate()
         {
@@ -54,6 +56,8 @@ namespace Xi.Framework
             {
                 _subScenes.Remove(newSceneName);
             }
+
+            OnActiveSceneChangedAction?.Invoke(oldScene, newScene);
         }
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -97,5 +101,9 @@ namespace Xi.Framework
 
         private void LoadSceneAsyncOnCompleted(string sceneName, bool isAdditive, AsyncOperationHandle<SceneInstance> _, float startTime)
             => XiLogger.Log($"SceneName: {sceneName}, IsAdditive: {isAdditive}, TimePassed: {Time.realtimeSinceStartup - startTime}");
+
+        public void AddOnActiveSceneChangedActionListener(Action<Scene, Scene> callback) => OnActiveSceneChangedAction += callback;
+
+        public void RemoveOnActiveSceneChangedActionListener(Action<Scene, Scene> callback) => OnActiveSceneChangedAction -= callback;
     }
 }

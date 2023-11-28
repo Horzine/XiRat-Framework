@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using Xi.Framework;
+using Xi.Gameplay;
 using Xi.Tools;
 
 namespace Xi.Metagame
@@ -14,9 +15,15 @@ namespace Xi.Metagame
             XiLogger.Log($"oldGameInstance: {oldGameInstance}, gameInstanceObject: {gameInstanceObject}");
             if (oldGameInstance == null)
             {
-
+                return;
             }
-            else
+
+            if (oldGameInstance is MetagameGameInstance oldMetagame)
+            {
+                return;
+            }
+
+            if (oldGameInstance is GameplayGameInstance oldGameplay)
             {
 
             }
@@ -31,5 +38,8 @@ namespace Xi.Metagame
     public static class MetagameGameInstance_Extend
     {
         public static MetagameGameInstance CreateMetagameGameInstance() => new();
+
+        public static MetagameGameInstance GetMetagameGameInstance(this GameMain gameMain)
+            => gameMain.CurrentGameInstance is MetagameGameInstance metagameGameInstance ? metagameGameInstance : null;
     }
 }
