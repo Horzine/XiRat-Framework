@@ -48,7 +48,6 @@ namespace Xi.Framework
             {
                 XiLogger.LogWarning($"cancellationToken IsCancellationRequested, key = {key}");
                 Release(loadOperation);
-                Destroy(asset);
                 return null;
             }
 
