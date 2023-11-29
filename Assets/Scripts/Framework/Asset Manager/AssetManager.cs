@@ -47,8 +47,8 @@ namespace Xi.Framework
             if (cancellationToken.IsCancellationRequested)
             {
                 XiLogger.LogWarning($"cancellationToken IsCancellationRequested, key = {key}");
-                Destroy(asset);
                 Release(loadOperation);
+                Destroy(asset);
                 return null;
             }
 
@@ -71,6 +71,14 @@ namespace Xi.Framework
             return go ? go.GetComponent<TScript>() : null;
         }
 
-        public void Release(AsyncOperationHandle operationHandle) => Addressables.Release(operationHandle);
+        public void Release(AsyncOperationHandle operationHandle)
+        {
+            if (!operationHandle.IsValid())
+            {
+                return;
+            }
+
+            Addressables.Release(operationHandle);
+        }
     }
 }

@@ -11,12 +11,13 @@ namespace Xi.TestCase
         private const string kCubeName = "Cube";
         private AsyncOperationHandle _operationHandle;
 
-        private async void Start()
+        private void Awake() => AssetManager.Instance.InitAsync().Forget();
+
+        private void Start()
         {
-            await TestLoadAsset();
-            await AssetManager.Instance.InitAsync();
-            var cube = await TestInstantiateScript();
-            cube.Test();
+            TestLoadAsset().Forget();
+
+            TestInstantiateScript().Forget();
         }
 
         private async UniTask TestLoadAsset()
@@ -31,8 +32,14 @@ namespace Xi.TestCase
             print(asset.name);
         }
 
-        private async UniTask<Test_AssetMgr_Cube> TestInstantiateScript()
-            => await AssetManager.Instance.InstantiateScriptAsync<Test_AssetMgr_Cube>($"Test Case/AssetMgr/Cube.prefab", Vector3.zero, Quaternion.identity, null, this.GetCancellationTokenOnDestroy());
+        private async UniTask TestInstantiateScript()
+        {
+            var cube = await AssetManager.Instance.InstantiateScriptAsync<Test_AssetMgr_Cube>($"Test Case/AssetMgr/Cube.prefab", Vector3.zero, Quaternion.identity, null, this.GetCancellationTokenOnDestroy());
+            if (cube)
+            {
+                cube.Test();
+            }
+        }
 
         private void OnDestroy()
         {
