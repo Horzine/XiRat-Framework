@@ -21,7 +21,11 @@ namespace Xi.Framework
 
         public async UniTask InitAsync(IReadOnlyCollection<Type> allTypeInAssembly, AssetManager assetManager)
         {
-            _uiRootObject = await assetManager.InstantiateScriptAsync<UiRootObject>($"{AssetGroupNameConst.kAddressableGroupName_Manager}/{kUiManagerPrefabName}", Vector3.zero, Quaternion.identity, transform);
+            _uiRootObject = await assetManager.InstantiateScriptAsync<UiRootObject>($"{AssetGroupNameConst.kAddressableGroupName_Manager}/{kUiManagerPrefabName}",
+                Vector3.zero,
+                Quaternion.identity,
+                transform,
+                this.GetCancellationTokenOnDestroy());
             CreateAllUiControllerInstance(allTypeInAssembly);
         }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using Xi.Extend.UnityExtend;
@@ -48,7 +49,8 @@ namespace Xi.Framework
             _windowObject = await AssetManager.Instance.InstantiateScriptAsync<TWindow>(UiNameConst_Extend.AddressableName(PrefabAssetPath),
                 Vector3.zero,
                 Quaternion.identity,
-                IsOverlayMode ? _uiRootObject.OverlayModeCanvasTsf : _uiRootObject.CameraModeCanvasTsf);
+                IsOverlayMode ? _uiRootObject.OverlayModeCanvasTsf : _uiRootObject.CameraModeCanvasTsf,
+                CancellationToken.None);
             _windowObject.GetRectTransform().anchoredPosition3D = Vector3.zero;
             _windowObject.Init(UiEnum_Extend.GetSortingOrder(UiEnum));
             await _windowObject.OpenAsync();
