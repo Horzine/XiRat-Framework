@@ -45,13 +45,10 @@ namespace Xi.Framework
             }
 
             newGameInstance.OnCreate();
-
             var op = await _gameSceneManager.LoadActiveSceneAsync(newGameInstance.SceneName, false);
             await op.Result.ActivateAsync();
-
             newGameInstance.OnNewSceneActive(CurrentGameInstance);
             CurrentGameInstance?.WillBeReplaced();
-
             CurrentGameInstance = newGameInstance;
             RunGC();
         }
