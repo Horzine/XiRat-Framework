@@ -22,7 +22,7 @@ namespace Xi.TestCase
 
         private async UniTask TestLoadAsset()
         {
-            var (success, asset, operationHandle) = await AssetManager.Instance.LoadAssetAsync<GameObject>($"Test Case/AssetMgr/Cube.prefab", this.GetCancellationTokenOnDestroy());
+            var (success, asset, operationHandle) = await AssetManager.Instance.LoadAssetAsync<GameObject>($"{kGroupName}/AssetMgr/{kCubeName}.prefab", this.GetCancellationTokenOnDestroy());
             if (!success)
             {
                 return;
@@ -34,7 +34,7 @@ namespace Xi.TestCase
 
         private async UniTask TestInstantiateScript()
         {
-            var cube = await AssetManager.Instance.InstantiateScriptAsync<Test_AssetMgr_Cube>($"Test Case/AssetMgr/Cube.prefab", Vector3.zero, Quaternion.identity, null, this.GetCancellationTokenOnDestroy());
+            var cube = await AssetManager.Instance.InstantiateScriptAsync<Test_AssetMgr_Cube>($"{kGroupName}/AssetMgr/{kCubeName}.prefab", Vector3.zero, Quaternion.identity, null, this.GetCancellationTokenOnDestroy());
             if (cube)
             {
                 cube.Test();
