@@ -11,7 +11,7 @@ namespace Xi.TestCase
         private const string kCubeName = "Cube";
         private AsyncOperationHandle _operationHandle;
 
-        private void Awake() => AssetManager.Instance.InitAsync().Forget();
+        private void Awake() => AssetManager.Instance.InitAsync(GameSceneManager.Instance).Forget();
 
         private void Start()
         {

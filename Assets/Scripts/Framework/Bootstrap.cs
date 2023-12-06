@@ -47,7 +47,7 @@ namespace Xi.Framework
 
             await GameSceneManager.Instance.InitAsync();
             var gameSceneManager = GameSceneManager.Instance;
-            await AssetManager.Instance.InitAsync();
+            await AssetManager.Instance.InitAsync(gameSceneManager);
             var assetManager = AssetManager.Instance;
             await GameMain.Instance.InitAsync(gameSceneManager,
                 MetagameGameInstance_Extend.CreateMetagameGameInstance,
