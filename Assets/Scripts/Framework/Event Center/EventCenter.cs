@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using Cysharp.Threading.Tasks;
 using Xi.Tools;
 
@@ -133,6 +134,45 @@ namespace Xi.Framework
             }
 
             pendingOperations.Clear();
+        }
+    }
+
+    public static class EventCenter_Extend
+    {
+        public static void RegisterListener<T>(this IEventListener<T> eventListener, [CallerFilePath] string filePath = "", [CallerMemberName] string methodName = "") where T : CustomEvent
+        {
+            if (eventListener == null)
+            {
+                XiLogger.LogError("EventListener is null");
+                return;
+            }
+
+            EventCenter.Instance.AddListener(eventListener);
+            XiLogger.Log($"Register Event Listener: {typeof(T).Name}", filePath: filePath, methodName: methodName);
+        }
+
+        public static void UnregisterListener<T>(this IEventListener<T> eventListener, [CallerFilePath] string filePath = "", [CallerMemberName] string methodName = "") where T : CustomEvent
+        {
+            if (eventListener == null)
+            {
+                XiLogger.LogError("EventListener is null");
+                return;
+            }
+
+            EventCenter.Instance.RemoveListener(eventListener);
+            XiLogger.Log($"Unregister Event Listener: {typeof(T).Name}", filePath: filePath, methodName: methodName);
+        }
+
+        public static void FireEvent<T>(this T customEvent, [CallerFilePath] string filePath = "", [CallerMemberName] string methodName = "") where T : CustomEvent
+        {
+            if (customEvent == null)
+            {
+                XiLogger.LogError("CustomEvent is null");
+                return;
+            }
+
+            EventCenter.Instance.FireEvent(customEvent);
+            XiLogger.Log($"FireEvent: {typeof(T).Name}", filePath: filePath, methodName: methodName);
         }
     }
 }

@@ -9,13 +9,13 @@ namespace Xi.TestCase
         public void Start()
         {
             EventCenter.Instance.AddListener<Event1Event>(this);
-            EventCenter.Instance.AddListener<Event2Event>(this);
+            this.RegisterListener<Event2Event>();
         }
 
         public void Stop()
         {
             EventCenter.Instance.RemoveListener<Event1Event>(this);
-            EventCenter.Instance.RemoveListener<Event2Event>(this);
+            this.UnregisterListener<Event2Event>();
         }
 
         void IEventListener<Event1Event>.OnEventFire(Event1Event eventArgs)
@@ -40,7 +40,7 @@ namespace Xi.TestCase
             EventCenter.Instance.FireEvent(new Event2Event());
 
             obj.Stop();
-            EventCenter.Instance.FireEvent(new Event1Event());
+            new Event1Event().FireEvent();
         }
     }
 }
