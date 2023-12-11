@@ -8,6 +8,7 @@
         Action,
         Resolution,
         Game_Over,
+        Game_Restart,
     }
 
     public enum StageState
@@ -57,6 +58,11 @@
                 return;
             }
 
+            SwitchToNextStage();
+        }
+
+        private void SwitchToNextStage()
+        {
             switch (CurrentGameStatus.stage)
             {
                 case GameStage.Game_Idle:
@@ -65,28 +71,35 @@
                         CurrentGameStatus = (CurrentGameStatus.stage + 1, StageState.Before);
                     }
                     break;
+
                 case GameStage.Game_Start:
-                    CurrentGameStatus = (CurrentGameStatus.stage + 1, StageState.Before);
-                    break;
                 case GameStage.Decision:
-                    CurrentGameStatus = (CurrentGameStatus.stage + 1, StageState.Before);
-                    break;
                 case GameStage.Action:
                     CurrentGameStatus = (CurrentGameStatus.stage + 1, StageState.Before);
                     break;
+
                 case GameStage.Resolution:
-                    CurrentGameStatus = IsGameAbleToOver() ? (CurrentGameStatus.stage + 1, StageState.Before) : (GameStage.Decision, StageState.Before);
+                    CurrentGameStatus = IsGameAbleToOver()
+                        ? (CurrentGameStatus.stage + 1, StageState.Before)
+                        : (GameStage.Decision, StageState.Before);
                     break;
+
                 case GameStage.Game_Over:
+                    CurrentGameStatus = IsGameAbleRestart() ? (GameStage.Game_Restart, StageState.Before) : (GameStage.Game_Over, StageState.After);
                     break;
+
+                case GameStage.Game_Restart:
+                    CurrentGameStatus = (GameStage.Game_Idle, StageState.Before);
+                    break;
+
                 default:
                     break;
             }
         }
 
-        protected abstract void OnGameStageChange(GameStage oldStage, GameStage newStage);// 在阶段改变时的逻辑处理，可以根据需要进行实现
+        protected abstract void OnGameStageChange(GameStage oldStage, GameStage newStage);
 
-        protected abstract void OnStageStateChange(GameStage currentStage, StageState oldState, StageState newState);// 在状态改变时的逻辑处理，可以根据需要进行实现
+        protected abstract void OnStageStateChange(GameStage currentStage, StageState oldState, StageState newState);
 
         protected abstract bool HandleStageAndState((GameStage stage, StageState state) currentGameStatus);
 
@@ -94,5 +107,11 @@
 
         protected abstract bool IsGameAbleToOver();
 
+        protected abstract bool IsGameAbleRestart();
+
+        public void RestartGame()
+        {
+            CurrentGameStatus = (GameStage.Game_Idle, StageState.Before);
+        }
     }
 }
