@@ -8,20 +8,20 @@ namespace Xi.TestCase
         public bool IsAbleToStart { get; set; }
         public bool IsAbleToOver { get; set; }
         public bool IsAbleRestart { get; set; }
-        protected override bool HandleStageAndState((GameStage stage, StageState state) currentGameStatus)
-        {
-            return currentGameStatus switch
-            {
-                _ => true,
-            };
-        }
-        protected override bool IsGameAbleToStart() => IsAbleToStart;
-        protected override bool IsGameAbleToOver() => IsAbleToOver;
-        protected override bool IsGameAbleRestart() => IsAbleRestart;
+        protected override bool IsGameAbleToStartLogic() => IsAbleToStart;
+        protected override bool IsGameAbleToOverLogic() => IsAbleToOver;
+        protected override bool IsGameAbleToRestartLogic() => IsAbleRestart;
         protected override void OnGameStageChange(GameStage oldStage, GameStage newStage)
             => Debug.Log($"OldStage: {oldStage} ==> NewStage: {newStage}");
         protected override void OnStageStateChange(GameStage currentStage, StageState oldState, StageState newState)
             => Debug.Log($"GameStage: {currentStage}, OldState: {oldState} ==> NewState: {newState}");
+        protected override bool HandleGameStage_Idle(StageState state) => true;
+        protected override bool HandleGameStage_Start(StageState state) => true;
+        protected override bool HandleGameStage_Decision(StageState state) => true;
+        protected override bool HandleGameStage_Action(StageState state) => true;
+        protected override bool HandleGameStage_Resolution(StageState state) => true;
+        protected override bool HandleGameStage_Over(StageState state) => true;
+        protected override bool HandleGameStage_Restart(StageState state) => true;
     }
 
     public class Test_GameProcess : MonoBehaviour
@@ -48,11 +48,10 @@ namespace Xi.TestCase
 
             if (_lastTimeSecond != (int)Time.time)
             {
-                Debug.Log($"---------- {_myGameProcess.CurrentGameStatus.stage}, {_myGameProcess.CurrentGameStatus.state} -------------");
+                Debug.Log($"---------- {_myGameProcess.GetCurrentGameStage()}, {_myGameProcess.GetCurrentStageState()} -------------");
                 _myGameProcess.OnUpdate();
                 _lastTimeSecond = (int)Time.time;
             }
-
         }
     }
 }
