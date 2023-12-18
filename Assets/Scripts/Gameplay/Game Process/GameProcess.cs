@@ -20,9 +20,6 @@
 
     public abstract class GameProcess
     {
-        protected bool IsGameAbleToStartValue { get; set; }
-        protected bool IsGameAbleToOverValue { get; set; }
-        protected bool IsGameAbleToRestartValue { get; set; }
         protected (GameStage stage, StageState state) CurrentGameStatus
         {
             get => _currentGameStatus;
@@ -67,9 +64,9 @@
             switch (CurrentGameStatus.stage)
             {
                 case GameStage.Game_Idle:
-                    if (IsGameAbleToStartValue && IsGameAbleToStartLogic())
+                    if (IsGameAbleToStartLogic())
                     {
-                        CurrentGameStatus = (GameStage.Game_Start, StageState.Before);
+                        JumpToGame_Start();
                     }
 
                     break;
@@ -81,25 +78,39 @@
                     break;
 
                 case GameStage.Game_Resolution:
-                    CurrentGameStatus = IsGameAbleToOverValue && IsGameAbleToOverLogic()
-                        ? (GameStage.Game_Over, StageState.Before)
-                        : (GameStage.Game_Decision, StageState.Before);
+                    if (IsGameAbleToOverLogic())
+                    {
+                        JumpToGame_Over();
+                    }
+                    else
+                    {
+                        JumpToGame_Decision();
+                    }
+
                     break;
 
                 case GameStage.Game_Over:
-                    CurrentGameStatus = IsGameAbleToRestartValue && IsGameAbleToRestartLogic()
-                        ? (GameStage.Game_Restart, StageState.Before)
-                        : (GameStage.Game_Over, StageState.After);
+                    if (IsGameAbleToRestartLogic())
+                    {
+                        JumpToGame_Restart();
+                    }
+
                     break;
 
                 case GameStage.Game_Restart:
-                    CurrentGameStatus = (GameStage.Game_Idle, StageState.Before);
+                    JumpToGame_Idle();
                     break;
 
                 default:
                     break;
             }
         }
+
+        private void JumpToGame_Decision() => CurrentGameStatus = (GameStage.Game_Decision, StageState.Before);
+        private void JumpToGame_Idle() => CurrentGameStatus = (GameStage.Game_Idle, StageState.Before);
+        private void JumpToGame_Start() => CurrentGameStatus = (GameStage.Game_Start, StageState.Before);
+        private void JumpToGame_Over() => CurrentGameStatus = (GameStage.Game_Over, StageState.Before);
+        private void JumpToGame_Restart() => CurrentGameStatus = (GameStage.Game_Restart, StageState.Before);
 
         private bool HandleStageAndState((GameStage stage, StageState state) currentGameStatus)
         {
@@ -133,5 +144,29 @@
 
         public GameStage GetCurrentGameStage() => CurrentGameStatus.stage;
         public StageState GetCurrentStageState() => CurrentGameStatus.state;
+
+        public void StartGame()
+        {
+            if (CurrentGameStatus == (GameStage.Game_Idle, StageState.After))
+            {
+                JumpToGame_Start();
+            }
+        }
+
+        public void RestartGame(bool force)
+        {
+            if (force || CurrentGameStatus == (GameStage.Game_Over, StageState.After))
+            {
+                JumpToGame_Restart();
+            }
+        }
+
+        public void OverGame(bool force)
+        {
+            if (force || CurrentGameStatus == (GameStage.Game_Resolution, StageState.After))
+            {
+                JumpToGame_Over();
+            }
+        }
     }
 }

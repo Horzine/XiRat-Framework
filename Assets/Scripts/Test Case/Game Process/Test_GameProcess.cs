@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using TMPro;
+using UnityEngine;
 using Xi.Gameplay;
 
 namespace Xi.TestCase
@@ -26,6 +27,7 @@ namespace Xi.TestCase
 
     public class Test_GameProcess : MonoBehaviour
     {
+        public TextMeshProUGUI currentStageTxt;
         private readonly MyGameProcess _myGameProcess = new();
         private int _lastTimeSecond;
 
@@ -52,6 +54,18 @@ namespace Xi.TestCase
                 _myGameProcess.OnUpdate();
                 _lastTimeSecond = (int)Time.time;
             }
+
+            currentStageTxt.text = $"{_myGameProcess.GetCurrentGameStage()}, {_myGameProcess.GetCurrentStageState()}";
         }
+
+        public void StartGame() => _myGameProcess.StartGame();
+
+        public void OverGameForce() => _myGameProcess.OverGame(true);
+
+        public void OverGame() => _myGameProcess.OverGame(false);
+
+        public void RestartGameForce() => _myGameProcess.RestartGame(true);
+
+        public void RestartGame() => _myGameProcess.RestartGame(false);
     }
 }
