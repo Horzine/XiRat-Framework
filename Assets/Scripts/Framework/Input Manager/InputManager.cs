@@ -5,13 +5,14 @@ namespace Xi.Framework
 {
     public class InputManager : MonoSingleton<InputManager>, ISingleton
     {
-        private readonly InputActionConfig _actionConfig = new();
+        private InputActionConfig _actionConfig;
         public InputActionConfig.PlayerActions Player { get; private set; }
         public InputActionConfig.UiActions Ui { get; private set; }
         public InputActionConfig.HudActions Hud { get; private set; }
 
         void ISingleton.OnCreate()
         {
+            _actionConfig = new();
             Player = _actionConfig.Player;
             Ui = _actionConfig.Ui;
             Hud = _actionConfig.Hud;
