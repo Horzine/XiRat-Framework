@@ -24,10 +24,26 @@ namespace Xi.Framework
             CancellationToken cancellationToken,
             bool currentActiveSceneOnly = true)
         {
-            
+            string lastSceneName = string.Empty;
+            if (currentActiveSceneOnly)
+            {
+                lastSceneName = _gameSceneManager.CurrentActiveSceneName;
+            }
+
             var loadOperation = Addressables.LoadAssetAsync<TObject>(key);
             await loadOperation;
             var asset = loadOperation.Result;
+            if (currentActiveSceneOnly)
+            {
+                string newSceneName = _gameSceneManager.CurrentActiveSceneName;
+                if (lastSceneName != newSceneName)
+                {
+                    XiLogger.LogWarning($"currentActiveSceneName changed, lastSceneName: {lastSceneName}, currentSceneName = {newSceneName}, key = {key}");
+                    Release(loadOperation);
+                    return (false, default, default);
+                }
+            }
+
             if (cancellationToken.IsCancellationRequested)
             {
                 XiLogger.LogWarning($"cancellationToken IsCancellationRequested, key = {key}");
@@ -42,17 +58,35 @@ namespace Xi.Framework
             Vector3 position,
             Quaternion rotation,
             Transform parent,
-            CancellationToken cancellationToken)
-            => await InstantiateGameObjectAsync(key, new InstantiationParameters(position, rotation, parent), cancellationToken);
+            CancellationToken cancellationToken,
+            bool currentActiveSceneOnly = true)
+            => await InstantiateGameObjectAsync(key, new InstantiationParameters(position, rotation, parent), cancellationToken, currentActiveSceneOnly);
 
         public async UniTask<GameObject> InstantiateGameObjectAsync(string key,
             InstantiationParameters instantiateParameters,
             CancellationToken cancellationToken,
             bool currentActiveSceneOnly = true)
         {
+            string lastSceneName = string.Empty;
+            if (currentActiveSceneOnly)
+            {
+                lastSceneName = _gameSceneManager.CurrentActiveSceneName;
+            }
+
             var loadOperation = Addressables.InstantiateAsync(key, instantiateParameters);
             await loadOperation;
             var asset = loadOperation.Result;
+            if (currentActiveSceneOnly)
+            {
+                string newSceneName = _gameSceneManager.CurrentActiveSceneName;
+                if (lastSceneName != newSceneName)
+                {
+                    XiLogger.LogWarning($"currentActiveSceneName changed, lastSceneName: {lastSceneName}, currentSceneName = {newSceneName}, key = {key}");
+                    Release(loadOperation);
+                    return null;
+                }
+            }
+
             if (cancellationToken.IsCancellationRequested)
             {
                 XiLogger.LogWarning($"cancellationToken IsCancellationRequested, key = {key}");
@@ -68,14 +102,16 @@ namespace Xi.Framework
             Vector3 position,
             Quaternion rotation,
             Transform parent,
-            CancellationToken cancellationToken) where TScript : MonoBehaviour
-            => await InstantiateScriptAsync<TScript>(key, new InstantiationParameters(position, rotation, parent), cancellationToken);
+            CancellationToken cancellationToken,
+            bool currentActiveSceneOnly = true) where TScript : MonoBehaviour
+            => await InstantiateScriptAsync<TScript>(key, new InstantiationParameters(position, rotation, parent), cancellationToken, currentActiveSceneOnly);
 
         public async UniTask<TScript> InstantiateScriptAsync<TScript>(string key,
             InstantiationParameters instantiateParameters,
-            CancellationToken cancellationToken) where TScript : MonoBehaviour
+            CancellationToken cancellationToken,
+            bool currentActiveSceneOnly = true) where TScript : MonoBehaviour
         {
-            var go = await InstantiateGameObjectAsync(key, instantiateParameters, cancellationToken);
+            var go = await InstantiateGameObjectAsync(key, instantiateParameters, cancellationToken, currentActiveSceneOnly);
             return go ? go.GetComponent<TScript>() : null;
         }
 

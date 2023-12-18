@@ -17,8 +17,8 @@ namespace Xi.Framework
     {
         private readonly Dictionary<Type, CustomEventDefine.EventId> _eventMapping = new();
         private readonly Dictionary<int, List<IEventListener>> _allEvent = new();
-        private readonly List<Action> pendingOperations = new();
-        private bool isFiringEvent = false;
+        private readonly List<Action> _pendingOperations = new();
+        private bool _isFiringEvent = false;
 
         void ISingleton.OnCreate()
         {
@@ -51,9 +51,9 @@ namespace Xi.Framework
 
         public void AddListener<T>(IEventListener<T> listener) where T : CustomEvent
         {
-            if (isFiringEvent)
+            if (_isFiringEvent)
             {
-                pendingOperations.Add(() => AddListener(listener));
+                _pendingOperations.Add(() => AddListener(listener));
                 return;
             }
 
@@ -79,9 +79,9 @@ namespace Xi.Framework
         public void RemoveListener<T>(IEventListener<T> listener) where T : CustomEvent
         {
             var eventType = typeof(T);
-            if (isFiringEvent)
+            if (_isFiringEvent)
             {
-                pendingOperations.Add(() => RemoveListener(listener));
+                _pendingOperations.Add(() => RemoveListener(listener));
                 return;
             }
 
@@ -106,7 +106,7 @@ namespace Xi.Framework
         public void FireEvent<T>(T customEvent) where T : CustomEvent
         {
             var eventType = typeof(T);
-            if (isFiringEvent)
+            if (_isFiringEvent)
             {
                 throw new InvalidOperationException("Cannot call FireEvent while already firing an event");
             }
@@ -118,7 +118,7 @@ namespace Xi.Framework
 
             var eventId = _eventMapping[eventType];
             var listeners = _allEvent[(int)eventId];
-            isFiringEvent = true;
+            _isFiringEvent = true;
             foreach (var listener in listeners)
             {
                 if (listener is IEventListener<T> eventListener)
@@ -127,13 +127,13 @@ namespace Xi.Framework
                 }
             }
 
-            isFiringEvent = false;
-            foreach (var pendingOperation in pendingOperations)
+            _isFiringEvent = false;
+            foreach (var pendingOperation in _pendingOperations)
             {
                 pendingOperation.Invoke();
             }
 
-            pendingOperations.Clear();
+            _pendingOperations.Clear();
         }
     }
 

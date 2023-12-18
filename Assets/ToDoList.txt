@@ -1,6 +1,2 @@
-﻿1. 资源加载的时候, 需要知道当前Active场景的变化, 假如场景变更之前申请加载, 变更之后加载完成, 就自动销毁
-2. 代码生成-> 类名映射Int值
-3. SubBuff : ISubEffect, 利用 is as 去判断哪些受到 ISubEffect 影响
-4. 扩展方法,发送时间而不需要知道EventCenter
-5. GameStage + GameStatue
+﻿3. SubBuff : ISubEffect, 利用 is as 去判断哪些受到 ISubEffect 影响
 6. 修饰器设计模式, 举例: Buff生效的修饰
