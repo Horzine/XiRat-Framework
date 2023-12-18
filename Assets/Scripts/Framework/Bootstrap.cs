@@ -55,7 +55,7 @@ namespace Xi.Framework
             await GameObjectPoolManager.Instance.InitAsync(gameSceneManager);
             await UiManager.Instance.InitAsync(GetTypesFromAssembly(), assetManager);
             await EventCenter.Instance.InitAsync(GetTypesFromAssembly());
-
+            await InputManager.Instance.InitAsync();
         }
     }
 }

@@ -4,7 +4,7 @@ using static UnityEngine.InputSystem.InputAction;
 
 namespace Xi.TestCase
 {
-    public class Test_InputSystem_InputConfig : MonoBehaviour, InputActionConfig.IPlayerActions, InputActionConfig.IHUDActions
+    public class Test_InputSystem_InputConfig : MonoBehaviour, InputActionConfig.IPlayerActions, InputActionConfig.IHudActions
     {
         private InputActionConfig _inputObj;
 
@@ -15,13 +15,13 @@ namespace Xi.TestCase
         void InputActionConfig.IPlayerActions.OnReload(CallbackContext context) => print(nameof(InputActionConfig.IPlayerActions.OnReload));
         void InputActionConfig.IPlayerActions.OnTacticsReload(CallbackContext context)
             => print($"{nameof(InputActionConfig.IPlayerActions.OnTacticsReload)}, Started: {context.started}, Performed: {context.performed}, Canceled: {context.canceled}");
-        void InputActionConfig.IHUDActions.OnInteractive(CallbackContext context) { }
+        void InputActionConfig.IHudActions.OnInteractive(CallbackContext context) { }
 
         private void Awake()
         {
             _inputObj = new InputActionConfig();
             _inputObj.Player.SetCallbacks(this);
-            _inputObj.HUD.SetCallbacks(this);
+            _inputObj.Hud.SetCallbacks(this);
 
         }
 

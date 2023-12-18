@@ -317,7 +317,7 @@
             ]
         },
         {
-            "name": "HUD",
+            "name": "Hud",
             "id": "08708497-4b8b-43fb-9cfb-38e4aee4fc55",
             "actions": [
                 {
@@ -345,7 +345,7 @@
             ]
         },
         {
-            "name": "UI",
+            "name": "Ui",
             "id": "1a3362c6-e293-4d11-a536-044d716bd923",
             "actions": [
                 {
