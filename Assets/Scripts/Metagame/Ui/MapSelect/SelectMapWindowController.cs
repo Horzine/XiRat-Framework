@@ -6,7 +6,7 @@ namespace Xi.Metagame.Ui
 {
     public class SelectMapWindowController : UiBaseController<SelectMapWindow>
     {
-        protected override UiEnum UiEnum => UiEnum.Metagame_MapSelect;
+        protected override UiEnum UiEnum => UiEnum.Metagame_SelectMap;
         protected override (string groupName, string uiFeatureName, string uiPrefabName) PrefabAssetPath
             => (AssetGroupNameConst.kAddressableGroupName_MetagameUi, UiFeatureNameConst.kMetagame_SelectMap, UiPrefabNameConst.kMetagame_SelectMap);
         protected override bool IsOverlayMode => false;

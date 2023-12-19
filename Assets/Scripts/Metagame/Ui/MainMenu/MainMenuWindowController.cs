@@ -22,7 +22,7 @@ namespace Xi.Metagame.Ui
 
         public void SelectMapBtnCallback()
         {
-            var selectMapCtrl = UiManager.Instance.GetController<SelectMapWindowController>(UiEnum.Metagame_MapSelect);
+            var selectMapCtrl = UiManager.Instance.GetController<SelectMapWindowController>(UiEnum.Metagame_SelectMap);
             selectMapCtrl.Open();
         }
 

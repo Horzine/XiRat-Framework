@@ -2,17 +2,15 @@
 {
     public enum UiEnum
     {
-        TestCase_A,
-        TestCase_B,
+        None,
         ________Default_Above____,// This Above SortOrder = kDefaultOrder(0), No sorting
+        //=================================================================================
         ________SortOrder_Below____,// This Below will sort by Enum number value
 
-        TestCase_D,
         Metagame_MainMenu,
         ________SortOrder_Default____,// This mean SortOrder is kDefaultOrder(0);
-        TestCase_C,
         Metagame_ClassBuild,
-        Metagame_MapSelect,
+        Metagame_SelectMap,
     }
 
     public static class UiEnum_Extend
