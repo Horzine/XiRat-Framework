@@ -38,7 +38,7 @@ namespace Xi.Framework
                 string newSceneName = _gameSceneManager.CurrentActiveSceneName;
                 if (lastSceneName != newSceneName)
                 {
-                    XiLogger.LogWarning($"currentActiveSceneName changed, lastSceneName: {lastSceneName}, currentSceneName = {newSceneName}, key = {key}");
+                    XiLogger.LogWarning($"CurrentActiveSceneName changed, lastSceneName: {lastSceneName}, currentSceneName = {newSceneName}, key = {key}");
                     Release(loadOperation);
                     return (false, default, default);
                 }
@@ -46,7 +46,7 @@ namespace Xi.Framework
 
             if (cancellationToken.IsCancellationRequested)
             {
-                XiLogger.LogWarning($"cancellationToken IsCancellationRequested, key = {key}");
+                XiLogger.LogWarning($"CancellationToken IsCancellationRequested, key = {key}");
                 Release(loadOperation);
                 return (false, default, default);
             }
@@ -81,7 +81,7 @@ namespace Xi.Framework
                 string newSceneName = _gameSceneManager.CurrentActiveSceneName;
                 if (lastSceneName != newSceneName)
                 {
-                    XiLogger.LogWarning($"currentActiveSceneName changed, lastSceneName: {lastSceneName}, currentSceneName = {newSceneName}, key = {key}");
+                    XiLogger.LogWarning($"CurrentActiveSceneName changed, lastSceneName: {lastSceneName}, currentSceneName = {newSceneName}, key = {key}");
                     Release(loadOperation);
                     return null;
                 }
@@ -89,7 +89,7 @@ namespace Xi.Framework
 
             if (cancellationToken.IsCancellationRequested)
             {
-                XiLogger.LogWarning($"cancellationToken IsCancellationRequested, key = {key}");
+                XiLogger.LogWarning($"CancellationToken IsCancellationRequested, key = {key}");
                 Release(loadOperation);
                 return null;
             }
@@ -112,7 +112,19 @@ namespace Xi.Framework
             bool currentActiveSceneOnly = true) where TScript : MonoBehaviour
         {
             var go = await InstantiateGameObjectAsync(key, instantiateParameters, cancellationToken, currentActiveSceneOnly);
-            return go ? go.GetComponent<TScript>() : null;
+            if (!go)
+            {
+                XiLogger.LogError($"GameObject is null, key = {key}");
+                return null;
+            }
+
+            if (!go.TryGetComponent<TScript>(out var script))
+            {
+                XiLogger.LogError($"No '{typeof(TScript)}' this component, key = {key}");
+                return null;
+            }
+
+            return script;
         }
 
         public void Release(AsyncOperationHandle operationHandle)

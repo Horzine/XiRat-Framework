@@ -10,8 +10,10 @@ namespace Xi.TestCase
             => (AssetGroupNameConst.kAddressableGroupName_GameplayUi, UiFeatureNameConst.kSystem_A, UiPrefabNameConst.kSystem_A_name);
         protected override UiEnum UiEnum => UiEnum.TestCase_A;
         protected override bool IsOverlayMode => true;
-        public override void BeforeClose() { }
+        protected override void CleanControllerDependency() { }
         public void Init_A() => Debug.Log(nameof(Test_UiController_A));
         public new async UniTask OpenAsync() => await base.OpenAsync();
+        protected override void OnCloseAccomplishCallback() { }
+        protected override void OnOpenAccomplishCallback() { }
     }
 }

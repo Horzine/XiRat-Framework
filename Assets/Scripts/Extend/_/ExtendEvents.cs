@@ -372,7 +372,7 @@ public static class ExtendEvents
         var fun = _GetMethod(subscribe.GetType(), messgae);
         if (fun == null)
         {
-            XiLogger.LogWarning(" not found method" + subscribe.GetType() + " -> " + messgae);
+            XiLogger.LogWarning(" Not found method" + subscribe.GetType() + " -> " + messgae);
         }
         else
         {

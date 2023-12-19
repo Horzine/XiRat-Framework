@@ -1,4 +1,5 @@
 ﻿using Cysharp.Threading.Tasks;
+using Unity.VisualScripting;
 using UnityEngine;
 using Xi.Extend.UnityExtend;
 using Xi.Tools;
@@ -27,7 +28,7 @@ namespace Xi.Framework
             XiLogger.Log($"[{GetType().Name}]: End Close");
         }
 
-        public void Init(int sortOrder)
+        public void BaseWindowInit(int sortOrder)
         {
             SetCanvasSortOrder(sortOrder);
             _canvasGroup = this.GetOrAddComponent<CanvasGroup>();
@@ -53,6 +54,11 @@ namespace Xi.Framework
         }
 
         protected void SetCanvasGroupInteractable(bool interactable)
-            => _canvasGroup.interactable = interactable;
+        {
+            if (_canvasGroup)
+            {
+                _canvasGroup.interactable = interactable;
+            }
+        }
     }
 }

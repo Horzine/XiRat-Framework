@@ -10,7 +10,9 @@ namespace Xi.TestCase
         protected override (string groupName, string uiFeatureName, string uiPrefabName) PrefabAssetPath
             => (AssetGroupNameConst.kAddressableGroupName_MetagameUi, UiFeatureNameConst.kSystem_C, UiPrefabNameConst.kSystem_C_name);
         protected override bool IsOverlayMode => false;
-        public override void BeforeClose() { }
+
+        protected override void CleanControllerDependency() { }
+
         public void Init_C() => Debug.Log(nameof(Test_UiController_C));
 
         public new async UniTask OpenAsync() => await base.OpenAsync();
@@ -22,10 +24,12 @@ namespace Xi.TestCase
                 return;
             }
 
-            BeforeClose();
+            CleanControllerDependency();
             CurrentWindowState = WindowState.Closing;
             await UniTask.Delay(15 * 1000);
             await DoCloseAsync();
         }
+        protected override void OnCloseAccomplishCallback() { }
+        protected override void OnOpenAccomplishCallback() { }
     }
 }

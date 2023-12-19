@@ -8,9 +8,11 @@
         ________SortOrder_Below____,// This Below will sort by Enum number value
 
         TestCase_D,
+        Metagame_MainMenu,
         ________SortOrder_Default____,// This mean SortOrder is kDefaultOrder(0);
         TestCase_C,
-
+        Metagame_ClassBuild,
+        Metagame_MapSelect,
     }
 
     public static class UiEnum_Extend

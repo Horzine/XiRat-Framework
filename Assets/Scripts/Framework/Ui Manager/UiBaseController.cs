@@ -23,7 +23,7 @@ namespace Xi.Framework
             Closing,
         }
 
-        protected TWindow _windowObject;
+        protected TWindow WindowObj { get; private set; }
         private UiRootObject _uiRootObject;
         private Action _willRelaseAfterOpening = null;
         public WindowState CurrentWindowState { get; protected set; } = WindowState.None;
@@ -31,7 +31,9 @@ namespace Xi.Framework
         protected abstract (string groupName, string uiFeatureName, string uiPrefabName) PrefabAssetPath { get; }
         protected abstract bool IsOverlayMode { get; }
 
-        public abstract void BeforeClose();
+        protected abstract void CleanControllerDependency();
+        protected abstract void OnOpenAccomplishCallback();
+        protected abstract void OnCloseAccomplishCallback();
 
         protected async UniTask OpenAsync()
         {
@@ -46,14 +48,15 @@ namespace Xi.Framework
 
         protected async UniTask DoOpenAsync()
         {
-            _windowObject = await AssetManager.Instance.InstantiateScriptAsync<TWindow>(UiNameConst_Extend.AddressableName(PrefabAssetPath),
+            WindowObj = await AssetManager.Instance.InstantiateScriptAsync<TWindow>(UiNameConst_Extend.AddressableName(PrefabAssetPath),
                 Vector3.zero,
                 Quaternion.identity,
                 IsOverlayMode ? _uiRootObject.OverlayModeCanvasTsf : _uiRootObject.CameraModeCanvasTsf,
-                CancellationToken.None);
-            _windowObject.GetRectTransform().anchoredPosition3D = Vector3.zero;
-            _windowObject.Init(UiEnum_Extend.GetSortingOrder(UiEnum));
-            await _windowObject.OpenAsync();
+                CancellationToken.None,
+                false);
+            WindowObj.GetRectTransform().anchoredPosition3D = Vector3.zero;
+            WindowObj.BaseWindowInit(UiEnum_Extend.GetSortingOrder(UiEnum));
+            await WindowObj.OpenAsync();
             if (_willRelaseAfterOpening != null)
             {
                 _willRelaseAfterOpening.Invoke();
@@ -62,6 +65,7 @@ namespace Xi.Framework
             }
 
             CurrentWindowState = WindowState.OnDisplay;
+            OnOpenAccomplishCallback();
         }
 
         public virtual async UniTask CloseAsync()
@@ -71,26 +75,27 @@ namespace Xi.Framework
                 return;
             }
 
-            BeforeClose();
+            CleanControllerDependency();
             CurrentWindowState = WindowState.Closing;
             await DoCloseAsync();
         }
 
         protected async UniTask DoCloseAsync()
         {
-            await _windowObject.CloseAsync();
+            await WindowObj.CloseAsync();
             DestroyWindow();
+            OnCloseAccomplishCallback();
         }
 
         protected void DestroyWindow()
         {
-            if (_windowObject)
+            if (WindowObj)
             {
-                _windowObject.DestroySelfGameObject();
+                WindowObj.DestroySelfGameObject();
                 XiLogger.Log($"Destroy {UiEnum} Window");
             }
 
-            _windowObject = null;
+            WindowObj = null;
             CurrentWindowState = WindowState.None;
         }
 
@@ -120,7 +125,7 @@ namespace Xi.Framework
 
             void doDestroyWindow()
             {
-                BeforeClose();
+                CleanControllerDependency();
                 DestroyWindow();
             }
         }

@@ -25,7 +25,8 @@ namespace Xi.Framework
                 Vector3.zero,
                 Quaternion.identity,
                 transform,
-                this.GetCancellationTokenOnDestroy());
+                this.GetCancellationTokenOnDestroy(),
+                false);
             CreateAllUiControllerInstance(allTypeInAssembly);
         }
 
