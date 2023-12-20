@@ -1,7 +1,7 @@
 ﻿using Xi.Framework;
 using Xi.Metagame.Ui;
 
-namespace Xi.Metagame
+namespace Xi.Metagame.Main
 {
     public class MetagameGameInstanceObject : GameInstanceObject
     {
@@ -14,9 +14,6 @@ namespace Xi.Metagame
             _mainMenuCtrl.Open();
         }
 
-        public void OnDestroy()
-        {
-            _mainMenuCtrl?.Close();
-        }
+        public void OnDestroy() => _mainMenuCtrl?.Close();
     }
 }

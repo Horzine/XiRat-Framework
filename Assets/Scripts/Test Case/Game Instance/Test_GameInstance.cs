@@ -1,8 +1,8 @@
 ﻿using Cysharp.Threading.Tasks;
 using UnityEngine;
 using Xi.Framework;
-using Xi.Gameplay;
-using Xi.Metagame;
+using Xi.Gameplay.Main;
+using Xi.Metagame.Main;
 
 namespace Xi.TestCase
 {
@@ -26,8 +26,8 @@ namespace Xi.TestCase
             }
             else if (Input.GetKeyDown(KeyCode.Space))
             {
-                var metagameInstance = GameMain.Instance.GetMetagameGameInstance();
-                var gameplayInstance = GameMain.Instance.GetGameplayGameInstance();
+                var metagameInstance = GameMain.Instance.MetagameInstance();
+                var gameplayInstance = GameMain.Instance.GameplayInstance();
                 print($"{metagameInstance}, {gameplayInstance}");
             }
         }

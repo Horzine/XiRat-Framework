@@ -1,4 +1,4 @@
-﻿namespace Xi.Gameplay
+﻿namespace Xi.Gameplay.Process
 {
     public enum GameStage
     {

@@ -1,6 +1,6 @@
 ﻿using TMPro;
 using UnityEngine;
-using Xi.Gameplay;
+using Xi.Gameplay.Process;
 
 namespace Xi.TestCase
 {

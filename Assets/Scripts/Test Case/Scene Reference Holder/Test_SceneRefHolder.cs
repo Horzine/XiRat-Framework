@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using Xi.Framework;
-using Xi.Metagame;
+using Xi.Metagame.Scene;
 
 namespace Xi.TestCase
 {

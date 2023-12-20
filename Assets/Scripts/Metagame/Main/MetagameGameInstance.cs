@@ -1,12 +1,16 @@
 ﻿using UnityEngine;
 using Xi.Framework;
-using Xi.Gameplay;
+using Xi.Gameplay.Main;
+using Xi.Metagame.Client;
+using Xi.Metagame.Scene;
 using Xi.Tools;
 
-namespace Xi.Metagame
+namespace Xi.Metagame.Main
 {
     public class MetagameGameInstance : GameInstance
     {
+        public MetagameClient Client { get; private set; }
+        public MetagameSceneObjRefHolder SceneObjRefHolder { get; private set; }
         public override string SceneName { get => SceneNameConst.kMainScene; protected set { } }
         protected override void OnCreate() => XiLogger.Log(string.Empty);
         protected override GameInstanceObject AddGameInstanceObjectComponent(GameObject go) => go.AddComponent<MetagameGameInstanceObject>();
@@ -15,17 +19,30 @@ namespace Xi.Metagame
             XiLogger.Log($"oldGameInstance: {oldGameInstance}, gameInstanceObject: {gameInstanceObject}");
             if (oldGameInstance == null)
             {
-                return;
             }
 
             if (oldGameInstance is MetagameGameInstance oldMetagame)
             {
-                return;
             }
 
             if (oldGameInstance is GameplayGameInstance oldGameplay)
             {
+               
+            }
 
+            Client = new MetagameClient();
+            var refHolderObj = Object.FindObjectOfType<SceneObjectReferenceHolderGameObject>();
+            if (refHolderObj != null && refHolderObj.TryGetComponent<MetagameSceneObjRefHolder>(out var refHolder))
+            {
+                SceneObjRefHolder = refHolder;
+            }
+            else if (refHolderObj == null)
+            {
+                XiLogger.LogError($"'{SceneName}' scene no contain '{typeof(SceneObjectReferenceHolderGameObject)}' mono behaivour");
+            }
+            else if (SceneObjRefHolder == null)
+            {
+                XiLogger.LogError($"'{refHolderObj.name}' no contain '{typeof(MetagameSceneObjRefHolder)}' mono behaivour");
             }
         }
         protected override void WillBeReplaced()
@@ -39,7 +56,13 @@ namespace Xi.Metagame
     {
         public static MetagameGameInstance CreateMetagameGameInstance() => new();
 
-        public static MetagameGameInstance GetMetagameGameInstance(this GameMain gameMain)
+        public static MetagameGameInstance MetagameInstance(this GameMain gameMain)
             => gameMain.CurrentGameInstance is MetagameGameInstance metagameGameInstance ? metagameGameInstance : null;
+
+        public static MetagameClient MetagameClient(this GameMain gameMain)
+            => MetagameInstance(gameMain)?.Client;
+
+        public static MetagameSceneObjRefHolder MetagameSceneObjRefHolder(this GameMain gameMain)
+            => MetagameInstance(gameMain)?.SceneObjRefHolder;
     }
 }

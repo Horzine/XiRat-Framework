@@ -1,6 +1,4 @@
-﻿using Cysharp.Threading.Tasks;
-using UnityEngine;
-using Xi.Framework;
+﻿using UnityEngine;
 
 namespace Xi.TestCase
 {

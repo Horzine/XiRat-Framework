@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Reflection;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
-using Xi.Gameplay;
-using Xi.Metagame;
+using Xi.Gameplay.Main;
+using Xi.Metagame.Main;
 using Xi.Tools;
 
 namespace Xi.Framework
@@ -45,6 +45,7 @@ namespace Xi.Framework
         {
             _loggerTool ??= new AdvancedLoggerTool();
 
+            await ConfigManager.Instance.InitAsync();
             await GameSceneManager.Instance.InitAsync();
             var gameSceneManager = GameSceneManager.Instance;
             await AssetManager.Instance.InitAsync(gameSceneManager);

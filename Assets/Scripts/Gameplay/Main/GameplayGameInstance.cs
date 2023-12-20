@@ -1,12 +1,16 @@
 ﻿using UnityEngine;
 using Xi.Framework;
-using Xi.Metagame;
+using Xi.Gameplay.Client;
+using Xi.Gameplay.Scene;
+using Xi.Metagame.Main;
 using Xi.Tools;
 
-namespace Xi.Gameplay
+namespace Xi.Gameplay.Main
 {
     public class GameplayGameInstance : GameInstance
     {
+        public GameplayClient Client { get; private set; }
+        public GameplaySceneObjRefHolder SceneObjRefHolder { get; private set; }
         public override string SceneName { get; protected set; }
         protected override void OnCreate() => XiLogger.Log(string.Empty);
         protected override GameInstanceObject AddGameInstanceObjectComponent(GameObject go) => go.AddComponent<GameplayGameInstanceObject>();
@@ -15,18 +19,18 @@ namespace Xi.Gameplay
             XiLogger.Log($"oldGameInstance: {oldGameInstance}, gameInstanceObject: {gameInstanceObject}");
             if (oldGameInstance == null)
             {
-                return;
             }
 
             if (oldGameInstance is GameplayGameInstance oldGameplay)
             {
-                return;
             }
 
             if (oldGameInstance is MetagameGameInstance oldMetagame)
             {
-
             }
+
+            Client = new GameplayClient();
+            SceneObjRefHolder = Object.FindObjectOfType<SceneObjectReferenceHolderGameObject>().GetComponent<GameplaySceneObjRefHolder>();
         }
         protected override void WillBeReplaced()
         {
@@ -39,7 +43,13 @@ namespace Xi.Gameplay
     {
         public static GameplayGameInstance CreateGameplayGameInstance() => new();
 
-        public static GameplayGameInstance GetGameplayGameInstance(this GameMain gameMain)
+        public static GameplayGameInstance GameplayInstance(this GameMain gameMain)
             => gameMain.CurrentGameInstance is GameplayGameInstance gameplayGameInstance ? gameplayGameInstance : null;
+
+        public static GameplayClient GameplayClient(this GameMain gameMain)
+            => GameplayInstance(gameMain)?.Client;
+
+        public static GameplaySceneObjRefHolder GameplaySceneObjRefHolder(this GameMain gameMain)
+            => GameplayInstance(gameMain)?.SceneObjRefHolder;
     }
 }

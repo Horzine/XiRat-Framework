@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using Xi.Framework;
+﻿using Xi.Framework;
 
 namespace Xi.Metagame.Ui
 {

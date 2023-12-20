@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using Xi.Framework;
-using static Xi.Metagame.MetagameSceneObjRefHolder;
+using static Xi.Metagame.Scene.MetagameSceneObjRefHolder;
 
-namespace Xi.Metagame
+namespace Xi.Metagame.Scene
 {
     public enum MetagameSceneObjectEnum
     {
@@ -23,5 +23,5 @@ namespace Xi.Metagame
 
         public T GetSceneObjectReference<T>(MetagameSceneObjectEnum objectType) where T : Component
             => GetSceneObjectReference<T>(objectType.ToString(), (int)objectType);
-    }   
+    }
 }

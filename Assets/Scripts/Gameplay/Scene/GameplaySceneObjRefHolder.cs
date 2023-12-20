@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using Xi.Framework;
-using static Xi.Gameplay.GameplaySceneObjRefHolder;
+using static Xi.Gameplay.Scene.GameplaySceneObjRefHolder;
 
-namespace Xi.Gameplay
+namespace Xi.Gameplay.Scene
 {
     public enum GameplaySceneObjectEnum
     {

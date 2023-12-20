@@ -1,6 +1,6 @@
 ﻿using Xi.Framework;
 
-namespace Xi.Gameplay
+namespace Xi.Gameplay.Main
 {
     public class GameplayGameInstanceObject : GameInstanceObject
     {
