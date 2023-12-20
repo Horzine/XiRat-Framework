@@ -14,5 +14,6 @@ namespace Xi.Config
         public int Type { get; private set; }
         public bool Value { get; private set; }
         public List<string> Description { get; private set; }
+        public JObject Json { get; private set; }
     }
 }

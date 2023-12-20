@@ -12,13 +12,7 @@ namespace Xi.TestCase
 
             foreach (var item in collection.AllTemplate.Values)
             {
-                Debug.Log($"{item.Key}\t{item.Type}\t{item.Value}\t{string.Join(',', item.Description)}");
-            }
-
-
-            foreach (var item in collection.AllUnit.Values)
-            {
-                Debug.Log(item.J["test"]);
+                Debug.Log($"{item.Key}\t{item.Type}\t{item.Value}\t{string.Join(',', item.Description)}\t{item.Json}");
             }
         }
     }

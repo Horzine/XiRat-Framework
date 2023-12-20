@@ -1,0 +1,9 @@
+#Id	Age	Sex	Misc	Json
+Key	Type	Value	Description	Json
+string	int	bool	List<string>	JObject
+
+1	22	true	[a,b]	{}
+2	33	true	[c,d]	{}
+3	44	false	[e,f]	{}
+4	55	true	[g,h]	{}
+5	66	true	[g,h]	{}

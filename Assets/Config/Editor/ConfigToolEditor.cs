@@ -1,6 +1,6 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using UnityEditor;
+using UnityEngine;
 
 namespace Xi.Config.Editor
 {
@@ -9,9 +9,10 @@ namespace Xi.Config.Editor
         private const string kTxtOriginFolder = ConfigUtils.kTxtOriginFolder;
         private const string kCSharpOutputFolder = ConfigUtils.kCSharpOutputFolder;
         private const string kGenerateConfigDataChanged = "GenerateConfigDataChanged";
+        private static readonly string kSerializeDataFolderPath = ConfigUtils.kSerializeDataFolderPath;
 
-        [MenuItem("Xi/Config Tool/Generate ConfigData")]
-        public static void GenerateAllConfigData()
+        [MenuItem("Xi/Config Tool/Generate ConfigData C#")]
+        public static void GenerateAllConfigDataCSharp()
         {
             if (!Directory.Exists(kCSharpOutputFolder))
             {
@@ -23,7 +24,8 @@ namespace Xi.Config.Editor
                 Directory.CreateDirectory(kTxtOriginFolder);
             }
 
-            foreach (string item in GetTextFiles(kTxtOriginFolder))
+            string[] textFiles = GetTextFiles(kTxtOriginFolder);
+            foreach (string item in textFiles)
             {
                 string fileName = Path.GetFileNameWithoutExtension(item);
                 string originPath = Path.Combine(kTxtOriginFolder, string.Concat(fileName, ConfigUtils.kOriginConfigFileSuffix));
@@ -33,6 +35,7 @@ namespace Xi.Config.Editor
                 AssetDatabase.ImportAsset(outputPath);
             }
 
+            Debug.Log($"[{nameof(ConfigToolEditor)}] <{nameof(GenerateAllConfigDataCSharp)}> ===> Finish! Files:\n{string.Join('\n', textFiles)}");
             AssetDatabase.Refresh();
             UnityEditor.Compilation.CompilationPipeline.RequestScriptCompilation();
 
@@ -50,6 +53,7 @@ namespace Xi.Config.Editor
             string outputFilePath = Path.Combine(kCSharpOutputFolder, "ConfigCollection.cs");
             ConfigCollectionGenerateTool.GenerateCode(outputFilePath);
 
+            Debug.Log($"[{nameof(ConfigToolEditor)}] <{nameof(GenerateConfigCollection)}> ===> Finish! File: {outputFilePath}");
             AssetDatabase.Refresh();
             UnityEditor.Compilation.CompilationPipeline.RequestScriptCompilation();
         }
@@ -63,7 +67,7 @@ namespace Xi.Config.Editor
             }
             else
             {
-                UnityEngine.Debug.LogWarning($"[{nameof(ConfigToolEditor)}] <{nameof(GetTextFiles)}> ===> No text files found.");
+                Debug.LogWarning($"[{nameof(ConfigToolEditor)}] <{nameof(GetTextFiles)}> ===> No text files found.");
                 return null;
             }
         }
@@ -84,28 +88,27 @@ namespace Xi.Config.Editor
         [MenuItem("Xi/Config Tool/Serialize All Data")]
         public static void SerializeAllData()
         {
-            string folderPath = ConfigUtils.kTxtOriginFolder;
-
-            if (!Directory.Exists(folderPath))
+            if (!Directory.Exists(kTxtOriginFolder))
             {
-                // Log Waring
+                Debug.LogWarning($"[{nameof(ConfigToolEditor)}] <{nameof(SerializeAllData)}> ===> '{kTxtOriginFolder}' not Exists");
                 return;
             }
 
-            if (Directory.Exists(ConfigUtils.kSerializeDataFolderPath))
+            if (Directory.Exists(kSerializeDataFolderPath))
             {
-                Directory.Delete(ConfigUtils.kSerializeDataFolderPath, true);
+                Directory.Delete(kSerializeDataFolderPath, true);
             }
 
-            Directory.CreateDirectory(ConfigUtils.kSerializeDataFolderPath);
+            Directory.CreateDirectory(kSerializeDataFolderPath);
 
-            string[] cfgFiles = Array.FindAll(Directory.GetFiles(folderPath), s => s.EndsWith(ConfigUtils.kOriginConfigFileSuffix));
+            string[] cfgFiles = GetTextFiles(kTxtOriginFolder);
             foreach (string item in cfgFiles)
             {
                 string fileName = Path.GetFileNameWithoutExtension(item);
-                ConfigUtils.SerializeToFile(File.ReadAllLines(item), Path.Combine(ConfigUtils.kSerializeDataFolderPath, fileName), ConfigUtils.kKey);
+                ConfigUtils.SerializeToFile(File.ReadAllLines(item), Path.Combine(kSerializeDataFolderPath, fileName), ConfigUtils.kKey);
             }
 
+            Debug.Log($"[{nameof(ConfigToolEditor)}] <{nameof(SerializeAllData)}> ===> Finish! File:\n{string.Join('\n', cfgFiles)}");
             AssetDatabase.Refresh();
         }
     }

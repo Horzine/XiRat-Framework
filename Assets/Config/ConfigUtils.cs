@@ -16,7 +16,7 @@ namespace Xi.Config
         public const string kSerializeFolderName = "SerializeData";
         public static readonly string kRuntimeLoadPath = Path.Combine(Application.streamingAssetsPath, kSerializeFolderName);
         public static readonly string kSerializeDataFolderPath = Path.Combine("Assets/StreamingAssets", kSerializeFolderName);
-        public const string kOriginConfigFileSuffix = ".cfg";
+        public const string kOriginConfigFileSuffix = ".txt";
         public const string kKey = "LoveXiForever";
 
         private static readonly Dictionary<string, Type> typeCache = new();
