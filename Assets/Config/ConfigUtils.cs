@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Newtonsoft.Json.Linq;
+using UnityEngine;
 
 namespace Xi.Config
 {
@@ -15,8 +17,16 @@ namespace Xi.Config
 
         public static void ParseConfigData<T>(string[] lines, Dictionary<string, T> resultDic) where T : IConfigData, new()
         {
-            string[] memberNames = lines[1].Split('\t');
-            string[] memberTypes = lines[2].Split('\t');
+            var memberNamesLine = lines[1];
+            var memberTypesLine = lines[2];
+            string[] memberNames = memberNamesLine.Split('\t');
+            string[] memberTypes = memberTypesLine.Split('\t');
+            if (memberNames.Length != memberTypes.Length)
+            {
+                Debug.LogError($"[{nameof(ConfigUtils)}] <{nameof(ParseConfigData)}> ===> memberNames.Length != memberTypes.Length, memberNames = {memberNamesLine}, memberTypes = {memberTypesLine}");
+                return;
+            }
+
             for (int i = 3; i < lines.Length; i++)
             {
                 if (string.IsNullOrWhiteSpace(lines[i]))
@@ -26,6 +36,12 @@ namespace Xi.Config
 
                 var unit = new T();
                 string[] values = lines[i].Split("\t");
+                if (values.Length != memberNames.Length)
+                {
+                    Debug.LogError($"[{nameof(ConfigUtils)}] <{nameof(ParseConfigData)}> ===> values.Length != memberNames.Length, memberNames = {memberNamesLine}, values = {lines[i]}");
+                    continue;
+                }
+
                 for (int j = 0; j < values.Length; j++)
                 {
                     SetMemberValue(unit, memberNames[j], memberTypes[j], values[j]);
@@ -38,17 +54,27 @@ namespace Xi.Config
         {
             var type = obj.GetType();
             var field = type.GetProperty(memberName);
-            string typeNameStr = GetSystemName(typeName);
-            var valueType = Type.GetType(typeNameStr);
-            if (valueType != null && valueType.IsGenericType && valueType.GetGenericTypeDefinition() == typeof(List<>))
+            string typeDefineName = GetTypeDefineName(typeName);
+            var valueType = Type.GetType(typeDefineName);
+            if (valueType == null)
+            {
+                Debug.LogError($"[{nameof(ConfigUtils)}] <{nameof(SetMemberValue)}> ===> valueType is null, obj = {obj}, memberName = {memberName}, typeName = {typeName}, value = {value}, typeDefineName = {typeDefineName}");
+                return;
+            }
+
+            if (valueType.IsGenericType && valueType.GetGenericTypeDefinition() == typeof(List<>))
             {
                 string[] valueArr = value.TrimStart('[').TrimEnd(']').Split(',');
                 var listType = valueType.GetGenericArguments()[0];
 
-                var method = typeof(ConfigUtils).GetMethod("SetValueToList", BindingFlags.NonPublic | BindingFlags.Static);
+                var method = typeof(ConfigUtils).GetMethod(nameof(SetValueToList), BindingFlags.NonPublic | BindingFlags.Static);
                 var genericMethod = method.MakeGenericMethod(listType);
 
                 genericMethod.Invoke(null, new object[] { obj, field, valueArr });
+            }
+            else if (valueType == typeof(JObject))
+            {
+                field.SetValue(obj, JObject.Parse(value));
             }
             else
             {
@@ -66,11 +92,12 @@ namespace Xi.Config
 
             field.SetValue(obj, list);
         }
-        public static string GetSystemName(string typeName)
+        public static string GetTypeDefineName(string typeName)
         {
             if (typeCache.ContainsKey(typeName))
             {
-                return typeCache[typeName].FullName;
+                var t = typeCache[typeName];
+                return $"{t.AssemblyQualifiedName}, {t.FullName}";
             }
 
             var type = typeName switch
@@ -83,13 +110,14 @@ namespace Xi.Config
                 "List<int>" => typeof(List<int>),
                 "List<float>" => typeof(List<float>),
                 "List<bool>" => typeof(List<bool>),
+                "JObject" => typeof(JObject),
                 _ => null,
             };
 
             if (type != null)
             {
                 typeCache[typeName] = type;
-                return type.FullName;
+                return $"{type.AssemblyQualifiedName}, {type.FullName}";
             }
 
             return null;

@@ -2,6 +2,7 @@
 // This code is Generated. Do not modify !
 //
 using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
 
 namespace Xi.Config
 {
@@ -13,5 +14,6 @@ namespace Xi.Config
         public int Type { get; private set; }
         public bool Value { get; private set; }
         public List<string> Description { get; private set; }
+        public JObject J { get; private set; }
     }
 }

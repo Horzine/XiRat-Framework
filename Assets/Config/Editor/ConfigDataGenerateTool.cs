@@ -23,7 +23,8 @@ namespace Xi.Config.Editor
             sb.AppendLine(@"//
 // This code is Generated. Do not modify !
 //");
-            sb.AppendLine("using System.Collections.Generic;\n");
+            sb.AppendLine("using System.Collections.Generic;");
+            sb.AppendLine("using Newtonsoft.Json.Linq;\n");
             sb.AppendLine($@"namespace Xi.Config
 {{
     [{$"{nameof(ConfigDataTypeAttribute).Replace("Attribute", "")}"}]

@@ -5,7 +5,6 @@ namespace Xi.TestCase
 {
     public class Test_Config : MonoBehaviour
     {
-        // Start is called before the first frame update
         private void Start()
         {
             var collection = new ConfigCollection();
@@ -14,6 +13,12 @@ namespace Xi.TestCase
             foreach (var item in collection.AllTemplate.Values)
             {
                 Debug.Log($"{item.Key}\t{item.Type}\t{item.Value}\t{string.Join(',', item.Description)}");
+            }
+
+
+            foreach (var item in collection.AllUnit.Values)
+            {
+                Debug.Log(item.J["test"]);
             }
         }
     }
