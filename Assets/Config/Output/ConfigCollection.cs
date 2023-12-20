@@ -8,14 +8,14 @@ namespace Xi.Config
 {
     public class ConfigCollection
     {
-        private const string kLoadFloder = ConfigUtils.kRuntimLoadFolder;
+        private static readonly string kLoadFloder = ConfigUtils.kRuntimeLoadPath;
         public Dictionary<string, Template> AllTemplate { get; } = new();
         public Dictionary<string, Unit> AllUnit { get; } = new();
 
         public void Init()
         {
-            ConfigUtils.ParseConfigData(File.ReadAllLines(Path.Combine(kLoadFloder, "Template.cfg")), AllTemplate);
-            ConfigUtils.ParseConfigData(File.ReadAllLines(Path.Combine(kLoadFloder, "Unit.cfg")), AllUnit);
+            ConfigUtils.ParseConfigData(ConfigUtils.DeserializeFromFile(Path.Combine(kLoadFloder, "Template"), ConfigUtils.kKey), AllTemplate);
+            ConfigUtils.ParseConfigData(ConfigUtils.DeserializeFromFile(Path.Combine(kLoadFloder, "Unit"), ConfigUtils.kKey), AllUnit);
 
         }
     }

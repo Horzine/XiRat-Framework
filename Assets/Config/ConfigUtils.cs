@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
+using System.Security.Cryptography;
+using System.Text;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
 
@@ -10,15 +13,18 @@ namespace Xi.Config
     {
         public const string kTxtOriginFolder = "Assets/Config/Origin";
         public const string kCSharpOutputFolder = "Assets/Config/Output";
-        public const string kRuntimLoadFolder = "Assets/Config/Origin";
-        public const string kConfigFileSuffix = ".cfg";
+        public const string kSerializeFolderName = "SerializeData";
+        public static readonly string kRuntimeLoadPath = Path.Combine(Application.streamingAssetsPath, kSerializeFolderName);
+        public static readonly string kSerializeDataFolderPath = Path.Combine("Assets/StreamingAssets", kSerializeFolderName);
+        public const string kOriginConfigFileSuffix = ".cfg";
+        public const string kKey = "LoveXiForever";
 
         private static readonly Dictionary<string, Type> typeCache = new();
 
         public static void ParseConfigData<T>(string[] lines, Dictionary<string, T> resultDic) where T : IConfigData, new()
         {
-            var memberNamesLine = lines[1];
-            var memberTypesLine = lines[2];
+            string memberNamesLine = lines[1];
+            string memberTypesLine = lines[2];
             string[] memberNames = memberNamesLine.Split('\t');
             string[] memberTypes = memberTypesLine.Split('\t');
             if (memberNames.Length != memberTypes.Length)
@@ -121,6 +127,51 @@ namespace Xi.Config
             }
 
             return null;
+        }
+        public static void SerializeToFile(string[] lines, string outputPath, string key)
+        {
+            if (key.Length < 32)
+            {
+                key = key.PadRight(32, 'X');
+            }
+
+            using var fs = new FileStream(outputPath, FileMode.Create);
+            using var aesAlg = new AesCryptoServiceProvider();
+            aesAlg.Key = Encoding.UTF8.GetBytes(key);
+            aesAlg.IV = new byte[16]; // Use zero IV for simplicity; in practice, generate a random IV for each encryption.
+
+            using var encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
+            using var cryptoStream = new CryptoStream(fs, encryptor, CryptoStreamMode.Write);
+            using var writer = new StreamWriter(cryptoStream, Encoding.UTF8);
+
+            foreach (string line in lines)
+            {
+                writer.WriteLine(line);
+            }
+        }
+        public static string[] DeserializeFromFile(string inputPath, string key)
+        {
+            if (key.Length < 32)
+            {
+                key = key.PadRight(32, 'X');
+            }
+
+            using var fs = new FileStream(inputPath, FileMode.Open);
+            using var aesAlg = new AesCryptoServiceProvider();
+            aesAlg.Key = Encoding.UTF8.GetBytes(key);
+            aesAlg.IV = new byte[16]; // Use zero IV for simplicity; in practice, retrieve the IV from the encrypted file.
+
+            using var decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
+            using var cryptoStream = new CryptoStream(fs, decryptor, CryptoStreamMode.Read);
+            using var reader = new StreamReader(cryptoStream, Encoding.UTF8);
+
+            var decryptedLines = new List<string>();
+            while (!reader.EndOfStream)
+            {
+                decryptedLines.Add(reader.ReadLine());
+            }
+
+            return decryptedLines.ToArray();
         }
     }
 }

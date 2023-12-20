@@ -25,7 +25,7 @@ namespace Xi.Data
         [ReadOnly, SerializeField] private int m_NextConfigId = 1;
         [SerializeField] private string m_ExportTxtFileName;
         [SerializeField] private List<EntryInfo> m_So_Info;
-        public string FileOutputFullName => $"{ConfigUtils.kTxtOriginFolder}/{ExportTxtFileName}{ConfigUtils.kConfigFileSuffix}";
+        public string FileOutputFullName => $"{ConfigUtils.kTxtOriginFolder}/{ExportTxtFileName}{ConfigUtils.kOriginConfigFileSuffix}";
         public string ExportTxtFileName => m_ExportTxtFileName;
         public static bool ConfigIdValid(int id) => id > 0;
 
@@ -132,13 +132,13 @@ namespace Xi.Data
             base.OnInspectorGUI();
             var script = (SoCollection_SO)target;
 
-            if (GUILayout.Button($"Export '{script.ExportTxtFileName}{ConfigUtils.kConfigFileSuffix}' File", GUILayout.Height(20)))
+            if (GUILayout.Button($"Export '{script.ExportTxtFileName}{ConfigUtils.kOriginConfigFileSuffix}' File", GUILayout.Height(20)))
             {
                 script.DoExport();
                 AssetDatabase.Refresh();
             }
 
-            if (GUILayout.Button($"Open '{script.ExportTxtFileName}{ConfigUtils.kConfigFileSuffix}' File", GUILayout.Height(20)))
+            if (GUILayout.Button($"Open '{script.ExportTxtFileName}{ConfigUtils.kOriginConfigFileSuffix}' File", GUILayout.Height(20)))
             {
                 EditorGUIUtility.PingObject(AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(script.FileOutputFullName));
                 System.Diagnostics.Process.Start(Path.GetFullPath(script.FileOutputFullName));

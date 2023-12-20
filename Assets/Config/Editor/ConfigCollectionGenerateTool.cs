@@ -41,7 +41,7 @@ namespace Xi.Config
 {{
     public class {className}
     {{
-        private const string kLoadFloder = ConfigUtils.kRuntimLoadFolder;");
+        private static readonly string kLoadFloder = ConfigUtils.kRuntimeLoadPath;");
 
             foreach (var item in configDataTypes)
             {
@@ -54,7 +54,7 @@ namespace Xi.Config
 
             foreach (var item in configDataTypes)
             {
-                sb.AppendLine($@"            ConfigUtils.ParseConfigData(File.ReadAllLines(Path.Combine(kLoadFloder, ""{item.Name}{ConfigUtils.kConfigFileSuffix}"")), All{item.Name});");
+                sb.AppendLine($@"            ConfigUtils.ParseConfigData(ConfigUtils.DeserializeFromFile(Path.Combine(kLoadFloder, ""{item.Name}""), ConfigUtils.kKey), All{item.Name});");
             }
 
             sb.AppendLine(@"

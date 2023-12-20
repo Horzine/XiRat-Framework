@@ -23,7 +23,7 @@ namespace Xi.Data
             base.OnInspectorGUI();
             var script = (SoCollectionExportMgr_SO)target;
 
-            if (GUILayout.Button($"Export All {ConfigUtils.kConfigFileSuffix} File", GUILayout.Height(20)))
+            if (GUILayout.Button($"Export All {ConfigUtils.kOriginConfigFileSuffix} File", GUILayout.Height(20)))
             {
                 foreach (var item in script.so_Collections)
                 {
