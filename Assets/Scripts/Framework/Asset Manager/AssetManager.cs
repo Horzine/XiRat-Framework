@@ -31,7 +31,7 @@ namespace Xi.Framework
             }
 
             var loadOperation = Addressables.LoadAssetAsync<TObject>(key);
-            await loadOperation;
+            await loadOperation.WithCancellation(cancellationToken);
             var asset = loadOperation.Result;
             if (currentActiveSceneOnly)
             {
@@ -74,7 +74,7 @@ namespace Xi.Framework
             }
 
             var loadOperation = Addressables.InstantiateAsync(key, instantiateParameters);
-            await loadOperation;
+            await loadOperation.WithCancellation(cancellationToken);
             var asset = loadOperation.Result;
             if (currentActiveSceneOnly)
             {
