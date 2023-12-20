@@ -80,9 +80,8 @@ namespace Xi.Config.Editor
             {
                 EditorPrefs.SetBool(kGenerateConfigDataChanged, false);
                 GenerateConfigCollection();
+                SerializeAllData();
             }
-
-            SerializeAllData();
         }
 
         [MenuItem("Xi/Config Tool/Serialize All Data")]

@@ -40,8 +40,7 @@ using System.IO;
 namespace Xi.Config
 {{
     public class {className}
-    {{
-        private static readonly string kLoadFloder = ConfigUtils.kRuntimeLoadPath;");
+    {{");
 
             foreach (var item in configDataTypes)
             {
@@ -51,12 +50,20 @@ namespace Xi.Config
             sb.AppendLine(@"
         public void Init()
         {");
+            sb.AppendLine("#if UNITY_EDITOR");
+            foreach (var item in configDataTypes)
+            {
+                sb.AppendLine($@"            ConfigUtils.ParseConfigData(File.ReadAllLines(Path.Combine(ConfigUtils.kTxtOriginFolder, ""{item.Name}{ConfigUtils.kOriginConfigFileSuffix}"")), All{item.Name});");
+            }
+
+            sb.AppendLine("#else");
 
             foreach (var item in configDataTypes)
             {
-                sb.AppendLine($@"            ConfigUtils.ParseConfigData(ConfigUtils.DeserializeFromFile(Path.Combine(kLoadFloder, ""{item.Name}""), ConfigUtils.kKey), All{item.Name});");
+                sb.AppendLine($@"            ConfigUtils.ParseConfigData(ConfigUtils.DeserializeFromFile(Path.Combine(ConfigUtils.kRuntimeLoadPath, ""{item.Name}""), ConfigUtils.kKey), All{item.Name});");
             }
 
+            sb.AppendLine("#endif");
             sb.AppendLine(@"
         }
     }
