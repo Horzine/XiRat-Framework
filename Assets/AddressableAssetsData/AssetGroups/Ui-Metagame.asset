@@ -15,7 +15,7 @@ MonoBehaviour:
   m_GroupName: Ui-Metagame
   m_Data:
     m_SerializedData: []
-  m_GUID: c7d63730d898fde49b406dda22e674a5
+  m_GUID: 51ad67a46aa62584e805f330e0996173
   m_SerializeEntries:
   - m_GUID: 0679f2c1946801b4eb331c9f1ca2d6e5
     m_Address: Ui-Metagame/Metagame
