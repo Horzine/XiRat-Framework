@@ -23,6 +23,16 @@ namespace Xi.TestCase
         protected override bool HandleGameStage_Resolution(StageState state) => true;
         protected override bool HandleGameStage_Over(StageState state) => true;
         protected override bool HandleGameStage_Restart(StageState state) => true;
+        protected override bool HandleGameStage_InitializeOnce(StageState state) => true;
+        protected override bool HandleGameStage_RoundBegin(StageState state) => true;
+        protected override bool HandleGameStage_PreDecision(StageState state) => true;
+        protected override bool HandleGameStage_PostDecision(StageState state) => true;
+        protected override bool HandleGameStage_PreAction(StageState state) => true;
+        protected override bool HandleGameStage_PostAction(StageState state) => true;
+        protected override bool HandleGameStage_PreResolution(StageState state) => true;
+        protected override bool HandleGameStage_PostResolution(StageState state) => true;
+        protected override bool HandleGameStage_RoundEnd(StageState state) => true;
+        protected override bool IsGameAbleToNextRoundLogic() => true;
     }
 
     public class Test_GameProcess : MonoBehaviour
