@@ -1,18 +1,30 @@
-﻿using System.Collections.Generic;
+﻿using System.Linq;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using Xi.Gameplay.Process;
+using static Xi.TestCase.Test_RockPaperScissorsGame;
 
 namespace Xi.TestCase
 {
-    public class Test_RockPaperScissorsGame : GameProcess
+
+    public class Test_RockPaperScissorsGame : GameProcess<ProcessData, RoundData>
     {
+        public class ProcessData : GameProcessData<RoundData>
+        {
+            public string ResultStr => string.Join(",", _cachedRounds.Select(item => (RoundResult)item.Result));
+        }
+        public class RoundData : GameProcessRoundData
+        {
+            public int PlayerChoice { get; set; }
+            public int ComputerChoice { get; set; }
+            public int Result { get; set; }
+
+            public override void OnRoundBegin() => PlayerChoice = ComputerChoice = Result = -1;
+            public override void OnRoundEnd() => Result = (PlayerChoice - ComputerChoice + 3) % 3;
+        }
+
         private const int kMaxRound = 3;
-        private int _playerChoice;
-        private int _computerChoice;
-        private int _currentRound;
-        private List<int> _results = new();
-        private bool _skipResultDisplay;
+        protected override int MaxRoundCount => kMaxRound;
 
         // Define choices for Rock, Paper, Scissors
         private enum Choice
@@ -20,6 +32,13 @@ namespace Xi.TestCase
             Rock,
             Paper,
             Scissors
+        }
+
+        private enum RoundResult
+        {
+            TieRound,
+            WinRound,
+            LoseRound,
         }
 
         protected override UniTask<bool> HandleGameStage_Idle(StageState state)
@@ -37,29 +56,12 @@ namespace Xi.TestCase
             return UniTask.FromResult(true);
         }
 
-        protected override UniTask<bool> HandleGameStage_Initialize(StageState state)
-        {
-            switch (state)
-            {
-                case StageState.Before:
-                    _currentRound = 0;
-                    break;
-                case StageState.Progressing:
-                case StageState.After:
-                    break;
-            }
-
-            return UniTask.FromResult(true);
-        }
-
         protected override UniTask<bool> HandleGameStage_RoundBegin(StageState state)
         {
             switch (state)
             {
                 case StageState.Before:
                     Debug.Log("Round starting...");
-                    _playerChoice = -1;
-                    _currentRound++;
                     Debug.Log("Choose your move: (0) Rock, (1) Paper, (2) Scissors");
                     break;
                 case StageState.Progressing:
@@ -67,17 +69,17 @@ namespace Xi.TestCase
                     //Debug.Log("Choose your move: (0) Rock, (1) Paper, (2) Scissors");
                     if (Input.GetKeyDown(KeyCode.Alpha0))
                     {
-                        _playerChoice = 0;
+                        CurrentRound.PlayerChoice = 0;
                         break;
                     }
                     else if (Input.GetKeyDown(KeyCode.Alpha1))
                     {
-                        _playerChoice = 1;
+                        CurrentRound.PlayerChoice = 1;
                         break;
                     }
                     else if (Input.GetKeyDown(KeyCode.Alpha2))
                     {
-                        _playerChoice = 2;
+                        CurrentRound.PlayerChoice = 2;
                         break;
                     }
 
@@ -95,29 +97,13 @@ namespace Xi.TestCase
             {
                 case StageState.Before:
                     // Computer makes a random choice
-                    _computerChoice = Random.Range(0, 3);
-                    Debug.Log($"Computer chose: {(Choice)_computerChoice}");
+                    CurrentRound.ComputerChoice = Random.Range(0, 3);
+                    Debug.Log($"Computer chose: {(Choice)CurrentRound.ComputerChoice}");
                     break;
                 case StageState.Progressing:
                 case StageState.After:
                     break;
 
-            }
-
-            return UniTask.FromResult(true);
-        }
-
-        protected override UniTask<bool> HandleGameStage_OnResolution(StageState state)
-        {
-            switch (state)
-            {
-                case StageState.Before:
-                    // Determine the winner
-                    DetermineWinner();
-                    break;
-                case StageState.Progressing:
-                case StageState.After:
-                    break;
             }
 
             return UniTask.FromResult(true);
@@ -129,13 +115,21 @@ namespace Xi.TestCase
             {
                 case StageState.Before:
                     // display result 
-                    Debug.Log($"Round {_currentRound}: Player: {_playerChoice}, AI: {_computerChoice}");
+                    Debug.Log($"Round {CurrentRound.RoundNum}: Player: {(Choice)CurrentRound.PlayerChoice}, AI: {(Choice)CurrentRound.ComputerChoice}, Result: {(RoundResult)CurrentRound.Result}");
+                    //await UniTask.WhenAny(UniTask.Delay(5000), UniTask.WaitUntil(() => _skipResultDisplay));
+                    if (HasNextRound)
+                    {
+                        await UniTask.Delay(3000);
+                        IsAbleToNextRound = true;
+                    }
+                    else
+                    {
+                        IsAbleToOver = true;
+                    }
+
                     break;
                 case StageState.Progressing:
-                    await UniTask.WhenAny(UniTask.Delay(5000), UniTask.WaitUntil(() => _skipResultDisplay));
-                    break;
                 case StageState.After:
-                    _playerChoice = _computerChoice = -1;
                     break;
             }
 
@@ -147,7 +141,7 @@ namespace Xi.TestCase
             switch (state)
             {
                 case StageState.Before:
-                    Debug.Log($"result: {string.Join(", ", _results)}");
+                    Debug.Log($"result: {Data.ResultStr}");
                     break;
                 case StageState.Progressing:
                 case StageState.After:
@@ -157,39 +151,6 @@ namespace Xi.TestCase
             return UniTask.FromResult(true);
         }
 
-        protected override UniTask<bool> HandleGameStage_Restart(StageState state)
-        {
-            switch (state)
-            {
-                case StageState.Before:
-                    _results.Clear();
-                    break;
-                case StageState.Progressing:
-                case StageState.After:
-                    break;
-            }
-
-            return UniTask.FromResult(true);
-        }
-
-        protected override bool IsGameAbleToNextRoundLogic() => _currentRound < kMaxRound;
-
-        protected override bool IsGameAbleToOverLogic() => _currentRound >= kMaxRound;
-
-        private void DetermineWinner()
-        {
-            int result = (_playerChoice - _computerChoice + 3) % 3;
-            _results.Add(result);
-        }
-
-        protected override void OnGameStageChange(GameStage oldStage, GameStage newStage)
-        {
-            // Additional logic when transitioning between stages if needed
-        }
-
-        protected override void OnStageStateChange(GameStage currentStage, StageState oldState, StageState newState)
-        {
-            // Additional logic when the state of a stage changes if needed
-        }
+     
     }
 }

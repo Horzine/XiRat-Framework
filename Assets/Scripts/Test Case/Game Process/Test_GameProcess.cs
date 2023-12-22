@@ -5,15 +5,6 @@ using UnityEngine;
 
 namespace Xi.TestCase
 {
-    public class MyGameProcessConfig
-    {
-        public int totalRoundCount = 3;
-        public int maxPlayerHp = 100;
-        public int playerAtk = 20;
-        public int maxEnemyHp = 100;
-        public int enemyAtk = 20;
-    }
-
     public class Test_GameProcess : MonoBehaviour
     {
         public TextMeshProUGUI currentStageTxt;

@@ -1,4 +1,7 @@
-﻿using Cysharp.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
+using Xi.Tools;
 
 namespace Xi.Gameplay.Process
 {
@@ -41,15 +44,10 @@ namespace Xi.Gameplay.Process
             private set
             {
                 var oldStage = _currentGameStatus.stage;
-                var oldState = _currentGameStatus.state;
                 _currentGameStatus = value;
                 if (value.stage != oldStage)
                 {
                     OnGameStageChange(oldStage, value.stage);
-                }
-                else if (value.state != oldState)
-                {
-                    OnStageStateChange(value.stage, oldState, value.state);
                 }
             }
         }
@@ -85,10 +83,10 @@ namespace Xi.Gameplay.Process
                 CurrentGameStatus = (nextStage, StageState.Before);
             }
 
-            CleanAllMutex();
+            ClearAllMutex();
         }
 
-        private void CleanAllMutex()
+        private void ClearAllMutex()
         {
             IsAbleToStart = false;
             IsAbleToOver = false;
@@ -156,7 +154,6 @@ namespace Xi.Gameplay.Process
         protected virtual UniTask<bool> HandleGameStage_Restart(StageState state) => UniTask.FromResult(true);
 
         protected abstract void OnGameStageChange(GameStage oldStage, GameStage newStage);
-        protected abstract void OnStageStateChange(GameStage currentStage, StageState oldState, StageState newState);
         protected virtual bool IsGameAbleToStartLogic() => IsAbleToStart;
         protected virtual bool IsGameAbleToOverLogic() => IsAbleToOver;
         protected virtual bool IsGameAbleToRestartLogic() => IsAbleToRestart;
@@ -186,5 +183,83 @@ namespace Xi.Gameplay.Process
                 JumpToGame_Over();
             }
         }
+    }
+
+    public abstract class GameProcessData<TRoundData> where TRoundData : GameProcessRoundData, new()
+    {
+        protected List<TRoundData> _cachedRounds = new();
+        public int CachedRoundsCount => _cachedRounds.Count;
+        public void CacheNewRound(TRoundData round)
+        {
+            if (round.RoundNum == CachedRoundsCount + 1)
+            {
+                _cachedRounds.Add(round);
+            }
+            else
+            {
+                XiLogger.LogError($"invalid roundNum: roundNum = {round.RoundNum}, CachedRoundsCount = {CachedRoundsCount}");
+            }
+        }
+        public void ClearCachedRound() => _cachedRounds.Clear();
+    }
+
+    public abstract class GameProcessRoundData
+    {
+        public int RoundNum { get; set; }
+        public abstract void OnRoundBegin();
+        public abstract void OnRoundEnd();
+    }
+
+    public abstract class GameProcess<TData, TRound> : GameProcess
+        where TData : GameProcessData<TRound>, new()
+        where TRound : GameProcessRoundData, new()
+    {
+        protected TRound CurrentRound { get; set; }
+        protected TData Data { get; set; } = new();
+        protected abstract int MaxRoundCount { get; }
+        protected event Action<GameStage, GameStage> OnGameStageChangeEvent;
+
+        protected override bool IsGameAbleToNextRoundLogic() => base.IsGameAbleToNextRoundLogic() && HasNextRound;
+
+        protected override bool IsGameAbleToOverLogic() => base.IsGameAbleToOverLogic() && !HasNextRound;
+
+        protected sealed override void OnGameStageChange(GameStage oldStage, GameStage newStage)
+        {
+            switch (newStage)
+            {
+                case GameStage.Game_Initialize:
+                    clearAllCacheRound();
+                    break;
+                case GameStage.Game_RoundBegin:
+                    CurrentRound = new TRound
+                    {
+                        RoundNum = Data.CachedRoundsCount + 1
+                    };
+                    CurrentRound.OnRoundBegin();
+                    break;
+                case GameStage.Game_RoundEnd:
+                    CurrentRound.OnRoundEnd();
+                    Data.CacheNewRound(CurrentRound);
+                    break;
+                case GameStage.Game_Over:
+                    CurrentRound = null;
+                    break;
+                case GameStage.Game_Restart:
+                    clearAllCacheRound();
+                    break;
+                default:
+                    break;
+            }
+
+            OnGameStageChangeEvent?.Invoke(oldStage, newStage);
+
+            void clearAllCacheRound()
+            {
+                Data.ClearCachedRound();
+                CurrentRound = null;
+            }
+        }
+
+        protected bool HasNextRound => CurrentRound.RoundNum < MaxRoundCount;
     }
 }
