@@ -185,35 +185,33 @@ namespace Xi.Gameplay.Process
         }
     }
 
-    public abstract class GameProcessData<TRoundData> where TRoundData : GameProcessRoundData, new()
-    {
-        protected List<TRoundData> _cachedRounds = new();
-        public int CachedRoundsCount => _cachedRounds.Count;
-        public void CacheNewRound(TRoundData round)
-        {
-            if (round.RoundNum == CachedRoundsCount + 1)
-            {
-                _cachedRounds.Add(round);
-            }
-            else
-            {
-                XiLogger.LogError($"invalid roundNum: roundNum = {round.RoundNum}, CachedRoundsCount = {CachedRoundsCount}");
-            }
-        }
-        public void ClearCachedRound() => _cachedRounds.Clear();
-    }
-
-    public abstract class GameProcessRoundData
-    {
-        public int RoundNum { get; set; }
-        public abstract void OnRoundBegin();
-        public abstract void OnRoundEnd();
-    }
-
     public abstract class GameProcess<TData, TRound> : GameProcess
-        where TData : GameProcessData<TRound>, new()
-        where TRound : GameProcessRoundData, new()
+        where TData : GameProcess<TData, TRound>.GameProcessData<TRound>, new()
+        where TRound : GameProcess<TData, TRound>.GameProcessRoundData, new()
     {
+        public abstract class GameProcessData<TRoundData> where TRoundData : GameProcessRoundData, new()
+        {
+            protected List<TRoundData> _cachedRounds = new();
+            public int CachedRoundsCount => _cachedRounds.Count;
+            public void CacheNewRound(TRoundData round)
+            {
+                if (round.RoundNum == CachedRoundsCount + 1)
+                {
+                    _cachedRounds.Add(round);
+                }
+                else
+                {
+                    XiLogger.LogError($"invalid roundNum: roundNum = {round.RoundNum}, CachedRoundsCount = {CachedRoundsCount}");
+                }
+            }
+            public void ClearCachedRound() => _cachedRounds.Clear();
+        }
+        public abstract class GameProcessRoundData
+        {
+            public int RoundNum { get; set; }
+            public abstract void OnRoundBegin();
+            public abstract void OnRoundEnd();
+        }
         protected TRound CurrentRound { get; set; }
         protected TData Data { get; set; } = new();
         protected abstract int MaxRoundCount { get; }

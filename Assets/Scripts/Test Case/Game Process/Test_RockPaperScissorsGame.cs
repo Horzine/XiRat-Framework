@@ -6,12 +6,11 @@ using static Xi.TestCase.Test_RockPaperScissorsGame;
 
 namespace Xi.TestCase
 {
-
     public class Test_RockPaperScissorsGame : GameProcess<ProcessData, RoundData>
     {
         public class ProcessData : GameProcessData<RoundData>
         {
-            public string ResultStr => string.Join(",", _cachedRounds.Select(item => (RoundResult)item.Result));
+            public string ResultStr => string.Join(", ", _cachedRounds.Select(item => (RoundResult)item.Result));
         }
         public class RoundData : GameProcessRoundData
         {
@@ -26,7 +25,6 @@ namespace Xi.TestCase
         private const int kMaxRound = 3;
         protected override int MaxRoundCount => kMaxRound;
 
-        // Define choices for Rock, Paper, Scissors
         private enum Choice
         {
             Rock,
@@ -150,7 +148,5 @@ namespace Xi.TestCase
 
             return UniTask.FromResult(true);
         }
-
-     
     }
 }
