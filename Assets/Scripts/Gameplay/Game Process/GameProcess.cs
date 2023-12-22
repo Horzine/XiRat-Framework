@@ -84,10 +84,6 @@ namespace Xi.Gameplay.Process
             {
                 CurrentGameStatus = (nextStage, StageState.Before);
             }
-            else
-            {
-                OnGameStatusStaying(CurrentGameStatus.stage, CurrentGameStatus.state);
-            }
 
             CleanAllMutex();
         }
@@ -142,24 +138,23 @@ namespace Xi.Gameplay.Process
             };
         }
 
-        protected abstract UniTask<bool> HandleGameStage_Idle(StageState state);
-        protected abstract UniTask<bool> HandleGameStage_Start(StageState state);
-        protected abstract UniTask<bool> HandleGameStage_Initialize(StageState state);
-        protected abstract UniTask<bool> HandleGameStage_RoundBegin(StageState state);
-        protected abstract UniTask<bool> HandleGameStage_PreDecision(StageState state);
-        protected abstract UniTask<bool> HandleGameStage_OnDecision(StageState state);
-        protected abstract UniTask<bool> HandleGameStage_PostDecision(StageState state);
-        protected abstract UniTask<bool> HandleGameStage_PreAction(StageState state);
-        protected abstract UniTask<bool> HandleGameStage_OnAction(StageState state);
-        protected abstract UniTask<bool> HandleGameStage_PostAction(StageState state);
-        protected abstract UniTask<bool> HandleGameStage_PreResolution(StageState state);
-        protected abstract UniTask<bool> HandleGameStage_OnResolution(StageState state);
-        protected abstract UniTask<bool> HandleGameStage_PostResolution(StageState state);
-        protected abstract UniTask<bool> HandleGameStage_RoundEnd(StageState state);
-        protected abstract UniTask<bool> HandleGameStage_Over(StageState state);
-        protected abstract UniTask<bool> HandleGameStage_Restart(StageState state);
+        protected virtual UniTask<bool> HandleGameStage_Idle(StageState state) => UniTask.FromResult(true);
+        protected virtual UniTask<bool> HandleGameStage_Start(StageState state) => UniTask.FromResult(true);
+        protected virtual UniTask<bool> HandleGameStage_Initialize(StageState state) => UniTask.FromResult(true);
+        protected virtual UniTask<bool> HandleGameStage_RoundBegin(StageState state) => UniTask.FromResult(true);
+        protected virtual UniTask<bool> HandleGameStage_PreDecision(StageState state) => UniTask.FromResult(true);
+        protected virtual UniTask<bool> HandleGameStage_OnDecision(StageState state) => UniTask.FromResult(true);
+        protected virtual UniTask<bool> HandleGameStage_PostDecision(StageState state) => UniTask.FromResult(true);
+        protected virtual UniTask<bool> HandleGameStage_PreAction(StageState state) => UniTask.FromResult(true);
+        protected virtual UniTask<bool> HandleGameStage_OnAction(StageState state) => UniTask.FromResult(true);
+        protected virtual UniTask<bool> HandleGameStage_PostAction(StageState state) => UniTask.FromResult(true);
+        protected virtual UniTask<bool> HandleGameStage_PreResolution(StageState state) => UniTask.FromResult(true);
+        protected virtual UniTask<bool> HandleGameStage_OnResolution(StageState state) => UniTask.FromResult(true);
+        protected virtual UniTask<bool> HandleGameStage_PostResolution(StageState state) => UniTask.FromResult(true);
+        protected virtual UniTask<bool> HandleGameStage_RoundEnd(StageState state) => UniTask.FromResult(true);
+        protected virtual UniTask<bool> HandleGameStage_Over(StageState state) => UniTask.FromResult(true);
+        protected virtual UniTask<bool> HandleGameStage_Restart(StageState state) => UniTask.FromResult(true);
 
-        protected abstract void OnGameStatusStaying(GameStage stage, StageState state);
         protected abstract void OnGameStageChange(GameStage oldStage, GameStage newStage);
         protected abstract void OnStageStateChange(GameStage currentStage, StageState oldState, StageState newState);
         protected virtual bool IsGameAbleToStartLogic() => IsAbleToStart;

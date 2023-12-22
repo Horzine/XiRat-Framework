@@ -2,110 +2,27 @@
 using Cysharp.Threading.Tasks;
 using TMPro;
 using UnityEngine;
-using Xi.Gameplay.Process;
 
 namespace Xi.TestCase
 {
-    public class MyGameProcess : GameProcess
+    public class MyGameProcessConfig
     {
-        protected override void OnGameStageChange(GameStage oldStage, GameStage newStage) => Debug.Log($"OldStage: {oldStage} ==> NewStage: {newStage}");
-        protected override void OnStageStateChange(GameStage currentStage, StageState oldState, StageState newState) { }
-        //=> Debug.Log($"GameStage: {currentStage}, OldState: {oldState} ==> NewState: {newState}");
-
-        protected override async UniTask<bool> HandleGameStage_Idle(StageState state)
-        {
-            await UniTask.Delay(300);
-            return true;
-        }
-        protected override async UniTask<bool> HandleGameStage_Start(StageState state)
-        {
-            await UniTask.Delay(300);
-            return true;
-        }
-        protected override async UniTask<bool> HandleGameStage_OnDecision(StageState state)
-        {
-            await UniTask.Delay(300);
-            return true;
-        }
-        protected override async UniTask<bool> HandleGameStage_OnAction(StageState state)
-        {
-            await UniTask.Delay(300);
-            return true;
-        }
-        protected override async UniTask<bool> HandleGameStage_OnResolution(StageState state)
-        {
-            await UniTask.Delay(300);
-            return true;
-        }
-        protected override async UniTask<bool> HandleGameStage_Over(StageState state)
-        {
-            await UniTask.Delay(300);
-            return true;
-        }
-        protected override async UniTask<bool> HandleGameStage_Restart(StageState state)
-        {
-            await UniTask.Delay(300);
-            return true;
-        }
-        protected override async UniTask<bool> HandleGameStage_Initialize(StageState state)
-        {
-            await UniTask.Delay(300);
-            return true;
-        }
-        protected override async UniTask<bool> HandleGameStage_RoundBegin(StageState state)
-        {
-            await UniTask.Delay(300);
-            return true;
-        }
-        protected override async UniTask<bool> HandleGameStage_PreDecision(StageState state)
-        {
-            await UniTask.Delay(300);
-            return true;
-        }
-        protected override async UniTask<bool> HandleGameStage_PostDecision(StageState state)
-        {
-            await UniTask.Delay(300);
-            return true;
-        }
-        protected override async UniTask<bool> HandleGameStage_PreAction(StageState state)
-        {
-            await UniTask.Delay(300);
-            return true;
-        }
-        protected override async UniTask<bool> HandleGameStage_PostAction(StageState state)
-        {
-            await UniTask.Delay(300);
-            return true;
-        }
-        protected override async UniTask<bool> HandleGameStage_PreResolution(StageState state)
-        {
-            await UniTask.Delay(300);
-            return true;
-        }
-        protected override async UniTask<bool> HandleGameStage_PostResolution(StageState state)
-        {
-            await UniTask.Delay(300);
-            return true;
-        }
-        protected override async UniTask<bool> HandleGameStage_RoundEnd(StageState state)
-        {
-            await UniTask.Delay(300);
-            return true;
-        }
-
-        protected override void OnGameStatusStaying(GameStage stage, StageState state) => Debug.Log($"{nameof(OnGameStatusStaying)}: {stage}, {state}");
+        public int totalRoundCount = 3;
+        public int maxPlayerHp = 100;
+        public int playerAtk = 20;
+        public int maxEnemyHp = 100;
+        public int enemyAtk = 20;
     }
 
     public class Test_GameProcess : MonoBehaviour
     {
         public TextMeshProUGUI currentStageTxt;
-        private readonly MyGameProcess _myGameProcess = new();
+        private readonly Test_RockPaperScissorsGame _myGameProcess = new();
         private CancellationToken _cancellationToken;
 
         private void Start()
         {
             _cancellationToken = this.GetCancellationTokenOnDestroy();
-
             RunUpdateLoop().Forget();
         }
 
