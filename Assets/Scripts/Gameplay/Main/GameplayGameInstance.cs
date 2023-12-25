@@ -43,13 +43,13 @@ namespace Xi.Gameplay.Main
     {
         public static GameplayGameInstance CreateGameplayGameInstance() => new();
 
-        public static GameplayGameInstance GameplayInstance(this GameMain gameMain)
+        public static GameplayGameInstance GetGameplayInstance(this GameMain gameMain)
             => gameMain.CurrentGameInstance is GameplayGameInstance gameplayGameInstance ? gameplayGameInstance : null;
 
-        public static GameplayClient GameplayClient(this GameMain gameMain)
-            => GameplayInstance(gameMain)?.Client;
+        public static GameplayClient GetGameplayClient(this GameMain gameMain)
+            => GetGameplayInstance(gameMain)?.Client;
 
-        public static GameplaySceneObjRefHolder GameplaySceneObjRefHolder(this GameMain gameMain)
-            => GameplayInstance(gameMain)?.SceneObjRefHolder;
+        public static GameplaySceneObjRefHolder GetGameplaySceneObjRefHolder(this GameMain gameMain)
+            => GetGameplayInstance(gameMain)?.SceneObjRefHolder;
     }
 }

@@ -43,9 +43,13 @@ namespace Xi.Metagame.Client
                     system.OnSeupAsSystemDefault();
                 }
             }
+
+            UserArchiveManager.Instance.OnDestroyAction += OnUserArchiveDestroyCallback;
         }
 
-        public void SaveAllSystemData()
+        private void OnUserArchiveDestroyCallback() => SaveAllSystemData(false);
+
+        public void SaveAllSystemData(bool isAsync = true)
         {
             var allData = new Dictionary<string, SaveData>();
 
@@ -55,7 +59,14 @@ namespace Xi.Metagame.Client
                 allData.Add(system.systemName, new SaveData(system.systemName, systemData));
             }
 
-            UserArchiveManager.Instance.SaveAsync(allData).Forget();
+            if (isAsync)
+            {
+                UserArchiveManager.Instance.SaveAsync(allData).Forget();
+            }
+            else
+            {
+                UserArchiveManager.Instance.SaveSync(allData);
+            }
         }
 
         public void AddSystem(MetagameSystem system) => _allSystem.Add(system.systemName, system);

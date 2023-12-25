@@ -1,5 +1,6 @@
 ﻿using Cysharp.Threading.Tasks;
 using Xi.Framework;
+using Xi.Metagame.Client.System.User;
 
 namespace Xi.Metagame.Ui
 {
@@ -9,27 +10,48 @@ namespace Xi.Metagame.Ui
         protected override (string groupName, string uiFeatureName, string uiPrefabName) PrefabAssetPath
             => (AssetGroupNameConst.kAddressableGroupName_MetagameUi, UiFeatureNameConst.kMetagame_MainMenu, UiPrefabNameConst.kMetagame_MainMenu);
         protected override bool IsOverlayMode => false;
+        private MetagameSystem_User _userSystem;
 
-        public void Open() => OpenAsync().Forget();
+        public void Open(MetagameSystem_User userSystem)
+        {
+            _userSystem = userSystem;
+            OpenAsync().Forget();
+        }
 
         public void Close() => CloseAsync().Forget();
 
-        protected override void OnOpenAccomplishCallback() => WindowObj.AddCallback(SelectMapBtnCallback, ClassBuildBtnCallback);
+        protected override void OnOpenAccomplishCallback()
+        {
+            WindowObj.AddCallback(SelectMapBtnCallback, ClassBuildBtnCallback, ClaimUserTestIntStrCallback, RandomTestIntCallback);
+            WindowObj.Refresh();
+        }
 
-        protected override void CleanControllerDependency() => WindowObj.CleanCallback();
+        protected override void CleanControllerDependency()
+        {
+            _userSystem = null;
+            WindowObj.CleanCallback();
+        }
 
         protected override void OnCloseAccomplishCallback() { }
 
-        public void SelectMapBtnCallback()
+        private void SelectMapBtnCallback()
         {
             var selectMapCtrl = UiManager.Instance.GetController<SelectMapWindowController>(UiEnum.Metagame_SelectMap);
             selectMapCtrl.Open();
         }
 
-        public void ClassBuildBtnCallback()
+        private void ClassBuildBtnCallback()
         {
             var classBuildCtrl = UiManager.Instance.GetController<ClassBuildWindowController>(UiEnum.Metagame_ClassBuild);
             classBuildCtrl.Open();
+        }
+
+        private string ClaimUserTestIntStrCallback() => _userSystem == null ? string.Empty : _userSystem.GetTestInt().ToString();
+
+        private void RandomTestIntCallback()
+        {
+            _userSystem?.SetupTestInt(UnityEngine.Random.Range(0, 1000));
+            WindowObj.Refresh();
         }
     }
 }

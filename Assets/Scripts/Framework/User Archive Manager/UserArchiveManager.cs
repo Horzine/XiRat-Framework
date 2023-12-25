@@ -30,6 +30,7 @@ namespace Xi.Framework
 #endif
 
         private CancellationTokenSource _saveCancellationTokenSource;
+        public event Action OnDestroyAction;
 
         public void OnCreate()
         {
@@ -42,37 +43,71 @@ namespace Xi.Framework
 
         public async UniTask SaveAsync(Dictionary<string, SaveData> saveData)
         {
-            _saveCancellationTokenSource?.Cancel(); // Cancel previous save operation, if any
+            _saveCancellationTokenSource?.Cancel();
             _saveCancellationTokenSource = new CancellationTokenSource();
 
             try
             {
                 await UniTask.RunOnThreadPool(() =>
                 {
-                    using var fileStream = new FileStream(FilePath, FileMode.Create, FileAccess.Write);
-                    foreach (var system in saveData.Values)
-                    {
-                        _saveCancellationTokenSource.Token.ThrowIfCancellationRequested(); // Check if cancellation is requested
-
-                        // Write system name length as int32 followed by system name as bytes
-                        byte[] systemNameBytes = System.Text.Encoding.UTF8.GetBytes(system.systemName);
-                        byte[] systemNameLengthBytes = BitConverter.GetBytes(systemNameBytes.Length);
-                        fileStream.Write(systemNameLengthBytes, 0, systemNameLengthBytes.Length);
-
-                        fileStream.Write(systemNameBytes, 0, systemNameBytes.Length);
-
-                        // Write system data length as int32 followed by system data
-                        byte[] systemDataLengthBytes = BitConverter.GetBytes(system.data.Length);
-                        fileStream.Write(systemDataLengthBytes, 0, systemDataLengthBytes.Length);
-
-                        fileStream.Write(system.data, 0, system.data.Length);
-                    }
+                    DoSave(saveData);
                 }, cancellationToken: _saveCancellationTokenSource.Token);
+
                 CachedSaveData = saveData;
+                XiLogger.Log($"Finish, path = {FilePath}");
             }
             catch (OperationCanceledException)
             {
                 XiLogger.Log("Save operation canceled.");
+            }
+            catch (Exception ex)
+            {
+                XiLogger.LogError($"Failed: {ex}");
+            }
+        }
+
+        public void SaveSync(Dictionary<string, SaveData> saveData)
+        {
+            _saveCancellationTokenSource?.Cancel();
+            try
+            {
+                DoSave(saveData);
+
+                CachedSaveData = saveData;
+                XiLogger.Log($"Finish, path = {FilePath}");
+            }
+            catch (Exception ex)
+            {
+                XiLogger.LogError($"Failed: {ex}");
+            }
+        }
+
+        private void DoSave(Dictionary<string, SaveData> saveData)
+        {
+            using var fileStream = new FileStream(FilePath, FileMode.Create, FileAccess.Write);
+            try
+            {
+                foreach (var system in saveData.Values)
+                {
+                    _saveCancellationTokenSource?.Token.ThrowIfCancellationRequested();
+
+                    // 将系统名称长度作为int32写入，后跟系统名称的字节
+                    byte[] systemNameBytes = System.Text.Encoding.UTF8.GetBytes(system.systemName);
+                    byte[] systemNameLengthBytes = BitConverter.GetBytes(systemNameBytes.Length);
+                    fileStream.Write(systemNameLengthBytes, 0, systemNameLengthBytes.Length);
+
+                    fileStream.Write(systemNameBytes, 0, systemNameBytes.Length);
+
+                    // 将系统数据长度作为int32写入，后跟系统数据
+                    byte[] systemDataLengthBytes = BitConverter.GetBytes(system.data.Length);
+                    fileStream.Write(systemDataLengthBytes, 0, systemDataLengthBytes.Length);
+
+                    fileStream.Write(system.data, 0, system.data.Length);
+                }
+            }
+            catch
+            {
+                throw;
             }
         }
 
@@ -107,6 +142,7 @@ namespace Xi.Framework
                     }
 
                     CachedSaveData = saveData;
+                    XiLogger.Log($"Load finish. Path = {FilePath}");
                 }
                 else
                 {
@@ -114,6 +150,12 @@ namespace Xi.Framework
                     CachedSaveData = null;
                 }
             });
+        }
+
+        private void OnDestroy()
+        {
+            OnDestroyAction?.Invoke();
+            OnDestroyAction = null;
         }
     }
 }

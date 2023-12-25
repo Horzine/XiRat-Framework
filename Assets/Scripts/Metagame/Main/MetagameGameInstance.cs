@@ -2,6 +2,7 @@
 using Xi.Framework;
 using Xi.Gameplay.Main;
 using Xi.Metagame.Client;
+using Xi.Metagame.Client.System;
 using Xi.Metagame.Scene;
 using Xi.Tools;
 
@@ -56,13 +57,16 @@ namespace Xi.Metagame.Main
     {
         public static MetagameGameInstance CreateMetagameGameInstance() => new();
 
-        public static MetagameGameInstance MetagameInstance(this GameMain gameMain)
+        public static MetagameGameInstance GetMetagameInstance(this GameMain gameMain)
             => gameMain.CurrentGameInstance is MetagameGameInstance metagameGameInstance ? metagameGameInstance : null;
 
-        public static MetagameClient MetagameClient(this GameMain gameMain)
-            => MetagameInstance(gameMain)?.Client;
+        public static MetagameClient GetMetagameClient(this GameMain gameMain)
+            => GetMetagameInstance(gameMain)?.Client;
 
-        public static MetagameSceneObjRefHolder MetagameSceneObjRefHolder(this GameMain gameMain)
-            => MetagameInstance(gameMain)?.SceneObjRefHolder;
+        public static MetagameSceneObjRefHolder GetMetagameSceneObjRefHolder(this GameMain gameMain)
+            => GetMetagameInstance(gameMain)?.SceneObjRefHolder;
+
+        public static T GetMetagameSystem<T>(this GameMain gameMain, string systemName) where T : MetagameSystem
+            => GetMetagameClient(gameMain)?.GetSystem<T>(systemName);
     }
 }

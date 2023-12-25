@@ -26,8 +26,8 @@ namespace Xi.TestCase
             }
             else if (Input.GetKeyDown(KeyCode.Space))
             {
-                var metagameInstance = GameMain.Instance.MetagameInstance();
-                var gameplayInstance = GameMain.Instance.GameplayInstance();
+                var metagameInstance = GameMain.Instance.GetMetagameInstance();
+                var gameplayInstance = GameMain.Instance.GetGameplayInstance();
                 print($"{metagameInstance}, {gameplayInstance}");
             }
         }
