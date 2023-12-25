@@ -24,7 +24,7 @@ namespace Xi.Metagame.Client
                 saveData = new Dictionary<string, SaveData>();
                 foreach (var item in _allSystem.Values)
                 {
-                    item.OnSeupAsSystemDefault();
+                    item.OnSetupAsSystemDefault();
                 }
 
                 SaveAllSystemData();
@@ -40,7 +40,7 @@ namespace Xi.Metagame.Client
                 else
                 {
                     XiLogger.Log($"SaveData not contains '{system.systemName}', set as default");
-                    system.OnSeupAsSystemDefault();
+                    system.OnSetupAsSystemDefault();
                 }
             }
 

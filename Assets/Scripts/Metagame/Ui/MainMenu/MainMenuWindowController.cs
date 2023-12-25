@@ -4,7 +4,8 @@ using Xi.Metagame.Client.System.User;
 
 namespace Xi.Metagame.Ui
 {
-    public class MainMenuWindowController : UiBaseController<MainMenuWindow>
+    public class MainMenuWindowController : UiBaseController<MainMenuWindow>,
+        ISystemObserver_User
     {
         protected override UiEnum UiEnum => UiEnum.Metagame_MainMenu;
         protected override (string groupName, string uiFeatureName, string uiPrefabName) PrefabAssetPath
@@ -22,12 +23,14 @@ namespace Xi.Metagame.Ui
 
         protected override void OnOpenAccomplishCallback()
         {
+            _userSystem.AddObserver(this);
             WindowObj.AddCallback(SelectMapBtnCallback, ClassBuildBtnCallback, ClaimUserTestIntStrCallback, RandomTestIntCallback);
             WindowObj.Refresh();
         }
 
         protected override void CleanControllerDependency()
         {
+            _userSystem.RemoveObserver(this);
             _userSystem = null;
             WindowObj.CleanCallback();
         }
@@ -51,7 +54,8 @@ namespace Xi.Metagame.Ui
         private void RandomTestIntCallback()
         {
             _userSystem?.SetupTestInt(UnityEngine.Random.Range(0, 1000));
-            WindowObj.Refresh();
         }
+
+        void ISystemObserver_User.TestIntChange(int num) => WindowObj.Refresh();
     }
 }

@@ -9,11 +9,16 @@ namespace Xi.Metagame.Client.System.ClassBuild
         public override void PostDeserializeData() { }
         public override void PreSerializeData() { }
     }
-    public class MetagameSystem_ClassBuild : MetagameSystem<ClassBuildData>
+    public class MetagameSystem_ClassBuild : MetagameSystem<ClassBuildData, ISystemObserver_ClassBuild>
     {
         public MetagameSystem_ClassBuild(string systemName) : base(systemName)
         {
+
         }
+    }
+
+    public interface ISystemObserver_ClassBuild : IMetagameSystemObserver
+    {
     }
 }
 
