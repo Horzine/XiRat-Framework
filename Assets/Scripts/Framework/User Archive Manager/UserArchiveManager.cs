@@ -52,6 +52,7 @@ namespace Xi.Framework
 
                 CachedSaveData = saveData;
                 XiLogger.Log($"Finish. Path = {FilePath}");
+                _saveCancellationTokenSource = null;
             }
             catch (OperationCanceledException)
             {
@@ -66,6 +67,7 @@ namespace Xi.Framework
         public void SaveSync(Dictionary<string, SaveData> saveData)
         {
             _saveCancellationTokenSource?.Cancel();
+            _saveCancellationTokenSource = null;
             try
             {
                 DoSave(saveData);
@@ -88,14 +90,12 @@ namespace Xi.Framework
                 {
                     _saveCancellationTokenSource?.Token.ThrowIfCancellationRequested();
 
-                    // 将系统名称长度作为int32写入，后跟系统名称的字节
                     byte[] systemNameBytes = System.Text.Encoding.UTF8.GetBytes(system.systemName);
                     byte[] systemNameLengthBytes = BitConverter.GetBytes(systemNameBytes.Length);
                     fileStream.Write(systemNameLengthBytes, 0, systemNameLengthBytes.Length);
 
                     fileStream.Write(systemNameBytes, 0, systemNameBytes.Length);
 
-                    // 将系统数据长度作为int32写入，后跟系统数据
                     byte[] systemDataLengthBytes = BitConverter.GetBytes(system.data.Length);
                     fileStream.Write(systemDataLengthBytes, 0, systemDataLengthBytes.Length);
 
@@ -118,7 +118,6 @@ namespace Xi.Framework
                     using var fileStream = new FileStream(FilePath, FileMode.Open, FileAccess.Read);
                     while (fileStream.Position < fileStream.Length)
                     {
-                        // Read system name length as int32 followed by system name as bytes
                         byte[] systemNameLengthBytes = new byte[sizeof(int)];
                         fileStream.Read(systemNameLengthBytes, 0, systemNameLengthBytes.Length);
                         int systemNameLength = BitConverter.ToInt32(systemNameLengthBytes, 0);
@@ -127,7 +126,6 @@ namespace Xi.Framework
                         fileStream.Read(systemNameBytes, 0, systemNameBytes.Length);
                         string systemName = System.Text.Encoding.UTF8.GetString(systemNameBytes);
 
-                        // Read system data length as int32 followed by system data
                         byte[] systemDataLengthBytes = new byte[sizeof(int)];
                         fileStream.Read(systemDataLengthBytes, 0, systemDataLengthBytes.Length);
                         int systemDataLength = BitConverter.ToInt32(systemDataLengthBytes, 0);

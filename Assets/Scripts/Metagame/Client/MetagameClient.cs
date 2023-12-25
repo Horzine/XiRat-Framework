@@ -15,6 +15,7 @@ namespace Xi.Metagame.Client
 
         public MetagameClient()
         {
+            UserArchiveManager.Instance.OnDestroyAction += OnUserArchiveDestroyCallback;
             this.CreateAllSystemInstance();
 
             var saveData = UserArchiveManager.Instance.CachedSaveData;
@@ -43,8 +44,6 @@ namespace Xi.Metagame.Client
                     system.OnSetupAsSystemDefault();
                 }
             }
-
-            UserArchiveManager.Instance.OnDestroyAction += OnUserArchiveDestroyCallback;
         }
 
         private void OnUserArchiveDestroyCallback() => SaveAllSystemData(false);
