@@ -46,6 +46,7 @@ namespace Xi.Framework
             _loggerTool ??= new AdvancedLoggerTool();
 
             await ConfigManager.Instance.InitAsync();
+            await UserArchiveManager.Instance.InitAsync();
             await GameSceneManager.Instance.InitAsync();
             var gameSceneManager = GameSceneManager.Instance;
             await AssetManager.Instance.InitAsync(gameSceneManager);

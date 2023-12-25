@@ -6,7 +6,7 @@ namespace Xi.Framework
     {
         string SceneName { get; set; }
         void OnCreate();
-        void OnNewSceneActive(IGameInstance oldGameInstance);
+        void OnAfterNewSceneActive(IGameInstance oldGameInstance);
         void WillBeReplaced();
     }
     public abstract class GameInstance : IGameInstance
@@ -14,7 +14,7 @@ namespace Xi.Framework
         public abstract string SceneName { get; protected set; }
         protected GameInstanceObject _gameInstanceObject;
         protected abstract void OnCreate();
-        private void OnNewSceneActive(IGameInstance oldGameInstance)
+        private void OnAfterNewSceneActive(IGameInstance oldGameInstance)
         {
             CreateAndSetupGameInstanceObject();
             AfterNewSceneActiveAndCreateObject(oldGameInstance, _gameInstanceObject);
@@ -33,7 +33,7 @@ namespace Xi.Framework
         #region Interface IGameInstance
         string IGameInstance.SceneName { get => SceneName; set => SceneName = value; }
         void IGameInstance.OnCreate() => OnCreate();
-        void IGameInstance.OnNewSceneActive(IGameInstance oldGameInstance) => OnNewSceneActive(oldGameInstance);
+        void IGameInstance.OnAfterNewSceneActive(IGameInstance oldGameInstance) => OnAfterNewSceneActive(oldGameInstance);
         void IGameInstance.WillBeReplaced() => WillBeReplaced();
         #endregion
     }

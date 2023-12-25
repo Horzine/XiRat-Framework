@@ -27,7 +27,7 @@ namespace Xi.Metagame.Main
 
             if (oldGameInstance is GameplayGameInstance oldGameplay)
             {
-               
+
             }
 
             Client = new MetagameClient();
