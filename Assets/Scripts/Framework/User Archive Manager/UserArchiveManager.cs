@@ -32,10 +32,7 @@ namespace Xi.Framework
         private CancellationTokenSource _saveCancellationTokenSource;
         public event Action OnDestroyAction;
 
-        public void OnCreate()
-        {
-
-        }
+        public void OnCreate() { }
 
         public async UniTask InitAsync() => await LoadAsync();
 
@@ -54,7 +51,7 @@ namespace Xi.Framework
                 }, cancellationToken: _saveCancellationTokenSource.Token);
 
                 CachedSaveData = saveData;
-                XiLogger.Log($"Finish, path = {FilePath}");
+                XiLogger.Log($"Finish. Path = {FilePath}");
             }
             catch (OperationCanceledException)
             {
@@ -62,7 +59,7 @@ namespace Xi.Framework
             }
             catch (Exception ex)
             {
-                XiLogger.LogError($"Failed: {ex}");
+                XiLogger.LogError($"Failed ! {ex}");
             }
         }
 
@@ -74,11 +71,11 @@ namespace Xi.Framework
                 DoSave(saveData);
 
                 CachedSaveData = saveData;
-                XiLogger.Log($"Finish, path = {FilePath}");
+                XiLogger.Log($"Finish. Path = {FilePath}");
             }
             catch (Exception ex)
             {
-                XiLogger.LogError($"Failed: {ex}");
+                XiLogger.LogError($"Failed ! {ex}");
             }
         }
 
@@ -146,7 +143,7 @@ namespace Xi.Framework
                 }
                 else
                 {
-                    XiLogger.Log($"File not Exists: FilePath = {FilePath}");
+                    XiLogger.Log($"File not exists. FilePath = {FilePath}");
                     CachedSaveData = null;
                 }
             });
