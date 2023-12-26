@@ -1,4 +1,5 @@
 ﻿using Cysharp.Threading.Tasks;
+using UnityEngine;
 using Xi.Framework;
 using Xi.Metagame.Client.System.User;
 
@@ -51,10 +52,7 @@ namespace Xi.Metagame.Ui
 
         private string ClaimUserTestIntStrCallback() => _userSystem == null ? string.Empty : _userSystem.GetTestInt().ToString();
 
-        private void RandomTestIntCallback()
-        {
-            _userSystem?.SetupTestInt(UnityEngine.Random.Range(0, 1000));
-        }
+        private void RandomTestIntCallback() => _userSystem?.SetupTestInt(Random.Range(0, 1000));
 
         void ISystemObserver_User.TestIntChange(int num) => WindowObj.Refresh();
     }

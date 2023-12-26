@@ -8,7 +8,6 @@ namespace Xi.Metagame.Client.System.User
         [MemoryPackInclude] private string testStr;
         [MemoryPackInclude] public int TestInt { get; set; }
         public override void OnCreateAsDefaultData() => TestInt = 1000;
-
         public override void PostDeserializeData() => testStr = TestInt.ToString();
         public override void PreSerializeData() => testStr = TestInt.ToString();
     }
@@ -25,6 +24,7 @@ namespace Xi.Metagame.Client.System.User
         }
 
         public int GetTestInt() => Data.TestInt;
+
     }
     public interface ISystemObserver_User : IMetagameSystemObserver
     {

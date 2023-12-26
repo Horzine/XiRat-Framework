@@ -24,8 +24,8 @@ namespace Xi.Metagame.Client.System
 
             for (int i = _observers.Count - 1; i >= 0; i--)
             {
-                var item = _observers[i];
-                action.Invoke(item);
+                var observer = _observers[i];
+                action.Invoke(observer);
             }
         }
     }
@@ -63,7 +63,7 @@ namespace Xi.Metagame.Client.System
                 return;
             }
 
-            NotifyObserver(item => action.Invoke(item));
+            NotifyObserver(observer => action.Invoke(observer));
         }
 
         protected void NotifyObserver(Action<TObserver> action)
@@ -75,8 +75,8 @@ namespace Xi.Metagame.Client.System
 
             for (int i = _observers.Count - 1; i >= 0; i--)
             {
-                var item = (TObserver)_observers[i];
-                action.Invoke(item);
+                var observer = (TObserver)_observers[i];
+                action.Invoke(observer);
             }
         }
     }
