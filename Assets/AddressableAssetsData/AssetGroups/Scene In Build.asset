@@ -15,8 +15,12 @@ MonoBehaviour:
   m_GroupName: Scene In Build
   m_Data:
     m_SerializedData: []
-  m_GUID: 3ab1b8c0107b818428fca3fef16075b6
+  m_GUID: 0cbdb68137a427a4ca946cb935371e02
   m_SerializeEntries:
+  - m_GUID: 2cda990e2423bbf4892e6590ba056729
+    m_Address: Scene In Build/Bootstrap
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   - m_GUID: 67a3335df17909e49b643dcfbfb6c445
     m_Address: Scene In Build/MainScene
     m_ReadOnly: 0

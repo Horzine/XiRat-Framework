@@ -15,7 +15,7 @@ MonoBehaviour:
   m_GroupName: Ui-Gameplay
   m_Data:
     m_SerializedData: []
-  m_GUID: 6e5b242de56c1ec43865dcc2f30eefda
+  m_GUID: 7a220aee3d920ba4da4adb17c335d800
   m_SerializeEntries:
   - m_GUID: 961b8e4d53e0f094197744993df2af74
     m_Address: Ui-Gameplay/Gameplay
