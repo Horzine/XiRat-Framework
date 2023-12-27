@@ -7,7 +7,7 @@ namespace Xi.Metagame.Feature
 {
     public enum MetagameFeatureEnum
     {
-        Main,
+        Center,
         Mission,
         Arsenal,
         XXX,
@@ -36,19 +36,12 @@ namespace Xi.Metagame.Feature
             }
         }
 
-        private void Awake() => _allFeatureObjDictionary = _allFeatureObjList.ToDictionary(item => (int)item.FeatureEnum);
-
-        private void Start()
+        private void Awake()
         {
+            _allFeatureObjDictionary = _allFeatureObjList.ToDictionary(item => (int)item.FeatureEnum);
             foreach (var item in _allFeatureObjList)
             {
                 item.Setup();
-            }
-
-            var mainFeature = GetFeatureObj<MetagameFeatureObj>(MetagameFeatureEnum.Main);
-            if (mainFeature != null)
-            {
-                CurrentActiveFeatureObj = mainFeature;
             }
         }
 
