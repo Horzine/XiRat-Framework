@@ -9,7 +9,7 @@ EditorBuildSettings:
     path: Assets/Scenes/Build/Bootstrap.unity
     guid: 2cda990e2423bbf4892e6590ba056729
   - enabled: 0
-    path: Assets/Scenes/None Build/Test Case Scene.unity
+    path: Assets/Test Case/Test Case Scene.unity
     guid: 1db04d3bb9e9bf541a612f175a6d1dd8
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: b9e72fc94cd9b0047ba9e39dce39d4b5, type: 2}
