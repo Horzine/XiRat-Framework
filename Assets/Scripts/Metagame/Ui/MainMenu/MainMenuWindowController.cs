@@ -2,6 +2,7 @@
 using UnityEngine;
 using Xi.Framework;
 using Xi.Metagame.Client.System.User;
+using Xi.Metagame.Feature;
 
 namespace Xi.Metagame.Ui
 {
@@ -13,10 +14,11 @@ namespace Xi.Metagame.Ui
             => (AssetGroupNameConst.kAddressableGroupName_MetagameUi, UiFeatureNameConst.kMetagame_MainMenu, UiPrefabNameConst.kMetagame_MainMenu);
         protected override bool IsOverlayMode => false;
         private MetagameSystem_User _userSystem;
-
-        public void Open(MetagameSystem_User userSystem)
+        private MetagameFeatureController _featureController;
+        public void Open(MetagameSystem_User userSystem, MetagameFeatureController featureController)
         {
             _userSystem = userSystem;
+            _featureController = featureController;
             OpenAsync().Forget();
         }
 
@@ -33,6 +35,7 @@ namespace Xi.Metagame.Ui
         {
             _userSystem.RemoveObserver(this);
             _userSystem = null;
+            _featureController = null;
             WindowObj.CleanCallback();
         }
 
@@ -40,14 +43,18 @@ namespace Xi.Metagame.Ui
 
         private void SelectMapBtnCallback()
         {
-            var selectMapCtrl = UiManager.Instance.GetController<SelectMapWindowController>(UiEnum.Metagame_SelectMap);
-            selectMapCtrl.Open();
+            if (_featureController)
+            {
+                _featureController.ActiveFeature(MetagameFeatureEnum.Mission);
+            }
         }
 
         private void ClassBuildBtnCallback()
         {
-            var classBuildCtrl = UiManager.Instance.GetController<ClassBuildWindowController>(UiEnum.Metagame_ClassBuild);
-            classBuildCtrl.Open();
+            if (_featureController)
+            {
+                _featureController.ActiveFeature(MetagameFeatureEnum.Arsenal);
+            }
         }
 
         private string ClaimUserTestIntStrCallback() => _userSystem == null ? string.Empty : _userSystem.GetTestInt().ToString();

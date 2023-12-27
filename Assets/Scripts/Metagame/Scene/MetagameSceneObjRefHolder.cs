@@ -7,6 +7,8 @@ namespace Xi.Metagame.Scene
 {
     public enum MetagameSceneObjectEnum
     {
+        Feature_Controller,
+        Cinemachine_Brain,
     }
 
     public class MetagameSceneObjRefHolder : SceneObjectReferenceHolder<MetagameSceneObjectReference>

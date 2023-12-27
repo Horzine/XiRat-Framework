@@ -25,7 +25,7 @@ namespace Xi.Framework
 
             if (!reference.sceneObject.TryGetComponent<T>(out var component))
             {
-                XiLogger.LogError($"{reference.sceneObject.name}  not found {nameof(T)} component");
+                XiLogger.LogError($"{reference.sceneObject.name} not found {nameof(T)} component");
                 return null;
             }
 
