@@ -2,3 +2,9 @@
 2. 修饰器设计模式, 举例: Buff生效的修饰]
 3. 代码生成优化,使用模板文件并替换其中的 {xxx}, 多用单个函数的模板和分部类
 4. UpdateInvoker
+5. SuppressCancellationThrow 异步操作的取消异常抑制
+7. 回调的数据结构改用 IndexedSet
+8. 枚举的 DrawIf
+9. EventCenter 改造, 可以改成 EventBus, 任意位置都可以收发
+10. callback 作为接口实现, 并使用 indexedSet,  所有回调的地方使用 TryCache 将遍历内部套住
+11. Tween.SelfKill
