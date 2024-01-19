@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 601e0d3c20d9fae40b82f8eb8bce82a9, type: 3}
   m_Name: Unit_SO_A 7
   m_EditorClassIdentifier: 
-  m_ConfigId: 12
+  _configId: 7
   m_DisplayName: 

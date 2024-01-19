@@ -7,4 +7,3 @@
 8. 枚举的 DrawIf
 9. EventCenter 改造, 可以改成 EventBus, 任意位置都可以收发
 10. callback 作为接口实现, 并使用 indexedSet,  所有回调的地方使用 TryCache 将遍历内部套住
-11. Tween.SelfKill

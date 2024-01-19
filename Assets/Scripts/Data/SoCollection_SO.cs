@@ -22,18 +22,18 @@ namespace Xi.Data
     [CreateAssetMenu(fileName = "SoCollection_SO_", menuName = "Xi/Data/ScriptableObject Collection")]
     public class SoCollection_SO : ScriptableObject
     {
-        [ReadOnly, SerializeField] private int m_NextConfigId = 1;
-        [SerializeField] private string m_ExportTxtFileName;
-        [SerializeField] private List<EntryInfo> m_So_Info;
+        [ReadOnly, SerializeField] private int _nextConfigId = 1;
+        [SerializeField] private string _exportTxtFileName;
+        [SerializeField] private List<EntryInfo> _soInfo;
         public string FileOutputFullName => $"{ConfigUtils.kTxtOriginFolder}/{ExportTxtFileName}{ConfigUtils.kOriginConfigFileSuffix}";
-        public string ExportTxtFileName => m_ExportTxtFileName;
+        public string ExportTxtFileName => _exportTxtFileName;
         public static bool ConfigIdValid(int id) => id > 0;
 
 #if UNITY_EDITOR
 
         private void CollectionAllEntry()
         {
-            m_So_Info.Clear();
+            _soInfo.Clear();
             string thisPath = AssetDatabase.GetAssetPath(this);
             var dirInfo = new DirectoryInfo(thisPath).Parent;
             var allPath = dirInfo.GetFiles();
@@ -49,7 +49,15 @@ namespace Xi.Data
                 var entryObj = AssetDatabase.LoadAssetAtPath<SoCollectionEntry_SO>(relativepath);
                 if (entryObj != null)
                 {
-                    m_So_Info.Add(new EntryInfo
+                    if (!ConfigIdValid(entryObj.GetIntConfigId(true)))
+                    {
+                        entryObj.SetIntConfigId(_nextConfigId);
+                        _nextConfigId += 1;
+                        EditorUtility.SetDirty(entryObj);
+                        AssetDatabase.SaveAssetIfDirty(entryObj);
+                    }
+
+                    _soInfo.Add(new EntryInfo
                     {
                         configId = entryObj.GetIntConfigId(true),
                         entry_so = entryObj
@@ -57,30 +65,15 @@ namespace Xi.Data
                 }
             }
 
+            _soInfo.Sort((x, y) => x.configId.CompareTo(y.configId));
+
             EditorUtility.SetDirty(this);
             AssetDatabase.SaveAssetIfDirty(this);
         }
-        private void CheckItemConfigId()
-        {
-            foreach (var item in m_So_Info)
-            {
-                if (!ConfigIdValid(item.configId))
-                {
-                    item.configId = m_NextConfigId;
-                    item.entry_so.SetIntConfigId(item.configId);
-                    m_NextConfigId += 1;
-                    EditorUtility.SetDirty(item.entry_so);
-                    AssetDatabase.SaveAssetIfDirty(item.entry_so);
-                }
-            }
 
-            m_So_Info.Sort((x, y) => x.configId.CompareTo(y.configId));
-
-            XiLogger.Log($"General Item ConfigId success");
-        }
         private void ExportTxtFile()
         {
-            if (m_So_Info.Count == 0)
+            if (_soInfo.Count == 0)
             {
                 XiLogger.LogWarning("List is empty");
                 return;
@@ -92,14 +85,14 @@ namespace Xi.Data
                 return;
             }
 
-            var first = m_So_Info.First();
+            var first = _soInfo.First();
             var sb = new StringBuilder();
             sb.AppendLine(first.entry_so.ToTxt_Comment());
             sb.AppendLine(first.entry_so.ToTxt_Header());
             sb.AppendLine(first.entry_so.ToTxt_Type());
             sb.AppendLine();
 
-            foreach (var item in m_So_Info)
+            foreach (var item in _soInfo)
             {
                 sb.AppendLine(item.entry_so.ToTxt_Entry());
             }
@@ -110,13 +103,12 @@ namespace Xi.Data
         public void DoExport()
         {
             CollectionAllEntry();
-            if (m_So_Info.Count == 0)
+            if (_soInfo.Count == 0)
             {
                 XiLogger.LogWarning($"No So_Info Entry");
                 return;
             }
 
-            CheckItemConfigId();
             ExportTxtFile();
         }
 #endif

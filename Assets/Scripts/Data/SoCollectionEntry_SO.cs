@@ -7,17 +7,17 @@ namespace Xi.Data
 {
     public abstract class SoCollectionEntry_SO : ScriptableObject
     {
-        [ReadOnly, SerializeField] private int m_ConfigId = 0;
+        [ReadOnly, SerializeField] private int _configId = 0;
         [SerializeField] private string m_DisplayName;
-        public void SetIntConfigId(int value) => m_ConfigId = value;
+        public void SetIntConfigId(int value) => _configId = value;
         public int GetIntConfigId(bool silence = false)
         {
-            if (!SoCollection_SO.ConfigIdValid(m_ConfigId) && !silence)
+            if (!SoCollection_SO.ConfigIdValid(_configId) && !silence)
             {
                 Debug.LogError("ConfigIdValid", this);
             }
 
-            return m_ConfigId;
+            return _configId;
         }
         public string ConfigId => GetIntConfigId().ToString();
         public string DisplayName => m_DisplayName;

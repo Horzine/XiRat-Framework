@@ -54,15 +54,15 @@ namespace Xi.Extend.Collection
 
         public void RemoveAt(int index)
         {
-            var removedItem = _elements[index];
-            _elements.RemoveAt(index);
-            _hashedElementIdx.Remove(removedItem);
+			int lastIndex = _elements.Count - 1;
+			if (index != lastIndex)
+			{
+				(_elements[index], _elements[lastIndex]) = (_elements[lastIndex], _elements[index]);
+				(_hashedElementIdx[_elements[index]], _hashedElementIdx[_elements[lastIndex]]) = (index, lastIndex);
+			}
 
-            if (index != _elements.Count)
-            {
-                var lastItem = _elements[index];
-                _hashedElementIdx[lastItem] = index;
-            }
+			_elements.RemoveAt(lastIndex);
+			_hashedElementIdx.Remove(_elements[index]);
         }
 
         public T this[int index]
