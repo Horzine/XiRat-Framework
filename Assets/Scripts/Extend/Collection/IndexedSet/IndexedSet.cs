@@ -61,8 +61,8 @@ namespace Xi.Extend.Collection
 				(_hashedElementIdx[_elements[index]], _hashedElementIdx[_elements[lastIndex]]) = (index, lastIndex);
 			}
 
-			_elements.RemoveAt(lastIndex);
 			_hashedElementIdx.Remove(_elements[index]);
+			_elements.RemoveAt(lastIndex);
         }
 
         public T this[int index]
