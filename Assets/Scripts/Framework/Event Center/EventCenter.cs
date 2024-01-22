@@ -11,7 +11,7 @@ namespace Xi.Framework
     public interface IEventListener { }
     public interface IEventListener<T> : IEventListener where T : CustomEvent
     {
-        void OnEventFire(T customEvent);
+        internal void OnEventFire(T customEvent);
     }
     public class EventCenter : MonoSingleton<EventCenter>, ISingleton
     {
@@ -78,13 +78,13 @@ namespace Xi.Framework
 
         public void RemoveListener<T>(IEventListener<T> listener) where T : CustomEvent
         {
-            var eventType = typeof(T);
             if (_isFiringEvent)
             {
                 _pendingOperations.Add(() => RemoveListener(listener));
                 return;
             }
 
+            var eventType = typeof(T);
             if (!_eventMapping.ContainsKey(eventType))
             {
                 throw new ArgumentException($"EventType '{eventType.Name}' is not mapped to any EventId");
@@ -123,7 +123,14 @@ namespace Xi.Framework
             {
                 if (listener is IEventListener<T> eventListener)
                 {
-                    eventListener.OnEventFire(customEvent);
+                    try
+                    {
+                        eventListener.OnEventFire(customEvent);
+                    }
+                    catch (Exception e)
+                    {
+                        XiLogger.LogException(e);
+                    }
                 }
             }
 

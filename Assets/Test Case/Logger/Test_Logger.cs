@@ -24,6 +24,9 @@ namespace Xi.TestCase
             {
                 XiLogger.LogException(e);
             }
+
+            ICallbackEntry_My my = new Test_CallbackContainer_Entry();
+            my.Test();
         }
     }
 }
