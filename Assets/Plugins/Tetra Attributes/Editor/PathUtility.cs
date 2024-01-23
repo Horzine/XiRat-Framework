@@ -1,11 +1,11 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
-namespace TetraCreations.Attributes
+namespace TetraCreations.Attributes.Editor
 {
 	/// <summary>
 	/// Used verify if a path is valid, by checking the existance of invalid characters, if the path is too long, if they are from the current Unity project etc.<br></br>
@@ -37,19 +37,19 @@ namespace TetraCreations.Attributes
         /// <returns></returns>
         public static bool ExistOnDisk(string path) => Directory.Exists(path);
 
-		/// <summary>
-		/// Dertermine if the path exist in the AssetDatabase
-		/// </summary>
-		/// <param name="path"></param>
-		/// <returns></returns>
-		public static bool Exist(string path) => AssetDatabase.AssetPathToGUID(path, AssetPathToGUIDOptions.OnlyExistingAssets).Length > 0;
+        /// <summary>
+        /// Dertermine if the path exist in the AssetDatabase
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public static bool Exist(string path) => AssetDatabase.AssetPathToGUID(path, AssetPathToGUIDOptions.OnlyExistingAssets).Length > 0;
 
-		/// <summary>
-		/// Determine if a path contains the unity project's root directory.
-		/// </summary>
-		/// <param name="fullPath"></param>
-		/// <returns></returns>
-		public static bool IsProjectPath(string fullPath)
+        /// <summary>
+        /// Determine if a path contains the unity project's root directory.
+        /// </summary>
+        /// <param name="fullPath"></param>
+        /// <returns></returns>
+        public static bool IsProjectPath(string fullPath)
 		{
 			// The path may already be relative, so we don't compare to the full project path
 			if (IsRelative(fullPath)) { return true; }
