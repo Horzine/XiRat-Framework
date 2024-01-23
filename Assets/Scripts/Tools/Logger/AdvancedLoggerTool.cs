@@ -23,12 +23,14 @@ namespace Xi.Tools
         private bool _isWriting = false;
         private bool _isWritingWarningError = false;
         private const int kMaxLogFileSizeInMB = 25;
+        private const string kLogFileName = "log_all.txt";
+        private const string kDetailFileName = "warning_error_exception.txt";
 
         public AdvancedLoggerTool()
         {
             _logFolderPath = LoggerUtils.GetLogFolderPath();
-            _logFilePath = LoggerUtils.GetLogFilePath("log_all.txt");
-            _warningErrorLogFilePath = LoggerUtils.GetLogFilePath("warning_error.txt");
+            _logFilePath = LoggerUtils.GetLogFilePath(kLogFileName);
+            _warningErrorLogFilePath = LoggerUtils.GetLogFilePath(kDetailFileName);
 
             if (!Directory.Exists(_logFolderPath))
             {
