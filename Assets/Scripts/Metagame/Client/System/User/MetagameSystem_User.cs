@@ -13,7 +13,7 @@ namespace Xi.Metagame.Client.System.User
     }
     public class MetagameSystem_User : MetagameSystem<UserData, ISystemObserver_User>
     {
-        public MetagameSystem_User(string systemName) : base(systemName)
+        public MetagameSystem_User() : base(MetagameSystemNameConst.kUser)
         {
         }
 

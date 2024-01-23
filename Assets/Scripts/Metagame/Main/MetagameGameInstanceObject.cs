@@ -1,6 +1,5 @@
 ﻿using Xi.Framework;
-using Xi.Metagame.Client.System;
-using Xi.Metagame.Client.System.User;
+using Xi.Metagame.Client;
 using Xi.Metagame.Feature;
 using Xi.Metagame.Scene;
 using Xi.Metagame.Ui;
@@ -18,7 +17,7 @@ namespace Xi.Metagame.Main
             featureController.ActiveFeature(MetagameFeatureEnum.Center);
 
             _mainMenuCtrl = UiManager.Instance.GetController<MainMenuWindowController>(UiEnum.Metagame_MainMenu);
-            var userSystem = MetagameGameInstance.Client.GetSystem<MetagameSystem_User>(MetagameSystemNameConst.kUser);
+            var userSystem = MetagameGameInstance.Client.GetMetagameSystem_User();
             _mainMenuCtrl.Open(userSystem, featureController);
         }
 

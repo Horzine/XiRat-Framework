@@ -20,7 +20,7 @@ namespace Xi.TestCase
 
         void IEventListener<Event1Event>.OnEventFire(Event1Event eventArgs)
         {
-            Debug.Log($"{GetHashCode()}: Event1 EventArgs received");
+            Debug.Log($"ObjectHash({GetHashCode()}): Event1 EventArgs received");
             EventCenter.Instance.AddListener<Event1Event>(new MyEventListener());
         }
 

@@ -11,7 +11,7 @@ namespace Xi.Metagame.Client.System.ClassBuild
     }
     public class MetagameSystem_ClassBuild : MetagameSystem<ClassBuildData, ISystemObserver_ClassBuild>
     {
-        public MetagameSystem_ClassBuild(string systemName) : base(systemName)
+        public MetagameSystem_ClassBuild() : base(MetagameSystemNameConst.kClassBuild)
         {
 
         }

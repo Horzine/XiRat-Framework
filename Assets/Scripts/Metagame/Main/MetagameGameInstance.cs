@@ -65,8 +65,5 @@ namespace Xi.Metagame.Main
 
         public static MetagameSceneObjRefHolder GetMetagameSceneObjRefHolder(this GameMain gameMain)
             => GetMetagameInstance(gameMain)?.SceneObjRefHolder;
-
-        public static T GetMetagameSystem<T>(this GameMain gameMain, string systemName) where T : MetagameSystem
-            => GetMetagameClient(gameMain)?.GetSystem<T>(systemName);
     }
 }

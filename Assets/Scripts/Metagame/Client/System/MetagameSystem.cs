@@ -1,41 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
 using MemoryPack;
+using Xi.Extend.Collection;
 
 namespace Xi.Metagame.Client.System
 {
-    public interface IMetagameSystemObserver { }
+    public interface IMetagameSystemObserver : CallbackContainer.ICallbackEntry { }
     public abstract class MetagameSystem
     {
-        protected List<IMetagameSystemObserver> _observers = new();
         public readonly string systemName;
         public MetagameSystem(string systemName) => this.systemName = systemName;
         public abstract byte[] ClaimSaveData();
         public abstract void OnSetupAsSystemDefault();
         public abstract void OnUpdateSystem(byte[] data);
-        public void AddObserver(IMetagameSystemObserver observer) => _observers.Add(observer);
-        public void RemoveObserver(IMetagameSystemObserver observer) => _observers.Remove(observer);
-        protected virtual void NotifyObserver(Action<IMetagameSystemObserver> action)
-        {
-            if (action == null)
-            {
-                return;
-            }
-
-            for (int i = _observers.Count - 1; i >= 0; i--)
-            {
-                var observer = _observers[i];
-                action.Invoke(observer);
-            }
-        }
     }
     public abstract class MetagameSystem<TSystemData, TObserver> : MetagameSystem
         where TSystemData : MetagameSystemData, new()
         where TObserver : IMetagameSystemObserver
     {
-        protected MetagameSystem(string systemName) : base(systemName) { }
-
+        private readonly CallbackContainer<TObserver> _observers = new();
         protected TSystemData Data { get; private set; }
+        protected MetagameSystem(string systemName) : base(systemName) { }
 
         public sealed override byte[] ClaimSaveData()
         {
@@ -56,15 +40,9 @@ namespace Xi.Metagame.Client.System
             Data.PostDeserializeData();
         }
 
-        protected override void NotifyObserver(Action<IMetagameSystemObserver> action)
-        {
-            if (action == null)
-            {
-                return;
-            }
+        public void AddObserver(TObserver observer) => _observers.AddCallback(observer);
 
-            NotifyObserver(observer => action.Invoke(observer));
-        }
+        public void RemoveObserver(TObserver observer) => _observers.RemoveCallback(observer);
 
         protected void NotifyObserver(Action<TObserver> action)
         {
@@ -73,11 +51,7 @@ namespace Xi.Metagame.Client.System
                 return;
             }
 
-            for (int i = _observers.Count - 1; i >= 0; i--)
-            {
-                var observer = (TObserver)_observers[i];
-                action.Invoke(observer);
-            }
+            _observers.InvokeCallback(action);
         }
     }
 }

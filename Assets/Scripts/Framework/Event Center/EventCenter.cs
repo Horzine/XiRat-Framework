@@ -146,7 +146,10 @@ namespace Xi.Framework
 
     public static class EventCenter_Extend
     {
-        public static void RegisterListener<T>(this IEventListener<T> eventListener, [CallerFilePath] string filePath = "", [CallerMemberName] string methodName = "") where T : CustomEvent
+        public static void RegisterListener<T>(this IEventListener<T> eventListener,
+            [CallerFilePath] string filePath = "",
+            [CallerMemberName] string methodName = "",
+            [CallerLineNumber] int lineNumber = -1) where T : CustomEvent
         {
             if (eventListener == null)
             {
@@ -155,10 +158,13 @@ namespace Xi.Framework
             }
 
             EventCenter.Instance.AddListener(eventListener);
-            XiLogger.Log($"Register Event Listener: {typeof(T).Name}", filePath: filePath, methodName: methodName);
+            XiLogger.Log($"Register Event Listener: {typeof(T).Name}", filePath: filePath, methodName: methodName, lineNumber: lineNumber);
         }
 
-        public static void UnregisterListener<T>(this IEventListener<T> eventListener, [CallerFilePath] string filePath = "", [CallerMemberName] string methodName = "") where T : CustomEvent
+        public static void UnregisterListener<T>(this IEventListener<T> eventListener,
+            [CallerFilePath] string filePath = "",
+            [CallerMemberName] string methodName = "",
+            [CallerLineNumber] int lineNumber = -1) where T : CustomEvent
         {
             if (eventListener == null)
             {
@@ -167,10 +173,13 @@ namespace Xi.Framework
             }
 
             EventCenter.Instance.RemoveListener(eventListener);
-            XiLogger.Log($"Unregister Event Listener: {typeof(T).Name}", filePath: filePath, methodName: methodName);
+            XiLogger.Log($"Unregister Event Listener: {typeof(T).Name}", filePath: filePath, methodName: methodName, lineNumber: lineNumber);
         }
 
-        public static void FireEvent<T>(this T customEvent, [CallerFilePath] string filePath = "", [CallerMemberName] string methodName = "") where T : CustomEvent
+        public static void FireEvent<T>(this T customEvent,
+            [CallerFilePath] string filePath = "",
+            [CallerMemberName] string methodName = "",
+            [CallerLineNumber] int lineNumber = -1) where T : CustomEvent
         {
             if (customEvent == null)
             {
@@ -179,7 +188,7 @@ namespace Xi.Framework
             }
 
             EventCenter.Instance.FireEvent(customEvent);
-            XiLogger.Log($"FireEvent: {typeof(T).Name}", filePath: filePath, methodName: methodName);
+            XiLogger.Log($"FireEvent: {typeof(T).Name}", filePath: filePath, methodName: methodName, lineNumber: lineNumber);
         }
     }
 }

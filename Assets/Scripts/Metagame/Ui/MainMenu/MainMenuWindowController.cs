@@ -15,6 +15,7 @@ namespace Xi.Metagame.Ui
         protected override bool IsOverlayMode => false;
         private MetagameSystem_User _userSystem;
         private MetagameFeatureController _featureController;
+
         public void Open(MetagameSystem_User userSystem, MetagameFeatureController featureController)
         {
             _userSystem = userSystem;

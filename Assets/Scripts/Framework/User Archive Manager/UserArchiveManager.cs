@@ -151,7 +151,14 @@ namespace Xi.Framework
 
         private void OnDestroy()
         {
-            OnDestroyAction?.Invoke();
+            try
+            {
+                OnDestroyAction?.Invoke();
+            }
+            catch (Exception e)
+            {
+                XiLogger.LogException(e);
+            }
             OnDestroyAction = null;
         }
     }

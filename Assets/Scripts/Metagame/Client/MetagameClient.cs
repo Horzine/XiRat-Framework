@@ -77,8 +77,14 @@ namespace Xi.Metagame.Client
     {
         public static void CreateAllSystemInstance(this MetagameClient metagameClient)
         {
-            metagameClient.AddSystem(new MetagameSystem_User(MetagameSystemNameConst.kUser));
-            metagameClient.AddSystem(new MetagameSystem_ClassBuild(MetagameSystemNameConst.kClassBuild));
+            metagameClient.AddSystem(new MetagameSystem_User());
+            metagameClient.AddSystem(new MetagameSystem_ClassBuild());
         }
+
+        public static MetagameSystem_User GetMetagameSystem_User(this MetagameClient metagameClient)
+            => metagameClient.GetSystem<MetagameSystem_User>(MetagameSystemNameConst.kUser);
+
+        public static MetagameSystem_ClassBuild GetMetagameSystem_ClassBuild(this MetagameClient metagameClient)
+            => metagameClient.GetSystem<MetagameSystem_ClassBuild>(MetagameSystemNameConst.kClassBuild);
     }
 }
