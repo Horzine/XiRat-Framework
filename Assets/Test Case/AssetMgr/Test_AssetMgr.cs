@@ -1,4 +1,5 @@
-﻿using Cysharp.Threading.Tasks;
+﻿using System.Threading;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using Xi.Framework;
@@ -22,7 +23,10 @@ namespace Xi.TestCase
 
         private async UniTask TestLoadAsset()
         {
-            var (success, asset, operationHandle) = await AssetManager.Instance.LoadAssetAsync<GameObject>($"{kGroupName}/AssetMgr/{kCubeName}.prefab", this.GetCancellationTokenOnDestroy());
+            var tokenSource = new CancellationTokenSource();
+            var op = AssetManager.Instance.LoadAssetAsync<GameObject>($"{kGroupName}/AssetMgr/{kCubeName}.prefab", tokenSource.Token);
+            //tokenSource.Cancel();
+            var (success, asset, operationHandle) = await op;
             if (!success)
             {
                 return;
@@ -34,7 +38,10 @@ namespace Xi.TestCase
 
         private async UniTask TestInstantiateScript()
         {
-            var cube = await AssetManager.Instance.InstantiateScriptAsync<Test_AssetMgr_Cube>($"{kGroupName}/AssetMgr/{kCubeName}.prefab", Vector3.zero, Quaternion.identity, null, this.GetCancellationTokenOnDestroy());
+            var tokenSource = new CancellationTokenSource();
+            var op = AssetManager.Instance.InstantiateScriptAsync<Test_AssetMgr_Cube>($"{kGroupName}/AssetMgr/{kCubeName}.prefab", Vector3.zero, Quaternion.identity, null, tokenSource.Token);
+            //tokenSource.Cancel();
+            var cube = await op;
             if (cube)
             {
                 cube.Test();

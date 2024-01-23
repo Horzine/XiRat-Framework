@@ -31,14 +31,19 @@ namespace Xi.Framework
             }
 
             var loadOperation = Addressables.LoadAssetAsync<TObject>(key);
-            await loadOperation.WithCancellation(cancellationToken);
-            var asset = loadOperation.Result;
+            var (isCanceled, result) = await loadOperation.WithCancellation(cancellationToken).SuppressCancellationThrow();
+            if (isCanceled)
+            {
+                XiLogger.LogWarning($"Async Operating Canceled! key = {key}, cancellationToken.IsCancellationRequested = {cancellationToken.IsCancellationRequested}");
+                return (false, default, default);
+            }
+            var asset = result;
             if (currentActiveSceneOnly)
             {
                 string newSceneName = _gameSceneManager.CurrentActiveSceneName;
                 if (lastSceneName != newSceneName)
                 {
-                    XiLogger.LogWarning($"CurrentActiveSceneName changed, lastSceneName: {lastSceneName}, currentSceneName = {newSceneName}, key = {key}");
+                    XiLogger.LogWarning($"CurrentActiveSceneName changed! lastSceneName: {lastSceneName}, currentSceneName = {newSceneName}, key = {key}");
                     Release(loadOperation);
                     return (false, default, default);
                 }
@@ -46,7 +51,7 @@ namespace Xi.Framework
 
             if (cancellationToken.IsCancellationRequested)
             {
-                XiLogger.LogWarning($"CancellationToken IsCancellationRequested, key = {key}");
+                XiLogger.LogWarning($"CancellationToken IsCancellationRequested! key = {key}");
                 Release(loadOperation);
                 return (false, default, default);
             }
@@ -74,14 +79,20 @@ namespace Xi.Framework
             }
 
             var loadOperation = Addressables.InstantiateAsync(key, instantiateParameters);
-            await loadOperation.WithCancellation(cancellationToken);
-            var asset = loadOperation.Result;
+            var (isCanceled, result) = await loadOperation.WithCancellation(cancellationToken).SuppressCancellationThrow();
+            if (isCanceled)
+            {
+                XiLogger.LogWarning($"Async Operating Canceled! key = {key}, cancellationToken.IsCancellationRequested = {cancellationToken.IsCancellationRequested}");
+                Release(loadOperation);
+                return null;
+            }
+            var asset = result;
             if (currentActiveSceneOnly)
             {
                 string newSceneName = _gameSceneManager.CurrentActiveSceneName;
                 if (lastSceneName != newSceneName)
                 {
-                    XiLogger.LogWarning($"CurrentActiveSceneName changed, lastSceneName: {lastSceneName}, currentSceneName = {newSceneName}, key = {key}");
+                    XiLogger.LogWarning($"CurrentActiveSceneName changed! lastSceneName: {lastSceneName}, currentSceneName = {newSceneName}, key = {key}");
                     Release(loadOperation);
                     return null;
                 }
@@ -89,7 +100,7 @@ namespace Xi.Framework
 
             if (cancellationToken.IsCancellationRequested)
             {
-                XiLogger.LogWarning($"CancellationToken IsCancellationRequested, key = {key}");
+                XiLogger.LogWarning($"CancellationToken IsCancellationRequested! key = {key}");
                 Release(loadOperation);
                 return null;
             }
@@ -114,13 +125,13 @@ namespace Xi.Framework
             var go = await InstantiateGameObjectAsync(key, instantiateParameters, cancellationToken, currentActiveSceneOnly);
             if (!go)
             {
-                XiLogger.LogError($"GameObject is null, key = {key}");
+                XiLogger.LogError($"GameObject is null! key = {key}");
                 return null;
             }
 
             if (!go.TryGetComponent<TScript>(out var script))
             {
-                XiLogger.LogError($"No '{typeof(TScript)}' this component, key = {key}");
+                XiLogger.LogError($"No '{typeof(TScript)}' this component! key = {key}");
                 return null;
             }
 
