@@ -12,7 +12,8 @@ namespace Xi.Tools
         {
             Info,
             Warning,
-            Error
+            Error,
+            Exception,
         }
         private readonly string _logFolderPath;
         private readonly string _logFilePath;
@@ -98,18 +99,19 @@ namespace Xi.Tools
                 case LogType.Warning:
                     level = LogLevel.Warning;
                     _warningErrorLogQueue.Enqueue(new LogData(logString, level, stackTrace));
-                    _logQueue.Enqueue(new LogData(logString, level));
                     break;
                 case LogType.Error:
-                case LogType.Exception:
                     level = LogLevel.Error;
                     _warningErrorLogQueue.Enqueue(new LogData(logString, level, stackTrace));
-                    _logQueue.Enqueue(new LogData(logString, level));
+                    break;
+                case LogType.Exception:
+                    level = LogLevel.Exception;
+                    _warningErrorLogQueue.Enqueue(new LogData(logString, level, stackTrace));
                     break;
                 default:
-                    _logQueue.Enqueue(new LogData(logString, level));
                     break;
             }
+            _logQueue.Enqueue(new LogData(logString, level));
         }
 
         private void OnApplicationQuit()
