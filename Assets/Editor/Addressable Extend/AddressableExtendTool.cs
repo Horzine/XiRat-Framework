@@ -36,7 +36,7 @@ namespace Xi.EditorExtend
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
 
-            XiLogger.Log("Auto Grouping All Folder");
+            XiLogger.Log("Auto Grouping All Folder Finish");
         }
         private static void DoAutoGroupingFolder(string folderPath)
         {
@@ -113,7 +113,7 @@ namespace Xi.EditorExtend
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
 
-            XiLogger.Log("Rename Address By File Name");
+            XiLogger.Log("Rename Address By File Name Finish");
         }
 
         [MenuItem("Xi-Tool/Addressable Extend Tool/Auto Grouping Scene")]
@@ -145,7 +145,7 @@ namespace Xi.EditorExtend
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
 
-            XiLogger.Log("Auto Grouping Scene");
+            XiLogger.Log("Auto Grouping Scene Finish");
         }
     }
 }
