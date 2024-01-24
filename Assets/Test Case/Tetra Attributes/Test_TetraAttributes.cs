@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using TetraCreations.Attributes;
 using UnityEngine;
 
@@ -89,5 +90,54 @@ namespace Xi.TestCase
         public void Test_4() { }
         [Button(methodName: nameof(Test_5), label: "Test_5", row: "xxx", space: 20)]
         public void Test_5() { }
+
+        public enum TestDrawIfEnum
+        {
+            Enum_0,
+            Enum_1,
+            Enum_2,
+            Enum_3,
+        }
+
+        public TestDrawIfEnum drawIfEnum;
+
+        [DrawIf(nameof(drawIfEnum), TestDrawIfEnum.Enum_0, disablingType: DisablingType.ReadOnly)]
+        public int a_0;
+        [DrawIf(nameof(drawIfEnum), TestDrawIfEnum.Enum_1, disablingType: DisablingType.ReadOnly)]
+        public int a_1;
+        [DrawIf(nameof(drawIfEnum), TestDrawIfEnum.Enum_2, disablingType: DisablingType.ReadOnly)]
+        public int a_2;
+        [DrawIf(nameof(drawIfEnum), TestDrawIfEnum.Enum_3, disablingType: DisablingType.ReadOnly)]
+        public int a_3;
+
+        [Flags]
+        public enum TestFlag
+        {
+            Flag_1 = 1 << 1,
+            Flag_2 = 1 << 2,
+            Flag_3 = 1 << 3,
+        }
+
+        public TestFlag flayIfDraw;
+
+        // !!!! isFlag = true !!!!
+        [DrawIf(nameof(flayIfDraw), TestFlag.Flag_1, disablingType: DisablingType.ReadOnly, isFlag: true)]
+        public int f_1;
+        [DrawIf(nameof(flayIfDraw), TestFlag.Flag_2, disablingType: DisablingType.ReadOnly, isFlag: true)]
+        public int f_2;
+        [DrawIf(nameof(flayIfDraw), TestFlag.Flag_3, disablingType: DisablingType.ReadOnly, isFlag: true)]
+        public int f_3;
+
+        //// Not Support !!!
+        //[DrawIf(nameof(flayIfDraw), TestFlag.Flag_1 & TestFlag.Flag_3, disablingType: DisablingType.ReadOnly, isFlag: true)]
+        //public int f_1_or_3;
+
+        // This mean Flag_1 and Flag_3 together
+        [DrawIf(nameof(flayIfDraw), TestFlag.Flag_1 | TestFlag.Flag_3, disablingType: DisablingType.ReadOnly, isFlag: true)]
+        public int f_1_and_3;
+
+        // This mean "EveryThing"
+        [DrawIf(nameof(flayIfDraw), (((int)TestFlag.Flag_3) << 1) - 1, disablingType: DisablingType.ReadOnly, isFlag: true)]
+        public int f_EveryThing;
     }
 }

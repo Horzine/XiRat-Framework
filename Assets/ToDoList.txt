@@ -2,9 +2,9 @@
 2. 修饰器设计模式, 举例: Buff生效的修饰]
 3. 代码生成优化,使用模板文件并替换其中的 {xxx}, 多用单个函数的模板和分部类
 4. UpdateInvoker
-5. SuppressCancellationThrow 异步操作的取消异常抑制
 
-8. 枚举的 DrawIf
-9. EventCenter 改造, 可以改成 EventBus, 任意位置都可以收发
+
+
+
 
 11. Cenimachine 的虚拟相机通过切换 priority 实现

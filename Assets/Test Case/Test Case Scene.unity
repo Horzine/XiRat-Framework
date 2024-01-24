@@ -900,19 +900,11 @@ MonoBehaviour:
   Name: 
   Quantity: 0
   Speed: 0
-  Array: 00000000000000000000000000000000000000000000000000000000
+  Array: 
   Go: {fileID: 0}
-  GoList:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  GoList: []
   ReadOnlyFloat: 0
-  DisabledByDefault: 310
+  DisabledByDefault: 0
   ToggleToEdit: 0
   MinMaxSliderAttribute: {x: 0, y: 0}
   SnappedFloat: 1
@@ -924,6 +916,17 @@ MonoBehaviour:
     _enableDebug: 1
   Collider: {fileID: 0}
   Sprite: {fileID: 0}
+  drawIfEnum: 1
+  a_0: 0
+  a_1: 1
+  a_2: 2
+  a_3: 3
+  flayIfDraw: 10
+  f_1: 1
+  f_2: 2
+  f_3: 3
+  f_1_and_3: 4
+  f_EveryThing: 6
 --- !u!1 &286622187
 GameObject:
   m_ObjectHideFlags: 0

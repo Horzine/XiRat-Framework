@@ -14,6 +14,7 @@ namespace TetraCreations.Attributes
         public string ComparedPropertyName { get; private set; }
         public object ComparedValue { get; private set; }
         public DisablingType DisablingType { get; private set; }
+        public bool IsFlag { get; set; }
 
         #endregion
 
@@ -25,11 +26,12 @@ namespace TetraCreations.Attributes
         /// <param name="comparedValue">The value the property is being compared to.</param>
         /// <param name="disablingType">Determine if it will hide the field or make it read only if the condition is NOT met. 
         /// Defaulted to DisablingType.DontDraw.</param>
-        public DrawIfAttribute(string comparedPropertyName, object comparedValue, DisablingType disablingType = DisablingType.DontDraw)
+        public DrawIfAttribute(string comparedPropertyName, object comparedValue, DisablingType disablingType = DisablingType.DontDraw, bool isFlag = false)
         {
             ComparedPropertyName = comparedPropertyName;
             ComparedValue = comparedValue;
             DisablingType = disablingType;
+            IsFlag = isFlag;
         }
     }
 

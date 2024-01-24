@@ -64,7 +64,14 @@ namespace TetraCreations.Attributes.Editor
                 case "bool":
                     return _comparedField.boolValue.Equals(_drawIf.ComparedValue);
                 case "Enum":
-                    return (_comparedField.intValue & (int)_drawIf.ComparedValue) == (int)_drawIf.ComparedValue;
+                    if (!_drawIf.IsFlag)
+                    {
+                        return _comparedField.intValue.Equals((int)_drawIf.ComparedValue);
+                    }
+                    else
+                    {
+                        return (_comparedField.intValue & (int)_drawIf.ComparedValue) == (int)_drawIf.ComparedValue;
+                    }
                 default:
                     Debug.LogError("Error: " + _comparedField.type + " is not supported");
                     return true;
