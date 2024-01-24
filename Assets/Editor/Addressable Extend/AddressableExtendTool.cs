@@ -10,7 +10,7 @@ using Xi.Tools;
 
 namespace Xi.EditorExtend
 {
-    public class AddressableExtendTool
+    public static class AddressableExtendTool
     {
         private const string kShouldBuildSceneFolderPath = "Assets/Scenes/Build";
         private static readonly List<string> _autoGroupingFolders = new()
@@ -18,7 +18,7 @@ namespace Xi.EditorExtend
             "Assets/Prefabs/Ui",
         };
 
-        [MenuItem("Xi/Addressable Extend Tool/Auto Grouping Folder")]
+        [MenuItem("Xi-Tool/Addressable Extend Tool/Auto Grouping Folder")]
         public static void AutoGroupingAllFolder()
         {
             if (_autoGroupingFolders.Count == 0)
@@ -34,6 +34,8 @@ namespace Xi.EditorExtend
 
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
+
+            XiLogger.Log("Auto Grouping All Folder");
         }
         private static void DoAutoGroupingFolder(string folderPath)
         {
@@ -67,7 +69,7 @@ namespace Xi.EditorExtend
             }
         }
 
-        [MenuItem("Xi/Addressable Extend Tool/Rename Address by FileName")]
+        [MenuItem("Xi-Tool/Addressable Extend Tool/Rename Address by FileName")]
         public static void RenameAddressByFileName()
         {
             var settings = AddressableAssetSettingsDefaultObject.Settings;
@@ -95,9 +97,11 @@ namespace Xi.EditorExtend
 
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
+
+            XiLogger.Log("Rename Address By File Name");
         }
 
-        [MenuItem("Xi/Addressable Extend Tool/Auto Grouping Scene")]
+        [MenuItem("Xi-Tool/Addressable Extend Tool/Auto Grouping Scene")]
         public static void AutoGroupingScene()
         {
             var settings = AddressableAssetSettingsDefaultObject.Settings;
@@ -125,6 +129,8 @@ namespace Xi.EditorExtend
 
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
+
+            XiLogger.Log("Auto Grouping Scene");
         }
     }
 }

@@ -15,7 +15,7 @@ MonoBehaviour:
   m_GroupName: Ui-Common
   m_Data:
     m_SerializedData: []
-  m_GUID: 9e13bf1ee05ee3948b1e283dc2f55d71
+  m_GUID: 78647088d82a4c446aaef087982aca4b
   m_SerializeEntries:
   - m_GUID: 3e7f14984d028924a8a5326f38a100af
     m_Address: Ui-Common/Common

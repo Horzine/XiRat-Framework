@@ -5,7 +5,7 @@ using Xi.Tools;
 namespace Xi.EditorExtend
 {
     [InitializeOnLoad]
-    public class LocalTestModePlayButton : MonoBehaviour
+    public static class LocalTestModePlayButton
     {
         static LocalTestModePlayButton() => ToolbarExtender.LeftToolbarGUI.Add(OnToolbarGUI);
 

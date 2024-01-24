@@ -11,7 +11,7 @@ namespace Xi.Config.Editor
         private const string kGenerateConfigDataChanged = "GenerateConfigDataChanged";
         private static readonly string kSerializeDataFolderPath = ConfigUtils.kSerializeDataFolderPath;
 
-        [MenuItem("Xi/Config Tool/Generate ConfigData C#")]
+        [MenuItem("Xi-Tool/Config Tool/Generate ConfigData C#")]
         public static void GenerateAllConfigDataCSharp()
         {
             if (!Directory.Exists(kCSharpOutputFolder))
@@ -42,7 +42,7 @@ namespace Xi.Config.Editor
             EditorPrefs.SetBool(kGenerateConfigDataChanged, true);
         }
 
-        [MenuItem("Xi/Config Tool/Generate ConfigCollection")]
+        [MenuItem("Xi-Tool/Config Tool/Generate ConfigCollection")]
         public static void GenerateConfigCollection()
         {
             if (!Directory.Exists(kCSharpOutputFolder))
@@ -84,7 +84,7 @@ namespace Xi.Config.Editor
             }
         }
 
-        [MenuItem("Xi/Config Tool/Serialize All Data")]
+        [MenuItem("Xi-Tool/Config Tool/Serialize All Data")]
         public static void SerializeAllData()
         {
             if (!Directory.Exists(kTxtOriginFolder))
