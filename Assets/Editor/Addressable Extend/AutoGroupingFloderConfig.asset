@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 584d788bb95e7874890e58c7f87be0a5, type: 3}
+  m_Name: AutoGroupingFloderConfig
+  m_EditorClassIdentifier: 
+  floders:
+  - {fileID: 102900000, guid: a45a1af0c0137ac448d8f488f4b4f649, type: 3}

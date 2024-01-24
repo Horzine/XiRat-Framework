@@ -5,6 +5,7 @@ using UnityEditor;
 using UnityEditor.AddressableAssets;
 using UnityEditor.AddressableAssets.Settings;
 using UnityEditor.AddressableAssets.Settings.GroupSchemas;
+using UnityEngine;
 using Xi.Framework;
 using Xi.Tools;
 
@@ -13,21 +14,21 @@ namespace Xi.EditorExtend
     public static class AddressableExtendTool
     {
         private const string kShouldBuildSceneFolderPath = "Assets/Scenes/Build";
-        private static readonly List<string> _autoGroupingFolders = new()
-        {// Folder path here 
-            "Assets/Prefabs/Ui",
-        };
+        private const string kAutoGroupingFloderConfigPath = "Assets/Editor/Addressable Extend/AutoGroupingFloderConfig.asset";
 
         [MenuItem("Xi-Tool/Addressable Extend Tool/Auto Grouping Folder")]
         public static void AutoGroupingAllFolder()
         {
-            if (_autoGroupingFolders.Count == 0)
+            var config = LoadOrCreateConfig();
+            var autoGroupingFolders = config.GetFloderPaths();
+
+            if (autoGroupingFolders.Count == 0)
             {
-                XiLogger.LogWarning($"_autoGroupingFolders is Empty !");
+                XiLogger.LogWarning($"{nameof(AutoGroupingFloderConfig)}.floders is Empty !");
                 return;
             }
 
-            foreach (string item in _autoGroupingFolders)
+            foreach (string item in autoGroupingFolders)
             {
                 DoAutoGroupingFolder(item);
             }
@@ -67,6 +68,20 @@ namespace Xi.EditorExtend
                     settings.RemoveGroup(item);
                 }
             }
+        }
+        private static AutoGroupingFloderConfig LoadOrCreateConfig()
+        {
+            var config = AssetDatabase.LoadAssetAtPath<AutoGroupingFloderConfig>(kAutoGroupingFloderConfigPath);
+            if (config == null)
+            {
+                config = ScriptableObject.CreateInstance<AutoGroupingFloderConfig>();
+                AssetDatabase.CreateAsset(config, kAutoGroupingFloderConfigPath);
+                AssetDatabase.SaveAssets();
+                AssetDatabase.Refresh();
+                XiLogger.Log($"New AutoGroupingFloderConfig created at {kAutoGroupingFloderConfigPath}");
+            }
+
+            return config;
         }
 
         [MenuItem("Xi-Tool/Addressable Extend Tool/Rename Address by FileName")]
