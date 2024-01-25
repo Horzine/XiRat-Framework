@@ -8,15 +8,6 @@ namespace Xi.TestCase
     {
         private InputActionConfig _inputObj;
 
-        void InputActionConfig.IPlayerActions.OnFire(CallbackContext context)
-            => print($"{nameof(InputActionConfig.IPlayerActions.OnFire)}, Started: {context.started}, Performed: {context.performed}, Canceled: {context.canceled}");
-        void InputActionConfig.IPlayerActions.OnLook(CallbackContext context) { }//=> print(nameof(InputActionConfig.IPlayerActions.OnLook));
-        void InputActionConfig.IPlayerActions.OnMove(CallbackContext context) => print(nameof(InputActionConfig.IPlayerActions.OnMove));
-        void InputActionConfig.IPlayerActions.OnReload(CallbackContext context) => print(nameof(InputActionConfig.IPlayerActions.OnReload));
-        void InputActionConfig.IPlayerActions.OnTacticsReload(CallbackContext context)
-            => print($"{nameof(InputActionConfig.IPlayerActions.OnTacticsReload)}, Started: {context.started}, Performed: {context.performed}, Canceled: {context.canceled}");
-        void InputActionConfig.IHudActions.OnInteractive(CallbackContext context) { }
-
         private void Awake()
         {
             _inputObj = new InputActionConfig();
@@ -29,7 +20,17 @@ namespace Xi.TestCase
 
         private void OnDisable() => _inputObj.Disable();
 
+        void InputActionConfig.IPlayerActions.OnFire(CallbackContext context)
+            => print($"{nameof(InputActionConfig.IPlayerActions.OnFire)}, Started: {context.started}, Performed: {context.performed}, Canceled: {context.canceled}");
+        void InputActionConfig.IPlayerActions.OnLook(CallbackContext context) { }//=> print(nameof(InputActionConfig.IPlayerActions.OnLook));
+        void InputActionConfig.IPlayerActions.OnMove(CallbackContext context) => print(nameof(InputActionConfig.IPlayerActions.OnMove));
+        void InputActionConfig.IPlayerActions.OnReload(CallbackContext context) => print(nameof(InputActionConfig.IPlayerActions.OnReload));
+        void InputActionConfig.IHudActions.OnInteractive(CallbackContext context) { }
         void InputActionConfig.IPlayerActions.OnSprint(CallbackContext context)
             => print($"{nameof(InputActionConfig.IPlayerActions.OnSprint)}, Started: {context.started}, Performed: {context.performed}, Canceled: {context.canceled}");
+        void InputActionConfig.IPlayerActions.OnTacticalSprint(CallbackContext context) => throw new System.NotImplementedException();
+        void InputActionConfig.IPlayerActions.OnJump(CallbackContext context) => throw new System.NotImplementedException();
+        void InputActionConfig.IPlayerActions.OnCrouch(CallbackContext context) => throw new System.NotImplementedException();
+        void InputActionConfig.IPlayerActions.OnSlide(CallbackContext context) => throw new System.NotImplementedException();
     }
 }

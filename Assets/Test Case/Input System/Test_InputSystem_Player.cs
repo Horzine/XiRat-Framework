@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.InputSystem;
+using Xi.Config;
 using static UnityEngine.InputSystem.InputAction;
 
 namespace Xi.TestCase
@@ -24,11 +25,11 @@ namespace Xi.TestCase
 
         private void Start()
         {
-            // var playerInput = FindObjectOfType<PlayerInput>();
-            // var actions = playerInput.actions;
-            // var map = actions.FindActionMap("Player");
-            // var moveAction = map.FindAction("Move");
-            // moveAction.performed += TTTTT;
+            var playerInput = FindObjectOfType<PlayerInput>();
+            var actions = playerInput.actions;
+            var map = actions.FindActionMap("Player");
+            var moveAction = map.FindAction("Move");
+            moveAction.performed += TTTTT;
 
             // var inputObj = new InputActionConfig();
             // inputObj.Enable();

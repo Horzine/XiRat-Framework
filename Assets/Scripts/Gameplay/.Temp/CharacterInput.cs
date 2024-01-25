@@ -2,6 +2,20 @@
 
 namespace Xi.Gameplay.Character
 {
+/*
+CharacterInput 类
+这个类是角色输入控制器，处理玩家的输入操作。
+
+moveInput: 移动输入。
+rawLookInput: 视角输入。
+lookInput: 经过灵敏度等因素处理后的视角输入。
+sprintInput、tacticalSprintInput、jumpInput、crouchInput等：是否进行冲刺、战术冲刺、跳跃、蹲伏等输入。
+rawSprintInput、rawTacticalSprintInput：未经处理的冲刺、战术冲刺输入。
+Start(): 初始化输入操作。
+Update(): 更新输入状态，包括移动、视角等。
+AddInputListener(): 添加输入监听器。
+AddLookValue(Vector2 value): 添加视角偏移量。
+*/
     public class CharacterInput : MonoBehaviour
     {
         /// <summary>

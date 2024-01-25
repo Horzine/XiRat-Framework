@@ -66,18 +66,45 @@ namespace Xi.Config
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""TacticsReload"",
-                    ""type"": ""Button"",
-                    ""id"": ""0be0c4b8-062d-40d8-8b6c-7a05cb6edd98"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": ""MultiTap"",
-                    ""initialStateCheck"": false
-                },
-                {
                     ""name"": ""Sprint"",
                     ""type"": ""Button"",
                     ""id"": ""a9f09365-e5d9-42e8-b726-c68797a135aa"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""TacticalSprint"",
+                    ""type"": ""Button"",
+                    ""id"": ""de83e25f-8687-4ebc-bd62-a64d56f11f21"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Jump"",
+                    ""type"": ""Button"",
+                    ""id"": ""c4044dce-1647-4990-81ab-5d7ae55673d0"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Crouch"",
+                    ""type"": ""Button"",
+                    ""id"": ""53085cb1-f931-43a1-b0a6-27929ab1d929"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Slide"",
+                    ""type"": ""Button"",
+                    ""id"": ""5f0205b6-a463-49de-8ba8-85c0b6981ace"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -318,23 +345,56 @@ namespace Xi.Config
                 },
                 {
                     ""name"": """",
-                    ""id"": ""34201247-4aae-49d6-8aef-d8185a31a226"",
-                    ""path"": ""<Keyboard>/r"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""TacticsReload"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""943e900b-20d9-4c4b-a614-0471a28decf7"",
                     ""path"": ""<Keyboard>/leftShift"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Sprint"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""498c318e-9d0e-43de-b009-74ff198cfd1c"",
+                    ""path"": ""<Keyboard>/leftShift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""TacticalSprint"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5af37c02-6d78-45b7-b4a3-b37a99d9d44c"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Jump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9d43bc73-05ee-4c41-a4e9-7356efc0d9b8"",
+                    ""path"": ""<Keyboard>/ctrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Crouch"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e535c46e-b5d4-4159-a75d-3bfeafe55838"",
+                    ""path"": ""<Keyboard>/c"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Slide"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -954,8 +1014,11 @@ namespace Xi.Config
             m_Player_Look = m_Player.FindAction("Look", throwIfNotFound: true);
             m_Player_Fire = m_Player.FindAction("Fire", throwIfNotFound: true);
             m_Player_Reload = m_Player.FindAction("Reload", throwIfNotFound: true);
-            m_Player_TacticsReload = m_Player.FindAction("TacticsReload", throwIfNotFound: true);
             m_Player_Sprint = m_Player.FindAction("Sprint", throwIfNotFound: true);
+            m_Player_TacticalSprint = m_Player.FindAction("TacticalSprint", throwIfNotFound: true);
+            m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
+            m_Player_Crouch = m_Player.FindAction("Crouch", throwIfNotFound: true);
+            m_Player_Slide = m_Player.FindAction("Slide", throwIfNotFound: true);
             // Hud
             m_Hud = asset.FindActionMap("Hud", throwIfNotFound: true);
             m_Hud_Interactive = m_Hud.FindAction("Interactive", throwIfNotFound: true);
@@ -1034,8 +1097,11 @@ namespace Xi.Config
         private readonly InputAction m_Player_Look;
         private readonly InputAction m_Player_Fire;
         private readonly InputAction m_Player_Reload;
-        private readonly InputAction m_Player_TacticsReload;
         private readonly InputAction m_Player_Sprint;
+        private readonly InputAction m_Player_TacticalSprint;
+        private readonly InputAction m_Player_Jump;
+        private readonly InputAction m_Player_Crouch;
+        private readonly InputAction m_Player_Slide;
         public struct PlayerActions
         {
             private @InputActionConfig m_Wrapper;
@@ -1044,8 +1110,11 @@ namespace Xi.Config
             public InputAction @Look => m_Wrapper.m_Player_Look;
             public InputAction @Fire => m_Wrapper.m_Player_Fire;
             public InputAction @Reload => m_Wrapper.m_Player_Reload;
-            public InputAction @TacticsReload => m_Wrapper.m_Player_TacticsReload;
             public InputAction @Sprint => m_Wrapper.m_Player_Sprint;
+            public InputAction @TacticalSprint => m_Wrapper.m_Player_TacticalSprint;
+            public InputAction @Jump => m_Wrapper.m_Player_Jump;
+            public InputAction @Crouch => m_Wrapper.m_Player_Crouch;
+            public InputAction @Slide => m_Wrapper.m_Player_Slide;
             public InputActionMap Get() { return m_Wrapper.m_Player; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -1067,12 +1136,21 @@ namespace Xi.Config
                     @Reload.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnReload;
                     @Reload.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnReload;
                     @Reload.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnReload;
-                    @TacticsReload.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTacticsReload;
-                    @TacticsReload.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTacticsReload;
-                    @TacticsReload.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTacticsReload;
                     @Sprint.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSprint;
                     @Sprint.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSprint;
                     @Sprint.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSprint;
+                    @TacticalSprint.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTacticalSprint;
+                    @TacticalSprint.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTacticalSprint;
+                    @TacticalSprint.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTacticalSprint;
+                    @Jump.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnJump;
+                    @Jump.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnJump;
+                    @Jump.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnJump;
+                    @Crouch.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCrouch;
+                    @Crouch.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCrouch;
+                    @Crouch.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnCrouch;
+                    @Slide.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSlide;
+                    @Slide.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSlide;
+                    @Slide.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSlide;
                 }
                 m_Wrapper.m_PlayerActionsCallbackInterface = instance;
                 if (instance != null)
@@ -1089,12 +1167,21 @@ namespace Xi.Config
                     @Reload.started += instance.OnReload;
                     @Reload.performed += instance.OnReload;
                     @Reload.canceled += instance.OnReload;
-                    @TacticsReload.started += instance.OnTacticsReload;
-                    @TacticsReload.performed += instance.OnTacticsReload;
-                    @TacticsReload.canceled += instance.OnTacticsReload;
                     @Sprint.started += instance.OnSprint;
                     @Sprint.performed += instance.OnSprint;
                     @Sprint.canceled += instance.OnSprint;
+                    @TacticalSprint.started += instance.OnTacticalSprint;
+                    @TacticalSprint.performed += instance.OnTacticalSprint;
+                    @TacticalSprint.canceled += instance.OnTacticalSprint;
+                    @Jump.started += instance.OnJump;
+                    @Jump.performed += instance.OnJump;
+                    @Jump.canceled += instance.OnJump;
+                    @Crouch.started += instance.OnCrouch;
+                    @Crouch.performed += instance.OnCrouch;
+                    @Crouch.canceled += instance.OnCrouch;
+                    @Slide.started += instance.OnSlide;
+                    @Slide.performed += instance.OnSlide;
+                    @Slide.canceled += instance.OnSlide;
                 }
             }
         }
@@ -1288,8 +1375,11 @@ namespace Xi.Config
             void OnLook(InputAction.CallbackContext context);
             void OnFire(InputAction.CallbackContext context);
             void OnReload(InputAction.CallbackContext context);
-            void OnTacticsReload(InputAction.CallbackContext context);
             void OnSprint(InputAction.CallbackContext context);
+            void OnTacticalSprint(InputAction.CallbackContext context);
+            void OnJump(InputAction.CallbackContext context);
+            void OnCrouch(InputAction.CallbackContext context);
+            void OnSlide(InputAction.CallbackContext context);
         }
         public interface IHudActions
         {

@@ -1,10 +1,19 @@
 ﻿using UnityEngine;
 using UnityEngine.InputSystem;
+/*
+FirstPersonController 类
+这个类是第一人称控制器，实现了 ICharacterController 接口，控制角色的移动、旋转等行为。
 
+acceleration、walkSpeed、sprintSpeed 等：控制角色的加速度、行走速度、冲刺速度等属性。
+Update(): 更新角色的移动、旋转等行为。
+ProgressStepCycle(float speed): 更新角色的步行声音等。
+UpdateCameraRotation(): 更新相机的旋转。
+OnControllerColliderHit(ControllerColliderHit hit): 角色与其他碰撞体发生碰撞时的处理。
+ */
 namespace Xi.Gameplay.Character
 {
-    // [RequireComponent(typeof(CharacterManager))]
-    // [RequireComponent(typeof(CharacterInput))]
+    [RequireComponent(typeof(CharacterManager))]
+    [RequireComponent(typeof(CharacterInput))]
     [RequireComponent(typeof(CharacterController), typeof(PlayerInput))]
     public class FirstPersonController : MonoBehaviour, ICharacterController
     {
@@ -47,19 +56,19 @@ namespace Xi.Gameplay.Character
         public float minimumX = -90f;
         [Tooltip("Camera offset from the player.")]
         public Vector3 offset = new(0, -0.2f, 0);
-        [Tooltip("Changes camera sens dynamicly change with camera field of view.")]
+        [Tooltip("Changes camera sens dynamically change with camera field of view.")]
         public bool dynamicSensitivity = true;
         [Tooltip("Locks and reset cursor on start")]
         public bool lockCursor = true;
         public bool globalOrientation = false;
 
-        [Header("Audio")]
-        [Tooltip("(optional) Footsteps list to play a random sound clip from while walking.")]
-        public AudioProfile[] footstepsSFX;
-        [Tooltip("(optional) Sound of jumping.")]
-        public AudioProfile jumpSFX;
-        [Tooltip("(optional) Sound of landing.")]
-        public AudioProfile landSFX;
+        //[Header("Audio")]
+        //[Tooltip("(optional) Footsteps list to play a random sound clip from while walking.")]
+        //public AudioProfile[] footstepsSFX;
+        //[Tooltip("(optional) Sound of jumping.")]
+        //public AudioProfile jumpSFX;
+        //[Tooltip("(optional) Sound of landing.")]
+        //public AudioProfile landSFX;
 
         public CollisionFlags CollisionFlags { get; set; }
         public CharacterController controller { get; set; }
@@ -101,9 +110,9 @@ namespace Xi.Gameplay.Character
         private float stepCycle;
         private float nextStep;
 
-        private Audio footStepsAudio = new Audio();
-        private Audio jumpAudio = new Audio();
-        private Audio landAudio = new Audio();
+        //private Audio footStepsAudio = new Audio();
+        //private Audio jumpAudio = new Audio();
+        //private Audio landAudio = new Audio();
 
         protected virtual void Awake()
         {
@@ -113,9 +122,9 @@ namespace Xi.Gameplay.Character
             Actor = GetComponent<Actor>();
             cameraManager = GetComponentInChildren<CameraManager>();
 
-            footStepsAudio.Equip(gameObject, null);
-            jumpAudio.Equip(gameObject, jumpSFX);
-            landAudio.Equip(gameObject, landSFX);
+            //footStepsAudio.Equip(gameObject, null);
+            //jumpAudio.Equip(gameObject, jumpSFX);
+            //landAudio.Equip(gameObject, landSFX);
 
             if (GetComponentInChildren<Inventory>())
             {
@@ -222,13 +231,13 @@ namespace Xi.Gameplay.Character
                 if (CharacterInput.jumpInput)
                 {
                     //update velocity in order to jump
-                    velocity += (jumpHeight * Vector3.up) + (-Physics.gravity * gravity * stickToGroundForce);
+                    velocity += (jumpHeight * Vector3.up) + (gravity * stickToGroundForce * -Physics.gravity);
 
-                    //play jump sound
-                    if (jumpSFX)
-                    {
-                        jumpAudio.PlayOneShot(jumpSFX);
-                    }
+                    ////play jump sound
+                    //if (jumpSFX)
+                    //{
+                    //    jumpAudio.PlayOneShot(jumpSFX);
+                    //}
                 }
             }
             else if (velocity.magnitude * 3.5f < maxFallSpeed)
