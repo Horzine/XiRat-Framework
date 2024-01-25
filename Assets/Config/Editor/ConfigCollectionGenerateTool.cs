@@ -1,75 +1,51 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using UnityEditor;
+using UnityEngine;
 using Type = System.Type;
 
 namespace Xi.Config.Editor
 {
     public static class ConfigCollectionGenerateTool
     {
+        private const string kConfigCollectionTemplateTextPath = "Assets/Config/Editor/Template Text/ConfigCollectionTemplate.txt";
+
         public static void GenerateCode(string outputFilePath)
         {
-            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-            var assembly = Array.Find(assemblies, item => item.FullName.Contains("Config,"));
-            var types = assembly.GetTypes();
-            var configDataTypes = new List<Type>();
-            foreach (var type in types)
-            {
-                if (Attribute.IsDefined(type, typeof(ConfigDataTypeAttribute)))
-                {
-                    configDataTypes.Add(type);
-                }
-            }
-
-            string code = GenerateCollectionCode(Path.GetFileNameWithoutExtension(outputFilePath), configDataTypes);
+            var configDataTypes = GetConfigDataTypes();
+            string code = GenerateCollectionCode(configDataTypes);
             File.WriteAllText(outputFilePath, code);
             AssetDatabase.ImportAsset(outputFilePath);
         }
-        private static string GenerateCollectionCode(string className, List<Type> configDataTypes)
+
+        private static List<Type> GetConfigDataTypes()
         {
-            var sb = new StringBuilder();
-
-            sb.AppendLine(@$"//
-// This code is Generated. Do not modify !
-//
-using System.Collections.Generic;
-using System.IO;
-
-namespace Xi.Config
-{{
-    public class {className}
-    {{");
-
-            foreach (var item in configDataTypes)
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            var assembly = assemblies.FirstOrDefault(item => item.FullName.Contains("Config,"));
+            if (assembly == null)
             {
-                sb.AppendLine($"        public Dictionary<string, {item.Name}> All{item.Name} {{ get; }} = new();");
+                Debug.LogError("Config assembly not found.");
+                return new List<Type>();
             }
 
-            sb.AppendLine(@"
-        public void Init()
-        {");
-            sb.AppendLine("#if UNITY_EDITOR");
-            foreach (var item in configDataTypes)
-            {
-                sb.AppendLine($@"            ConfigUtils.ParseConfigData(File.ReadAllLines(Path.Combine(ConfigUtils.kTxtOriginFolder, ""{item.Name}{ConfigUtils.kOriginConfigFileSuffix}"")), All{item.Name});");
-            }
-
-            sb.AppendLine("#else");
-
-            foreach (var item in configDataTypes)
-            {
-                sb.AppendLine($@"            ConfigUtils.ParseConfigData(ConfigUtils.DeserializeFromFile(Path.Combine(ConfigUtils.kRuntimeLoadPath, ""{item.Name}""), ConfigUtils.kKey), All{item.Name});");
-            }
-
-            sb.AppendLine("#endif");
-            sb.AppendLine(@"
+            var types = assembly.GetTypes();
+            return types.Where(type => Attribute.IsDefined(type, typeof(ConfigDataTypeAttribute)))
+                        .ToList();
         }
-    }
-}");
 
-            return sb.ToString();
+        private static string GenerateCollectionCode(List<Type> configDataTypes)
+        {
+            string template = File.ReadAllText(kConfigCollectionTemplateTextPath);
+            var sb = new StringBuilder();
+            foreach (var type in configDataTypes)
+            {
+                var typeName = type.Name;
+                sb.AppendLine($"            ConfigUtils.LoadAndParseConfigDictionary(\"{typeName}\", ref {ConfigDataGenerateTool.ClassNameParseToFieldName(typeName)});");
+            }
+            return template.Replace("{CONTENT}", sb.ToString());
         }
     }
 }

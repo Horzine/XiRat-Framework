@@ -15,4 +15,10 @@ namespace Xi.Config
         public bool Value { get; private set; }
         public List<string> Description { get; private set; }
     }
+
+    public partial class ConfigCollection
+    {
+        public Dictionary<string, Unit> AllUnit => _unit;
+        private Dictionary<string, Unit> _unit;
+    }
 }

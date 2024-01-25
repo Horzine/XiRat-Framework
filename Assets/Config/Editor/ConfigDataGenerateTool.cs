@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
+using System.Linq;
 
 namespace Xi.Config.Editor
 {
     public static class ConfigDataGenerateTool
     {
-        private static readonly Dictionary<string, Type> typeCache = new();
+        private const string kClassTemplateTextPath = "Assets/Config/Editor/Template Text/ClassTemplate.txt";
 
         public static void GenerateCode(string filePath, string outputFilePath)
         {
@@ -17,32 +17,25 @@ namespace Xi.Config.Editor
             string code = GenerateClassCode(Path.GetFileNameWithoutExtension(outputFilePath), memberNames, memberTypes);
             File.WriteAllText(outputFilePath, code);
         }
+
         private static string GenerateClassCode(string className, string[] memberNames, string[] memberTypes)
         {
-            var sb = new StringBuilder();
-            sb.AppendLine(@"//
-// This code is Generated. Do not modify !
-//");
-            sb.AppendLine("using System.Collections.Generic;");
-            sb.AppendLine("using Newtonsoft.Json.Linq;\n");
-            sb.AppendLine($@"namespace Xi.Config
-{{
-    [{$"{nameof(ConfigDataTypeAttribute).Replace("Attribute", "")}"}]
-    public class {className} : IConfigData
-    {{
-        string IConfigData.Key => {memberNames[0]};");
+            string template = File.ReadAllText(kClassTemplateTextPath);
 
-            for (int i = 0; i < memberNames.Length; i++)
-            {
-                string memberName = memberNames[i];
-                string memberType = memberTypes[i];
+            template = template.Replace("{CLASS_NAME}", className)
+                               .Replace("{KEY_NAME}", memberNames[0])
+                               .Replace("{FIELD_NAME}", ClassNameParseToFieldName(className))
+                               .Replace("{PROPERTY}", GenerateProperties(memberNames, memberTypes));
 
-                sb.AppendLine($@"        public {memberType} {memberName} {{ get; private set; }}");
-            }
-
-            sb.AppendLine(@"    }
-}");
-            return sb.ToString();
+            return template;
         }
+
+        private static string GenerateProperties(string[] memberNames, string[] memberTypes)
+        {
+            var properties = memberNames.Zip(memberTypes, (name, type) => $"        public {type} {name} {{ get; private set; }}");
+            return string.Join(Environment.NewLine, properties);
+        }
+
+        public static string ClassNameParseToFieldName(string className) => $"_{char.ToLower(className[0])}{className[1..]}";
     }
 }

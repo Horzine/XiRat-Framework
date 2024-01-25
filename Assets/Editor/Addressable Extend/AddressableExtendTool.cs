@@ -16,6 +16,38 @@ namespace Xi.EditorExtend
         private const string kShouldBuildSceneFolderPath = "Assets/Scenes/Build";
         private const string kAutoGroupingFloderConfigPath = "Assets/Editor/Addressable Extend/AutoGroupingFloderConfig.asset";
 
+        [MenuItem("Xi-Tool/Addressable Extend Tool/Rename Address by FileName")]
+        public static void RenameAddressByFileName()
+        {
+            var settings = AddressableAssetSettingsDefaultObject.Settings;
+            if (settings != null)
+            {
+                var groups = settings.groups;
+                foreach (var group in groups)
+                {
+                    var entries = new List<AddressableAssetEntry>(group.entries);
+                    foreach (var entry in entries)
+                    {
+                        string oldAddress = entry.address;
+                        string newAddress = string.Concat(entry.parentGroup.name, "/", Path.GetFileNameWithoutExtension(entry.AssetPath));
+                        if (oldAddress != newAddress)
+                        {
+                            entry.SetAddress(newAddress, false);
+                            XiLogger.Log(string.Concat("Renamed Address: ", oldAddress, " to ", newAddress));
+                        }
+                    }
+                }
+
+                settings.SetDirty(AddressableAssetSettings.ModificationEvent.EntryMoved, null, true, true);
+
+            }
+
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+
+            XiLogger.Log("Rename Address By File Name Finish");
+        }
+
         [MenuItem("Xi-Tool/Addressable Extend Tool/Auto Grouping Folder")]
         public static void AutoGroupingAllFolder()
         {
@@ -82,38 +114,6 @@ namespace Xi.EditorExtend
             }
 
             return config;
-        }
-
-        [MenuItem("Xi-Tool/Addressable Extend Tool/Rename Address by FileName")]
-        public static void RenameAddressByFileName()
-        {
-            var settings = AddressableAssetSettingsDefaultObject.Settings;
-            if (settings != null)
-            {
-                var groups = settings.groups;
-                foreach (var group in groups)
-                {
-                    var entries = new List<AddressableAssetEntry>(group.entries);
-                    foreach (var entry in entries)
-                    {
-                        string oldAddress = entry.address;
-                        string newAddress = string.Concat(entry.parentGroup.name, "/", Path.GetFileNameWithoutExtension(entry.AssetPath));
-                        if (oldAddress != newAddress)
-                        {
-                            entry.SetAddress(newAddress, false);
-                            XiLogger.Log(string.Concat("Renamed Address: ", oldAddress, " to ", newAddress));
-                        }
-                    }
-                }
-
-                settings.SetDirty(AddressableAssetSettings.ModificationEvent.EntryMoved, null, true, true);
-
-            }
-
-            AssetDatabase.SaveAssets();
-            AssetDatabase.Refresh();
-
-            XiLogger.Log("Rename Address By File Name Finish");
         }
 
         [MenuItem("Xi-Tool/Addressable Extend Tool/Auto Grouping Scene")]

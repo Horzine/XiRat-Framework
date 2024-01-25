@@ -16,4 +16,10 @@ namespace Xi.Config
         public List<string> Description { get; private set; }
         public JObject Json { get; private set; }
     }
+
+    public partial class ConfigCollection
+    {
+        public Dictionary<string, Template> AllTemplate => _template;
+        private Dictionary<string, Template> _template;
+    }
 }

@@ -1,0 +1,21 @@
+﻿//
+// This code is Generated. Do not modify !
+//
+using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
+
+namespace Xi.Config
+{
+    [ConfigDataType]
+    public class {CLASS_NAME} : IConfigData
+    {
+        string IConfigData.Key => {KEY_NAME};
+{PROPERTY}
+    }
+
+    public partial class ConfigCollection
+    {
+        public Dictionary<string, {CLASS_NAME}> All{CLASS_NAME} => {FIELD_NAME};
+        private Dictionary<string, {CLASS_NAME}> {FIELD_NAME};
+    }
+}

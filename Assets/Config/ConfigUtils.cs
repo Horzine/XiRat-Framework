@@ -21,7 +21,7 @@ namespace Xi.Config
 
         private static readonly Dictionary<string, Type> typeCache = new();
 
-        public static void ParseConfigData<T>(string[] lines, Dictionary<string, T> resultDic) where T : IConfigData, new()
+        private static void ParseConfigData<T>(string[] lines, Dictionary<string, T> resultDic) where T : IConfigData, new()
         {
             string memberNamesLine = lines[1];
             string memberTypesLine = lines[2];
@@ -32,6 +32,8 @@ namespace Xi.Config
                 Debug.LogError($"[{nameof(ConfigUtils)}] <{nameof(ParseConfigData)}> ===> memberNames.Length != memberTypes.Length, memberNames = {memberNamesLine}, memberTypes = {memberTypesLine}");
                 return;
             }
+
+            resultDic = new();
 
             for (int i = 3; i < lines.Length; i++)
             {
@@ -56,7 +58,7 @@ namespace Xi.Config
                 resultDic.Add(unit.Key, unit);
             }
         }
-        public static void SetMemberValue(object obj, string memberName, string typeName, string value)
+        private static void SetMemberValue(object obj, string memberName, string typeName, string value)
         {
             var type = obj.GetType();
             var field = type.GetProperty(memberName);
@@ -98,7 +100,7 @@ namespace Xi.Config
 
             field.SetValue(obj, list);
         }
-        public static string GetTypeDefineName(string typeName)
+        private static string GetTypeDefineName(string typeName)
         {
             if (typeCache.ContainsKey(typeName))
             {
@@ -128,28 +130,7 @@ namespace Xi.Config
 
             return null;
         }
-        public static void SerializeToFile(string[] lines, string outputPath, string key)
-        {
-            if (key.Length < 32)
-            {
-                key = key.PadRight(32, 'X');
-            }
-
-            using var fs = new FileStream(outputPath, FileMode.Create);
-            using var aesAlg = new AesCryptoServiceProvider();
-            aesAlg.Key = Encoding.UTF8.GetBytes(key);
-            aesAlg.IV = new byte[16]; // Use zero IV for simplicity; in practice, generate a random IV for each encryption.
-
-            using var encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
-            using var cryptoStream = new CryptoStream(fs, encryptor, CryptoStreamMode.Write);
-            using var writer = new StreamWriter(cryptoStream, Encoding.UTF8);
-
-            foreach (string line in lines)
-            {
-                writer.WriteLine(line);
-            }
-        }
-        public static string[] DeserializeFromFile(string inputPath, string key)
+        private static string[] DeserializeFromFile(string inputPath, string key)
         {
             if (key.Length < 32)
             {
@@ -172,6 +153,38 @@ namespace Xi.Config
             }
 
             return decryptedLines.ToArray();
+        }
+        public static void SerializeToFile(string[] lines, string outputPath, string key)
+        {
+            if (key.Length < 32)
+            {
+                key = key.PadRight(32, 'X');
+            }
+
+            using var fs = new FileStream(outputPath, FileMode.Create);
+            using var aesAlg = new AesCryptoServiceProvider();
+            aesAlg.Key = Encoding.UTF8.GetBytes(key);
+            aesAlg.IV = new byte[16]; // Use zero IV for simplicity; in practice, generate a random IV for each encryption.
+
+            using var encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
+            using var cryptoStream = new CryptoStream(fs, encryptor, CryptoStreamMode.Write);
+            using var writer = new StreamWriter(cryptoStream, Encoding.UTF8);
+
+            foreach (string line in lines)
+            {
+                writer.WriteLine(line);
+            }
+        }
+
+        public static void LoadAndParseConfigDictionary<TConfigData>(string fileName, ref Dictionary<string, TConfigData> dataDic)
+            where TConfigData : IConfigData, new()
+        {
+#if UNITY_EDITOR
+            string[] lines = File.ReadAllLines(Path.Combine(kTxtOriginFolder, $"{fileName}{kOriginConfigFileSuffix}"));
+#else
+            string[] lines = DeserializeFromFile(Path.Combine(kRuntimeLoadPath, fileName), kKey);
+#endif
+            ParseConfigData(lines, dataDic);
         }
     }
 }

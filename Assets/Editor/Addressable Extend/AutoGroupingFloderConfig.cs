@@ -22,9 +22,8 @@ namespace Xi.EditorExtend
 
                     if (Directory.Exists(assetPath))
                     {
-                        // 是文件夹，执行你的后续代码
-                        XiLogger.Log("Folder Asset Path: " + assetPath);
                         result.Add(assetPath);
+                        XiLogger.Log("Folder Asset Path: " + assetPath);
                     }
                 }
             }
