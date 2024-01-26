@@ -32,6 +32,7 @@ namespace Xi.Framework
                 Player.Disable();
             }
         }
+
         public void SetInputEnable_UI(bool enable)
         {
             if (enable)
@@ -43,6 +44,7 @@ namespace Xi.Framework
                 Ui.Disable();
             }
         }
+
         public void SetInputEnable_Hud(bool enable)
         {
             if (enable)

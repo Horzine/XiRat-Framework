@@ -5736,6 +5736,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b966db1dbc5383c4ca51b726d604bb80, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  input:
+    <MoveInput>k__BackingField: {x: 0, y: 0}
+    <RawLookInput>k__BackingField: {x: 0, y: 0}
+    <CrouchInput>k__BackingField: 0
+    <TacticalSprintInput>k__BackingField: 0
+    <SprintInput>k__BackingField: 0
+    <JumpInput>k__BackingField: 0
+    <SlideInput>k__BackingField: 0
+    <LookInput>k__BackingField: {x: 0, y: 0}
 --- !u!1 &1890519020
 GameObject:
   m_ObjectHideFlags: 0
