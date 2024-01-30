@@ -14,7 +14,7 @@ namespace Xi.Gameplay.Character.Controller
         public PlayerInputHandlerMotor _motorInput;
         public PlayerInputHandlerCombat _cambotInput;
         private List<PlayerInputHandler> _playerInputHandlers;
-        private CharacterController _characterController;
+        private CharacterController _unityCharacterController;
 
         private Transform _selfTsf;
         private float defaultHeight;
@@ -39,12 +39,14 @@ namespace Xi.Gameplay.Character.Controller
         private Vector3 slopeDirection;
 
         private Transform Orientation { get; set; }
-        public CollisionFlags CollisionFlags { get; set; }
+        public CollisionFlags CollisionFlags { get; private set; }
+        public bool IsOnGround => _unityCharacterController.isGrounded;
+
 
         private void Awake()
         {
             _selfTsf = transform;
-            _characterController = GetComponent<CharacterController>();
+            _unityCharacterController = GetComponent<CharacterController>();
             _motorInput = new(InputManager.Instance.Player);
             _cambotInput = new(InputManager.Instance.Player);
 
@@ -62,9 +64,9 @@ namespace Xi.Gameplay.Character.Controller
 
             ResetSpeed();
 
-            defaultHeight = _characterController.height;
-            defaultstepOffset = _characterController.stepOffset;
-            _characterController.skinWidth = _characterController.radius / 10;
+            defaultHeight = _unityCharacterController.height;
+            defaultstepOffset = _unityCharacterController.stepOffset;
+            _unityCharacterController.skinWidth = _unityCharacterController.radius / 10;
         }
 
         private void OnEnable()
@@ -95,11 +97,11 @@ namespace Xi.Gameplay.Character.Controller
                 ((SlopeDirection() * _motorInput.MoveInput.y) + (Orientation.right * _motorInput.MoveInput.x)).normalized * speed, ref desiredVelocityRef, _config.acceleration);
 
             //set controller height according to if player is crouching
-            _characterController.height = _motorInput.CrouchInput ?
-             Mathf.Lerp(_characterController.height, _config.crouchHeight, Time.deltaTime * 15) :
-             Mathf.Lerp(_characterController.height, defaultHeight, Time.deltaTime * 15);
+            _unityCharacterController.height = _motorInput.CrouchInput ?
+             Mathf.Lerp(_unityCharacterController.height, _config.crouchHeight, Time.deltaTime * 15) :
+             Mathf.Lerp(_unityCharacterController.height, defaultHeight, Time.deltaTime * 15);
 
-            _characterController.stepOffset = !_characterController.isGrounded || OnSlope() ? 0 : defaultstepOffset;
+            _unityCharacterController.stepOffset = !_unityCharacterController.isGrounded || OnSlope() ? 0 : defaultstepOffset;
 
             //copy desiredVelocity x, z with normalized values
             velocity.x = desiredVelocity.x;
@@ -120,27 +122,17 @@ namespace Xi.Gameplay.Character.Controller
                 speed = outputTacticalSprintSpeed;
             }
 
-            //update gravity and jumping
-            if (_characterController.isGrounded)
+            if (IsOnGround)
             {
-                //set small force when grounded in order to stabilize the controller
-                velocity.y = Physics.gravity.y * _config.stickToGroundForce;
-
-                //check jumping input
-                if (_motorInput.JumpInput)
-                {
-                    //update velocity in order to jump
-                    velocity += (_config.jumpHeight * Vector3.up) + (_config.gravity * _config.stickToGroundForce * -Physics.gravity);
-                }
+                HandleOnGround();
             }
-            else if (velocity.magnitude * 3.5f < _config.maxFallSpeed)
+            else
             {
-                //add gravity
-                velocity += _config.gravity * Time.deltaTime * Physics.gravity;
+                HandleOnAir();
             }
 
             //move and update CollisionFlags in order to check if collision is coming from above to center or bottom
-            CollisionFlags = _characterController.Move(velocity * Time.deltaTime);
+            CollisionFlags = _unityCharacterController.Move(velocity * Time.deltaTime);
 
             //move camera according to controller height
             // _Camera.position = transform.position + ((transform.up * _characterController.height / 2) + _config.offset);
@@ -148,6 +140,24 @@ namespace Xi.Gameplay.Character.Controller
             //rotate camera
             // UpdateCameraRotation();
             // TacticalSprintAmount = _motorInput.TacticalSprintInput ? 1 : 0;
+        }
+
+        private void HandleOnGround()
+        {
+            velocity.y = _config.stickToGroundForce * Physics.gravity.y;
+
+            if (_motorInput.JumpInput)
+            {
+                velocity.y = _config.jumpHeight * -Physics.gravity.y;
+            }
+        }
+
+        private void HandleOnAir()
+        {
+            if (Mathf.Abs(velocity.y) < _config.maxFallSpeed)
+            {
+                velocity += Time.deltaTime * _config.gravityMultiply * Physics.gravity;
+            }
         }
 
         private void DoUpdateInputHandlers()
@@ -178,10 +188,10 @@ namespace Xi.Gameplay.Character.Controller
 
         public bool OnMaxedAngleSlope()
         {
-            if (_characterController.isGrounded && Physics.Raycast(transform.position, Vector3.down, out var hit, _characterController.height))
+            if (_unityCharacterController.isGrounded && Physics.Raycast(transform.position, Vector3.down, out var hit, _unityCharacterController.height))
             {
                 slopeDirection = hit.normal;
-                return Vector3.Angle(slopeDirection, Vector3.up) > _characterController.slopeLimit;
+                return Vector3.Angle(slopeDirection, Vector3.up) > _unityCharacterController.slopeLimit;
             }
 
             return false;
@@ -190,7 +200,7 @@ namespace Xi.Gameplay.Character.Controller
         public Vector3 SlopeDirection()
         {
             //setup a raycast from position to down at the bottom of the collider
-            if (Physics.Raycast(Orientation.position, Vector3.down, out var slopeHit, (_characterController.height / 2) + 0.1f))
+            if (Physics.Raycast(Orientation.position, Vector3.down, out var slopeHit, (_unityCharacterController.height / 2) + 0.1f))
             {
                 //get the direction result according to slope normal
                 return Vector3.ProjectOnPlane(Orientation.forward, slopeHit.normal);
@@ -232,14 +242,14 @@ namespace Xi.Gameplay.Character.Controller
         [Tooltip("Player height while crouching.")]
         public float crouchHeight = 1.5f;
         [Tooltip("Force multiplier from Physics/Gravity when grounded")]
-        public float stickToGroundForce = 0.5f;
+        public float stickToGroundForce = 1;
         [Tooltip("Force multiplier from Physics/Gravity.")]
-        public float gravity = 1;
+        public float gravityMultiply = 1;
         [Tooltip("The amount of force applied when jumping.")]
-        public float jumpHeight = 6;
+        public float jumpHeight = 3;
         [Tooltip("Camera offset from the player.")]
         public Vector3 offset = new(0, -0.2f, 0);
         [Tooltip("Max speed the player can reach while falling")]
-        public float maxFallSpeed = 350;
+        public float maxFallSpeed = 100;
     }
 }
