@@ -16,7 +16,7 @@ namespace Cinemachine.Examples
         /// </summary>
         [Tooltip("Radius of the look at target.")]
         public float m_LookAtTargetRadius = 1;
-    
+
         /// <summary>
         /// Minimum distance to have fading out effect in front of the camera.
         /// </summary>
@@ -36,15 +36,14 @@ namespace Cinemachine.Examples
         [Tooltip("If true, MaxDistance will be set to " +
             "distance between this virtual camera and LookAt target minus LookAtTargetRadius.")]
         public bool m_SetToCameraToLookAtDistance = false;
-    
+
         /// <summary>
         /// Material using the FadeOut shader.
         /// </summary>
         [Tooltip("Material using the FadeOut shader.")]
         public Material m_FadeOutMaterial;
-
-        static readonly int k_MaxDistanceID = Shader.PropertyToID("_MaxDistance");
-        static readonly int k_MinDistanceID = Shader.PropertyToID("_MinDistance");
+        private static readonly int k_MaxDistanceID = Shader.PropertyToID("_MaxDistance");
+        private static readonly int k_MinDistanceID = Shader.PropertyToID("_MinDistance");
 
         /// <summary>
         /// Updates FadeOut shader on the specified FadeOutMaterial.
@@ -59,9 +58,12 @@ namespace Cinemachine.Examples
         {
             if (stage == CinemachineCore.Stage.Finalize)
             {
-                if (m_FadeOutMaterial == null || !m_FadeOutMaterial.HasProperty(k_MaxDistanceID) || 
-                    !m_FadeOutMaterial.HasProperty(k_MinDistanceID)) return;
-            
+                if (m_FadeOutMaterial == null || !m_FadeOutMaterial.HasProperty(k_MaxDistanceID) ||
+                    !m_FadeOutMaterial.HasProperty(k_MinDistanceID))
+                {
+                    return;
+                }
+
                 if (m_SetToCameraToLookAtDistance && vcam.LookAt != null)
                 {
                     m_MaxDistance = Vector3.Distance(vcam.transform.position, vcam.LookAt.position) - m_LookAtTargetRadius;
@@ -71,8 +73,8 @@ namespace Cinemachine.Examples
                 m_FadeOutMaterial.SetFloat(k_MinDistanceID, m_MinDistance);
             }
         }
-        
-        void OnValidate()
+
+        private void OnValidate()
         {
             m_LookAtTargetRadius = Math.Max(0, m_LookAtTargetRadius);
             m_MinDistance = Math.Max(0, m_MinDistance);

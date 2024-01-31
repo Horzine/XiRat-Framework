@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using UnityEngine.InputSystem;
-using Xi.Config;
 using static UnityEngine.InputSystem.InputAction;
 
 namespace Xi.TestCase

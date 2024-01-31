@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using Cinemachine;
+﻿using Cinemachine;
+using UnityEngine;
 
 public class MoveAimTarget : MonoBehaviour
 {
@@ -42,10 +42,14 @@ public class MoveAimTarget : MonoBehaviour
         CollideAgainst = 1;
         IgnoreTag = string.Empty;
 
-        VerticalAxis = new AxisState(-70, 70, false, false, 10f, 0.1f, 0.1f, "Mouse Y", true);
-        VerticalAxis.m_SpeedMode = AxisState.SpeedMode.InputValueGain;
-        HorizontalAxis = new AxisState(-180, 180, true, false, 10f, 0.1f, 0.1f, "Mouse X", false);
-        HorizontalAxis.m_SpeedMode = AxisState.SpeedMode.InputValueGain;
+        VerticalAxis = new AxisState(-70, 70, false, false, 10f, 0.1f, 0.1f, "Mouse Y", true)
+        {
+            m_SpeedMode = AxisState.SpeedMode.InputValueGain
+        };
+        HorizontalAxis = new AxisState(-180, 180, true, false, 10f, 0.1f, 0.1f, "Mouse X", false)
+        {
+            m_SpeedMode = AxisState.SpeedMode.InputValueGain
+        };
     }
 
     private void OnEnable()
@@ -54,15 +58,14 @@ public class MoveAimTarget : MonoBehaviour
         CinemachineCore.CameraUpdatedEvent.AddListener(PlaceReticle);
     }
 
-    private void OnDisable()
-    {
-        CinemachineCore.CameraUpdatedEvent.RemoveListener(PlaceReticle);
-    }
+    private void OnDisable() => CinemachineCore.CameraUpdatedEvent.RemoveListener(PlaceReticle);
 
     private void Update()
     {
         if (Brain == null)
+        {
             return;
+        }
 
         HorizontalAxis.Update(Time.deltaTime);
         VerticalAxis.Update(Time.deltaTime);
@@ -74,7 +77,7 @@ public class MoveAimTarget : MonoBehaviour
     {
         var rot = Quaternion.Euler(VerticalAxis.Value, HorizontalAxis.Value, 0);
         var camPos = Brain.CurrentCameraState.RawPosition;
-        transform.position = GetProjectedAimTarget(camPos + rot * Vector3.forward, camPos);
+        transform.position = GetProjectedAimTarget(camPos + (rot * Vector3.forward), camPos);
     }
 
     private Vector3 GetProjectedAimTarget(Vector3 pos, Vector3 camPos)
@@ -83,11 +86,12 @@ public class MoveAimTarget : MonoBehaviour
         var fwd = (pos - camPos).normalized;
         pos += AimDistance * fwd;
         if (CollideAgainst != 0 && RaycastIgnoreTag(
-            new Ray(origin, fwd), 
-            out RaycastHit hitInfo, AimDistance, CollideAgainst))
+            new Ray(origin, fwd),
+            out var hitInfo, AimDistance, CollideAgainst))
         {
             pos = hitInfo.point;
         }
+
         return pos;
     }
 
@@ -107,30 +111,43 @@ public class MoveAimTarget : MonoBehaviour
             }
 
             // Ignore the hit.  Pull ray origin forward in front of obstacle
-            Ray inverseRay = new Ray(ray.GetPoint(rayLength), -ray.direction);
+            var inverseRay = new Ray(ray.GetPoint(rayLength), -ray.direction);
             if (!hitInfo.collider.Raycast(inverseRay, out hitInfo, rayLength))
+            {
                 break;
+            }
+
             float deltaExtraDistance = rayLength - (hitInfo.distance - PrecisionSlush);
             if (deltaExtraDistance < PrecisionSlush)
+            {
                 break;
+            }
+
             extraDistance += deltaExtraDistance;
             rayLength = hitInfo.distance - PrecisionSlush;
             if (rayLength < PrecisionSlush)
+            {
                 break;
+            }
+
             ray.origin = inverseRay.GetPoint(rayLength);
         }
+
         return false;
     }
 
-    void PlaceReticle(CinemachineBrain brain)
+    private void PlaceReticle(CinemachineBrain brain)
     {
         if (brain == null || brain != Brain || ReticleImage == null || brain.OutputCamera == null)
+        {
             return;
+        }
+
         PlaceTarget(); // To eliminate judder
-        CameraState state = brain.CurrentCameraState;
+        var state = brain.CurrentCameraState;
         var cam = brain.OutputCamera;
         var r = cam.WorldToScreenPoint(transform.position);
-        var r2 = new Vector2(r.x - cam.pixelWidth * 0.5f, r.y - cam.pixelHeight * 0.5f);
+        var r2 = new Vector2(r.x - (cam.pixelWidth * 0.5f), r.y - (cam.pixelHeight * 0.5f));
         ReticleImage.anchoredPosition = r2;
     }
 }

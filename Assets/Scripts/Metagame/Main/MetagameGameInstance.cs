@@ -2,7 +2,6 @@
 using Xi.Framework;
 using Xi.Gameplay.Main;
 using Xi.Metagame.Client;
-using Xi.Metagame.Client.System;
 using Xi.Metagame.Scene;
 using Xi.Tools;
 

@@ -18,7 +18,7 @@ public class CharacterMovementNoCamera : MonoBehaviour
     private float currentStrafeSpeed;
     private Vector2 currentVelocity;
 
-    void OnEnable()
+    private void OnEnable()
     {
         anim = GetComponent<Animator>();
         currentVelocity = Vector2.zero;
@@ -26,10 +26,10 @@ public class CharacterMovementNoCamera : MonoBehaviour
         isSprinting = false;
     }
 
-    void FixedUpdate()
+    private void FixedUpdate()
     {
         var input = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-        var speed = input.y;
+        float speed = input.y;
         speed = Mathf.Clamp(speed, -1f, 1f);
         speed = Mathf.SmoothDamp(anim.GetFloat("Speed"), speed, ref currentVelocity.y, Damping);
         anim.SetFloat("Speed", speed);
@@ -54,7 +54,10 @@ public class CharacterMovementNoCamera : MonoBehaviour
             rot = InvisibleCameraOrigin.localRotation.eulerAngles;
             rot.x -= rotInput.y * TurnSpeed;
             if (rot.x > 180)
+            {
                 rot.x -= 360;
+            }
+
             rot.x = Mathf.Clamp(rot.x, VerticalRotMin, VerticalRotMax);
             InvisibleCameraOrigin.localRotation = Quaternion.Euler(rot);
         }

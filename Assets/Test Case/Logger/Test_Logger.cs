@@ -7,10 +7,7 @@ namespace Xi.TestCase
     {
         //private void Update() => XiLogger.LogError(Time.time.ToString(), this);
 
-        private void Start()
-        {
-            Test_Exception();
-        }
+        private void Start() => Test_Exception();
 
         private void Test_Exception()
         {

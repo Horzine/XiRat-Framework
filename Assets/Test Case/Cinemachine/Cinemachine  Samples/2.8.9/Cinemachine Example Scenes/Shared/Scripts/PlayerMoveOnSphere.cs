@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Cinemachine.Utility;
+﻿using Cinemachine.Utility;
 using UnityEngine;
 
 public class PlayerMoveOnSphere : MonoBehaviour
@@ -12,9 +10,9 @@ public class PlayerMoveOnSphere : MonoBehaviour
     public float rotationDamping = 0.5f;
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        Vector3 input = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+        var input = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
         if (input.magnitude > 0)
         {
             input = Camera.main.transform.rotation * input;
@@ -24,7 +22,7 @@ public class PlayerMoveOnSphere : MonoBehaviour
                 if (rotatePlayer)
                 {
                     float t = Cinemachine.Utility.Damper.Damp(1, rotationDamping, Time.deltaTime);
-                    Quaternion newRotation = Quaternion.LookRotation(input.normalized, transform.up);
+                    var newRotation = Quaternion.LookRotation(input.normalized, transform.up);
                     transform.rotation = Quaternion.Slerp(transform.rotation, newRotation, t);
                 }
             }
@@ -36,7 +34,7 @@ public class PlayerMoveOnSphere : MonoBehaviour
             var up = transform.position - Sphere.transform.position;
             up = up.normalized;
             var fwd = transform.forward.ProjectOntoPlane(up);
-            transform.position = Sphere.transform.position + up * (Sphere.radius + transform.localScale.y / 2);
+            transform.position = Sphere.transform.position + (up * (Sphere.radius + (transform.localScale.y / 2)));
             transform.rotation = Quaternion.LookRotation(fwd, up);
         }
     }

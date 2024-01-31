@@ -27,14 +27,12 @@ namespace Xi.Framework
         private CancellationTokenSource _saveCancellationTokenSource;
         public event Action OnDestroyAction;
 
-        public void OnCreate()
-        {
+        public void OnCreate() =>
 #if UNITY_EDITOR
             FilePath = Path.Combine(Application.streamingAssetsPath, kSaveFileName);
 #else
             FilePath = Path.Combine(Application.persistentDataPath, kSaveFileName);
 #endif
-        }
 
         public async UniTask InitAsync() => await LoadAsync();
 
@@ -159,6 +157,7 @@ namespace Xi.Framework
             {
                 XiLogger.LogException(e);
             }
+
             OnDestroyAction = null;
         }
     }

@@ -37,6 +37,7 @@ namespace Xi.Framework
                 XiLogger.LogWarning($"Async Operating Canceled! key = {key}, cancellationToken.IsCancellationRequested = {cancellationToken.IsCancellationRequested}");
                 return (false, default, default);
             }
+
             var asset = result;
             if (currentActiveSceneOnly)
             {
@@ -86,6 +87,7 @@ namespace Xi.Framework
                 Release(loadOperation);
                 return null;
             }
+
             var asset = result;
             if (currentActiveSceneOnly)
             {

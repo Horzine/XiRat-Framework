@@ -52,6 +52,5 @@ namespace Xi.Framework
             CurrentGameInstance = newGameInstance;
             RunGC();
         }
-
     }
 }

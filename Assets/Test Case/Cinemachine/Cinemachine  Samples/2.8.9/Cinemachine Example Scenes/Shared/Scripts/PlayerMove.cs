@@ -15,10 +15,9 @@ public class PlayerMove : MonoBehaviour
 
     public Action SpaceAction;
     public Action EnterAction;
-
-    Vector3 m_currentVleocity;
-    float m_currentJumpSpeed;
-    float m_restY;
+    private Vector3 m_currentVleocity;
+    private float m_currentJumpSpeed;
+    private float m_restY;
 
     private void Reset()
     {
@@ -39,26 +38,26 @@ public class PlayerMove : MonoBehaviour
         SpaceAction += Jump;
     }
 
-    void Update()
+    private void Update()
     {
-        Vector3 fwd;
-        switch (InputForward)
+        var fwd = InputForward switch
         {
-            case ForwardMode.Camera: fwd = Camera.main.transform.forward; break;
-            case ForwardMode.Player: fwd = transform.forward; break;
-            case ForwardMode.World: default: fwd = Vector3.forward; break;
-        }
-
+            ForwardMode.Camera => Camera.main.transform.forward,
+            ForwardMode.Player => transform.forward,
+            _ => Vector3.forward,
+        };
         fwd.y = 0;
         fwd = fwd.normalized;
         if (fwd.sqrMagnitude < 0.01f)
+        {
             return;
+        }
 
-        Quaternion inputFrame = Quaternion.LookRotation(fwd, Vector3.up);
-        Vector3 input = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+        var inputFrame = Quaternion.LookRotation(fwd, Vector3.up);
+        var input = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
         input = inputFrame * input;
 
-        var dt = Time.deltaTime;
+        float dt = Time.deltaTime;
         var desiredVelocity = input * Speed;
         var deltaVel = desiredVelocity - m_currentVleocity;
         m_currentVleocity += Damper.Damp(deltaVel, VelocityDamping, dt);
@@ -68,14 +67,17 @@ public class PlayerMove : MonoBehaviour
         {
             var qA = transform.rotation;
             var qB = Quaternion.LookRotation(
-                (InputForward == ForwardMode.Player && Vector3.Dot(fwd, m_currentVleocity) < 0) 
+                (InputForward == ForwardMode.Player && Vector3.Dot(fwd, m_currentVleocity) < 0)
                     ? -m_currentVleocity : m_currentVleocity);
             transform.rotation = Quaternion.Slerp(qA, qB, Damper.Damp(1, VelocityDamping, dt));
         }
 
         // Process jump
         if (m_currentJumpSpeed != 0)
+        {
             m_currentJumpSpeed -= 10 * dt;
+        }
+
         var p = transform.position;
         p.y += m_currentJumpSpeed * dt;
         if (p.y < m_restY)
@@ -83,13 +85,19 @@ public class PlayerMove : MonoBehaviour
             p.y = m_restY;
             m_currentJumpSpeed = 0;
         }
+
         transform.position = p;
 
         if (Input.GetKeyDown(KeyCode.Space) && SpaceAction != null)
+        {
             SpaceAction();
+        }
+
         if (Input.GetKeyDown(KeyCode.Return) && EnterAction != null)
+        {
             EnterAction();
+        }
     }
 
-    public void Jump() { m_currentJumpSpeed += 10 * JumpTime * 0.5f; }
+    public void Jump() => m_currentJumpSpeed += 10 * JumpTime * 0.5f;
 }

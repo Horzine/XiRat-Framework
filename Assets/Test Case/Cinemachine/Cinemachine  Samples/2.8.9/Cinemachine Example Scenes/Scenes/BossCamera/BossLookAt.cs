@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 /// <summary>
@@ -13,7 +12,7 @@ public class BossLookAt : MonoBehaviour
     [Tooltip("Lock the camera's Z rotation to this value (in angles)")]
     public float m_RotationZ = 0;
 
-    void Update()
+    private void Update()
     {
         transform.LookAt(m_LookAt);
         var euler = transform.rotation.eulerAngles;

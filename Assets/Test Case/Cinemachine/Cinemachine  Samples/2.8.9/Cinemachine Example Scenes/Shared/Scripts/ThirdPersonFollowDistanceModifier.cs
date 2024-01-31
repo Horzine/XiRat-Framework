@@ -19,19 +19,18 @@ namespace Cinemachine.Examples
             + "X axis of graph go from 0 to 1, Y axis is the multiplier that will be "
             + "applied to the base distance.")]
         public AnimationCurve DistanceScale;
+        private Cinemachine3rdPersonFollow TpsFollow;
+        private Transform FollowTarget;
+        private float BaseDistance;
 
-        Cinemachine3rdPersonFollow TpsFollow;
-        Transform FollowTarget;
-        float BaseDistance;
-
-        void Reset()
+        private void Reset()
         {
             MinAngle = -90;
             MaxAngle = 90;
             DistanceScale = AnimationCurve.EaseInOut(0, 0.5f, 1, 2);
         }
 
-        void OnEnable()
+        private void OnEnable()
         {
             var vcam = GetComponentInChildren<CinemachineVirtualCamera>();
             if (vcam != null)
@@ -42,25 +41,32 @@ namespace Cinemachine.Examples
 
             // Store the base camera distance, for consistent scaling
             if (TpsFollow != null)
+            {
                 BaseDistance = TpsFollow.CameraDistance;
+            }
         }
 
-        void OnDisable()
+        private void OnDisable()
         {
             // Restore the TPS base camera distance
             if (TpsFollow != null)
+            {
                 TpsFollow.CameraDistance = BaseDistance;
+            }
         }
 
-        void Update()
+        private void Update()
         {
             // Scale the TPS camera distance
             if (TpsFollow != null && FollowTarget != null)
             {
-                var xRot = FollowTarget.rotation.eulerAngles.x;
+                float xRot = FollowTarget.rotation.eulerAngles.x;
                 if (xRot > 180)
+                {
                     xRot -= 360;
-                var t = (xRot - MinAngle) / (MaxAngle - MinAngle);
+                }
+
+                float t = (xRot - MinAngle) / (MaxAngle - MinAngle);
                 TpsFollow.CameraDistance = BaseDistance * DistanceScale.Evaluate(t);
             }
         }

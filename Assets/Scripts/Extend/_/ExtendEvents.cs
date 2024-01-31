@@ -63,7 +63,7 @@ public static class ExtendEvents
 
     public class Publisher<K> where K : IConvertible
     {
-        private Dictionary<K, ForeachMutableList<Delegate>> EventMap = new();
+        private readonly Dictionary<K, ForeachMutableList<Delegate>> EventMap = new();
 
         private ForeachMutableList<Delegate> _GetOrAddCallList(K name)
         {
@@ -309,7 +309,7 @@ public static class ExtendEvents
     public class SPublisher<K> : Xi.Framework.Singleton<SPublisher<K>> where K : IConvertible
     {
 
-        private Publisher<K> Publisher = new();
+        private readonly Publisher<K> Publisher = new();
 
         public void Subscribe(K name, Action cb) => Publisher.Subscribe(name, cb);
 

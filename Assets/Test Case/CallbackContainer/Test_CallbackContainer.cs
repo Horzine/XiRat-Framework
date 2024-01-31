@@ -26,9 +26,9 @@ namespace Xi.TestCase
     public class Test_CallbackContainer : MonoBehaviour
     {
 
-        private CallbackContainer<ICallbackEntry_My> _callbackContainer = new();
+        private readonly CallbackContainer<ICallbackEntry_My> _callbackContainer = new();
 
-        private HashSet<WeakReference<Test_CallbackContainer_Entry>> _set = new();
+        private readonly HashSet<WeakReference<Test_CallbackContainer_Entry>> _set = new();
         private Test_CallbackContainer_Entry _entry;
 
         private async void Start()

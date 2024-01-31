@@ -113,6 +113,7 @@ namespace Xi.Tools
                 default:
                     break;
             }
+
             _logQueue.Enqueue(new LogData(logString, level));
         }
 

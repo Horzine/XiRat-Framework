@@ -8,9 +8,9 @@ public class SimpleElevator : MonoBehaviour
     public float minY, maxY;
     public float speed;
     public bool on;
+    private float m_Direction = 1;
 
-    float m_Direction = 1;
-    void FixedUpdate()
+    private void FixedUpdate()
     {
         if (transform.position.y < minY)
         {
@@ -21,7 +21,7 @@ public class SimpleElevator : MonoBehaviour
         {
             m_Direction = -1f;
         }
-        
+
         var dir = new Vector3(0, m_Direction * speed * Time.fixedDeltaTime, 0);
         transform.position += dir;
     }

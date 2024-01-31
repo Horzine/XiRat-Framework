@@ -57,7 +57,7 @@ public static class ExtendGameObject
         private void OnDestroy() => gameObject._UnSubscribeAll();
     }
 
-    private static Dictionary<GameObject, ExtendEvents.Publisher<string>> sGameObjectEventMap = new();
+    private static readonly Dictionary<GameObject, ExtendEvents.Publisher<string>> sGameObjectEventMap = new();
 
     private static ExtendEvents.Publisher<string> _GetOrAddPublisher(this GameObject obj)
     {

@@ -3,45 +3,48 @@
 namespace Cinemachine.Examples
 {
 
-[AddComponentMenu("")] // Don't display in add component menu
-public class ActivateCameraWithDistance : MonoBehaviour
-{
-    public GameObject objectToCheck;
-    public float distanceToObject = 15f;
-    public CinemachineVirtualCameraBase initialActiveCam;
-    public CinemachineVirtualCameraBase switchCameraTo;
-    
-    CinemachineBrain brain;
-
-    void Start()
+    [AddComponentMenu("")] // Don't display in add component menu
+    public class ActivateCameraWithDistance : MonoBehaviour
     {
-        brain = Camera.main.GetComponent<CinemachineBrain>();
-        SwitchCam(initialActiveCam);
-    }
+        public GameObject objectToCheck;
+        public float distanceToObject = 15f;
+        public CinemachineVirtualCameraBase initialActiveCam;
+        public CinemachineVirtualCameraBase switchCameraTo;
+        private CinemachineBrain brain;
 
-    // Update is called once per frame
-    void Update()
-    {
-        if (objectToCheck && switchCameraTo)
+        private void Start()
         {
-            if (Vector3.Distance(transform.position, objectToCheck.transform.position) < distanceToObject)
+            brain = Camera.main.GetComponent<CinemachineBrain>();
+            SwitchCam(initialActiveCam);
+        }
+
+        // Update is called once per frame
+        private void Update()
+        {
+            if (objectToCheck && switchCameraTo)
             {
-                SwitchCam(switchCameraTo);
+                if (Vector3.Distance(transform.position, objectToCheck.transform.position) < distanceToObject)
+                {
+                    SwitchCam(switchCameraTo);
+                }
+                else
+                {
+                    SwitchCam(initialActiveCam);
+                }
             }
-            else
+        }
+
+        public void SwitchCam(CinemachineVirtualCameraBase vcam)
+        {
+            if (brain == null || vcam == null)
             {
-                SwitchCam(initialActiveCam);
+                return;
+            }
+
+            if (brain.ActiveVirtualCamera != (ICinemachineCamera)vcam)
+            {
+                vcam.MoveToTopOfPrioritySubqueue();
             }
         }
     }
-
-    public void SwitchCam(CinemachineVirtualCameraBase vcam)
-    {
-        if (brain == null || vcam == null)
-            return;
-        if (brain.ActiveVirtualCamera != (ICinemachineCamera)vcam)
-            vcam.MoveToTopOfPrioritySubqueue();      
-    }
-}
-
 }

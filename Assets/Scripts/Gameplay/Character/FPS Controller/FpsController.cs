@@ -42,7 +42,6 @@ namespace Xi.Gameplay.Character.Controller
         public CollisionFlags CollisionFlags { get; private set; }
         public bool IsOnGround => _unityCharacterController.isGrounded;
 
-
         private void Awake()
         {
             _selfTsf = transform;

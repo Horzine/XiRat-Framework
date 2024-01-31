@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class SpawnInCircle : MonoBehaviour
 {
@@ -9,7 +7,7 @@ public class SpawnInCircle : MonoBehaviour
     public float Amount = 10000;
     public bool DoIt;
 
-    void Update()
+    private void Update()
     {
         if (DoIt && Prefab != null)
         {
@@ -17,12 +15,13 @@ public class SpawnInCircle : MonoBehaviour
             var rot = transform.rotation;
             for (int i = 0; i < Amount; ++i)
             {
-                var a = Random.Range(0, 360);
+                int a = Random.Range(0, 360);
                 var pos = new Vector3(Mathf.Cos(a), 0, Mathf.Sin(a));
-                pos = rootPos + pos * Mathf.Sqrt(Random.Range(0.0f, 1.0f)) * Radius;
+                pos = rootPos + (pos * Mathf.Sqrt(Random.Range(0.0f, 1.0f)) * Radius);
                 Instantiate(Prefab, pos, rot, transform.parent);
             }
         }
+
         DoIt = false;
     }
 }
