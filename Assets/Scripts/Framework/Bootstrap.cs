@@ -26,6 +26,7 @@ namespace Xi.Framework
 
         private static async UniTask OnInitAllManagerAccomplish()
         {
+            XiLogger.CallMark();
             await UniTask.Yield();
             GameMain.Instance.ChangeSceneToMetagameScene().Forget();
         }
@@ -43,6 +44,7 @@ namespace Xi.Framework
 
         public static async UniTask InitAllManager()
         {
+            XiLogger.SetupByMainThread();
             _loggerTool ??= new AdvancedLoggerTool();
 
             await ConfigManager.Instance.InitAsync();
