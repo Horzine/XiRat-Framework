@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using Xi.Gameplay.Main;
@@ -44,7 +45,7 @@ namespace Xi.Framework
 
         public static async UniTask InitAllManager()
         {
-            XiLogger.SetupByMainThread();
+            XiLogger.SetupMainThread(Thread.CurrentThread);
             _loggerTool ??= new AdvancedLoggerTool();
 
             await ConfigManager.Instance.InitAsync();
