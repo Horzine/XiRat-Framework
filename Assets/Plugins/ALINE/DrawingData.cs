@@ -1442,10 +1442,17 @@ namespace Drawing {
 			// rendering many frames when outside of play mode.
 			cameraRenderingRange.start = Mathf.Max(cameraRenderingRange.start, lastTickVersion2 + 1);
 
+#if UNITY_2023_1_OR_NEWER
+			bool skipDueToWireframe = false;
+			commandBuffer.SetWireframe(false);
+#else
 			// If GL.wireframe is enabled (the Wireframe mode in the scene view settings)
 			// then I have found no way to draw gizmos in a good way.
 			// It's best to disable gizmos altogether to avoid drawing wireframe versions of gizmo meshes.
-			if (!GL.wireframe) {
+			bool skipDueToWireframe = GL.wireframe;
+#endif
+
+			if (!skipDueToWireframe) {
 				MarkerBuildMeshes.Begin();
 				processedData.SubmitMeshes(this, cam, cameraRenderingRange.start, allowGizmos, allowCameraDefault);
 				MarkerBuildMeshes.End();

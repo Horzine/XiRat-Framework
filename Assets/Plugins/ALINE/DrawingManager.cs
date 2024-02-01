@@ -655,6 +655,8 @@ namespace Drawing {
 		/// The DrawGizmos method on the object will be called every frame until it is destroyed (assuming there are cameras with gizmos enabled).
 		/// </summary>
 		public static void Register (IDrawGizmos item) {
+			// TODO: Use reflection to figure out if this type actually overrides the DrawGizmos method
+			// If it does not then we can skip adding it to the list.
 			gizmoDrawers.Add(item);
 			gizmoDrawerTypes.Add(item.GetType());
 		}
@@ -673,9 +675,7 @@ namespace Drawing {
 		/// </summary>
 		/// <param name="renderInGame">If true, this builder will be rendered in standalone games and in the editor even if gizmos are disabled.
 		/// If false, it will only be rendered in the editor when gizmos are enabled.</param>
-		public static CommandBuilder GetBuilder (bool renderInGame = false) {
-			return instance.gizmos.GetBuilder(renderInGame);
-		}
+		public static CommandBuilder GetBuilder(bool renderInGame = false) => instance.gizmos.GetBuilder(renderInGame);
 
 		/// <summary>
 		/// Get an empty builder for queuing drawing commands.
@@ -685,9 +685,7 @@ namespace Drawing {
 		/// <param name="redrawScope">Scope for this command builder. See #GetRedrawScope.</param>
 		/// <param name="renderInGame">If true, this builder will be rendered in standalone games and in the editor even if gizmos are disabled.
 		/// If false, it will only be rendered in the editor when gizmos are enabled.</param>
-		public static CommandBuilder GetBuilder (RedrawScope redrawScope, bool renderInGame = false) {
-			return instance.gizmos.GetBuilder(redrawScope, renderInGame);
-		}
+		public static CommandBuilder GetBuilder(RedrawScope redrawScope, bool renderInGame = false) => instance.gizmos.GetBuilder(redrawScope, renderInGame);
 
 		/// <summary>
 		/// Get an empty builder for queuing drawing commands.
@@ -698,9 +696,7 @@ namespace Drawing {
 		/// <param name="hasher">Hash of whatever inputs you used to generate the drawing data.</param>
 		/// <param name="redrawScope">Scope for this command builder. See #GetRedrawScope.</param>
 		/// <param name="renderInGame">If true, this builder will be rendered in standalone games and in the editor even if gizmos are disabled.</param>
-		public static CommandBuilder GetBuilder (DrawingData.Hasher hasher, RedrawScope redrawScope = default, bool renderInGame = false) {
-			return instance.gizmos.GetBuilder(hasher, redrawScope, renderInGame);
-		}
+		public static CommandBuilder GetBuilder(DrawingData.Hasher hasher, RedrawScope redrawScope = default, bool renderInGame = false) => instance.gizmos.GetBuilder(hasher, redrawScope, renderInGame);
 
 		/// <summary>
 		/// A scope which can be used to draw things over multiple frames.

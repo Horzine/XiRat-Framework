@@ -646,6 +646,32 @@ namespace Drawing {
 		}
 
 		/// <summary>
+		/// \copydocref{Drawing::CommandBuilder::DashedLine(float3,float3,float,float)}
+		/// Warning: This method cannot be used inside of Burst jobs. See job-system (view in online documentation for working links) instead.
+		/// </summary>
+		[BurstDiscard]
+		public static void DashedLine (float3 a, float3 b, float dash, float gap) {
+#if UNITY_EDITOR
+			DrawingManager.Init();
+			builder.DashedLine(a, b, dash, gap);
+#endif
+		}
+
+
+		/// <summary>
+		/// \copydocref{Drawing::CommandBuilder::DashedPolyline(List&lt;Vector3&gt;,float,float)}
+		/// Warning: This method cannot be used inside of Burst jobs. See job-system (view in online documentation for working links) instead.
+		/// </summary>
+		[BurstDiscard]
+		public static void DashedPolyline (List<Vector3> points, float dash, float gap) {
+#if UNITY_EDITOR
+			DrawingManager.Init();
+			builder.DashedPolyline(points, dash, gap);
+#endif
+		}
+
+
+		/// <summary>
 		/// \copydocref{Drawing::CommandBuilder::WireBox(float3,float3)}
 		/// Warning: This method cannot be used inside of Burst jobs. See job-system (view in online documentation for working links) instead.
 		/// </summary>
@@ -1774,6 +1800,32 @@ namespace Drawing {
 			builder.Polyline(points, color);
 #endif
 		}
+
+		/// <summary>
+		/// \copydocref{Drawing::CommandBuilder::DashedLine(float3,float3,float,float,Color)}
+		/// Warning: This method cannot be used inside of Burst jobs. See job-system (view in online documentation for working links) instead.
+		/// </summary>
+		[BurstDiscard]
+		public static void DashedLine (float3 a, float3 b, float dash, float gap, Color color) {
+#if UNITY_EDITOR
+			DrawingManager.Init();
+			builder.DashedLine(a, b, dash, gap, color);
+#endif
+		}
+
+
+		/// <summary>
+		/// \copydocref{Drawing::CommandBuilder::DashedPolyline(List&lt;Vector3&gt;,float,float,Color)}
+		/// Warning: This method cannot be used inside of Burst jobs. See job-system (view in online documentation for working links) instead.
+		/// </summary>
+		[BurstDiscard]
+		public static void DashedPolyline (List<Vector3> points, float dash, float gap, Color color) {
+#if UNITY_EDITOR
+			DrawingManager.Init();
+			builder.DashedPolyline(points, dash, gap, color);
+#endif
+		}
+
 
 		/// <summary>
 		/// \copydocref{Drawing::CommandBuilder::WireBox(float3,float3,Color)}

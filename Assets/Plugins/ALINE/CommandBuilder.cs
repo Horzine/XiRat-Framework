@@ -1498,6 +1498,15 @@ namespace Drawing {
 		/// <summary>Determines the symbol to use for <see cref="PolylineWithSymbol"/></summary>
 		public enum SymbolDecoration {
 			/// <summary>
+			/// No symbol.
+			///
+			/// Space will still be reserved, but no symbol will be drawn.
+			/// Can be used to draw dashed lines.
+			///
+			/// [Open online documentation to see images]
+			/// </summary>
+			None,
+			/// <summary>
 			/// An arrowhead symbol.
 			///
 			/// [Open online documentation to see images]
@@ -1512,6 +1521,62 @@ namespace Drawing {
 		}
 
 		/// <summary>
+		/// Draws a dashed line between two points.
+		///
+		/// <code>
+		/// Draw.DashedPolyline(points, 0.1f, 0.1f, color);
+		/// </code>
+		///
+		/// [Open online documentation to see images]
+		///
+		/// Warning: An individual line segment is drawn for each dash. This means that performance may suffer if you make the dash + gap distance too small.
+		/// But for most use cases the performance is nothing to worry about.
+		///
+		/// See: <see cref="DashedPolyline"/>
+		/// See: <see cref="PolylineWithSymbol"/>
+		/// </summary>
+		public void DashedLine (float3 a, float3 b, float dash, float gap) {
+			var p = new PolylineWithSymbol(SymbolDecoration.None, gap, 0, dash + gap);
+			p.MoveTo(ref this, a);
+			p.MoveTo(ref this, b);
+		}
+
+		/// <summary>
+		/// Draws a dashed line through a sequence of points.
+		///
+		/// <code>
+		/// Draw.DashedPolyline(points, 0.1f, 0.1f, color);
+		/// </code>
+		///
+		/// [Open online documentation to see images]
+		///
+		/// Warning: An individual line segment is drawn for each dash. This means that performance may suffer if you make the dash + gap distance too small.
+		/// But for most use cases the performance is nothing to worry about.
+		///
+		/// If you have a different collection type, or you do not have the points in a collection at all, then you can use the <see cref="PolylineWithSymbol"/> struct directly.
+		///
+		/// <code>
+		/// using (Draw.WithColor(color)) {
+		///     var dash = 0.1f;
+		///     var gap = 0.1f;
+		///     var p = new CommandBuilder.PolylineWithSymbol(CommandBuilder.SymbolDecoration.None, gap, 0, dash + gap);
+		///     for (int i = 0; i < points.Count; i++) {
+		///         p.MoveTo(ref Draw.editor, points[i]);
+		///     }
+		/// }
+		/// </code>
+		///
+		/// See: <see cref="DashedLine"/>
+		/// See: <see cref="PolylineWithSymbol"/>
+		/// </summary>
+		public void DashedPolyline (List<Vector3> points, float dash, float gap) {
+			var p = new PolylineWithSymbol(SymbolDecoration.None, gap, 0, dash + gap);
+			for (int i = 0; i < points.Count; i++) {
+				p.MoveTo(ref this, points[i]);
+			}
+		}
+
+		/// <summary>
 		/// Helper for drawing a polyline with symbols at regular intervals.
 		///
 		/// <code>
@@ -1521,6 +1586,21 @@ namespace Drawing {
 		/// </code>
 		///
 		/// [Open online documentation to see images]
+		///
+		/// [Open online documentation to see images]
+		///
+		/// You can also draw a dashed line using this struct, but for common cases you can use the <see cref="DashedPolyline"/> helper function instead.
+		///
+		/// <code>
+		/// using (Draw.WithColor(color)) {
+		///     var dash = 0.1f;
+		///     var gap = 0.1f;
+		///     var p = new CommandBuilder.PolylineWithSymbol(CommandBuilder.SymbolDecoration.None, gap, 0, dash + gap);
+		///     for (int i = 0; i < points.Count; i++) {
+		///         p.MoveTo(ref Draw.editor, points[i]);
+		///     }
+		/// }
+		/// </code>
 		///
 		/// [Open online documentation to see images]
 		/// </summary>
@@ -1577,9 +1657,12 @@ namespace Drawing {
 				var len = math.length(next - prev);
 				var invLen = math.rcp(len);
 				var dir = next - prev;
-				var up = math.normalizesafe(math.cross(dir, math.cross(dir, new float3(0, 1, 0))));
-				if (math.all(up == 0f)) {
-					up = new float3(0, 0, 1);
+				float3 up = default;
+				if (symbol != SymbolDecoration.None) {
+					up = math.normalizesafe(math.cross(dir, math.cross(dir, new float3(0, 1, 0))));
+					if (math.all(up == 0f)) {
+						up = new float3(0, 0, 1);
+					}
 				}
 				if (reverseSymbols) dir = -dir;
 				if (offset > 0 && !odd) {
@@ -1595,6 +1678,8 @@ namespace Drawing {
 					} else {
 						var p = math.lerp(prev, next, (offset + symbolOffset) * invLen);
 						switch (symbol) {
+						case SymbolDecoration.None:
+							break;
 						case SymbolDecoration.ArrowHead:
 							draw.Arrowhead(p, dir, up, symbolSize);
 							break;

@@ -326,6 +326,25 @@ namespace Drawing {
 		public void Polyline (NativeArray<float3> points, Color color) {
 			Polyline(points, false, color);
 		}
+		/// <summary>\copydocref{DashedLine(float3,float3,float,float)}</summary>
+		public void DashedLine (float3 a, float3 b, float dash, float gap, Color color) {
+			PushColor(color);
+			var p = new PolylineWithSymbol(SymbolDecoration.None, gap, 0, dash + gap);
+			p.MoveTo(ref this, a);
+			p.MoveTo(ref this, b);
+			PopColor();
+		}
+
+		/// <summary>\copydocref{DashedPolyline(List&lt;Vector3&gt;,float,float)}</summary>
+		public void DashedPolyline (List<Vector3> points, float dash, float gap, Color color) {
+			PushColor(color);
+			var p = new PolylineWithSymbol(SymbolDecoration.None, gap, 0, dash + gap);
+			for (int i = 0; i < points.Count; i++) {
+				p.MoveTo(ref this, points[i]);
+			}
+			PopColor();
+		}
+
 		/// <summary>\copydocref{WireBox(float3,float3)}</summary>
 		/// <param name="color">Color of the object</param>
 		public void WireBox (float3 center, float3 size, Color color) {

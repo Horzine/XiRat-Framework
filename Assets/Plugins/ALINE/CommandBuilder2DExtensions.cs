@@ -191,6 +191,21 @@ namespace Drawing {
 		public void Polyline (NativeArray<float3> points, bool cycle = false) {
 			draw.Polyline(points, cycle);
 		}
+		/// <summary>\copydocref{CommandBuilder.DashedLine(float3,float3,float,float)}</summary>
+		public void DashedLine (float3 a, float3 b, float dash, float gap) {
+			draw.DashedLine(a, b, dash, gap);
+		}
+
+		/// <summary>\copydocref{CommandBuilder.DashedLine(float3,float3,float,float)}</summary>
+		public void DashedLine (float2 a, float2 b, float dash, float gap) {
+			DashedLine(xy ? new float3(a, 0) : new float3(a.x, 0, a.y), xy ? new float3(b, 0) : new float3(b.x, 0, b.y), dash, gap);
+		}
+
+		/// <summary>\copydocref{CommandBuilder.DashedPolyline(List&lt;Vector3&gt;,float,float)}</summary>
+		public void DashedPolyline (List<Vector3> points, float dash, float gap) {
+			draw.DashedPolyline(points, dash, gap);
+		}
+
 		/// <summary>\copydocref{CommandBuilder.Cross(float3,float)}</summary>
 		public void Cross (float3 position, float size = 1) {
 			draw.Cross(position, size);
@@ -517,6 +532,21 @@ namespace Drawing {
 		public void Polyline (NativeArray<float3> points, Color color) {
 			Polyline(points, false, color);
 		}
+		/// <summary>\copydocref{DashedLine(float3,float3,float,float)}</summary>
+		public void DashedLine (float3 a, float3 b, float dash, float gap, Color color) {
+			draw.DashedLine(a, b, dash, gap, color);
+		}
+
+		/// <summary>\copydocref{DashedLine(float2,float2,float,float)}</summary>
+		public void DashedLine (float2 a, float2 b, float dash, float gap, Color color) {
+			DashedLine(xy ? new float3(a, 0) : new float3(a.x, 0, a.y), xy ? new float3(b, 0) : new float3(b.x, 0, b.y), dash, gap, color);
+		}
+
+		/// <summary>\copydocref{DashedPolyline(List&lt;Vector3&gt;,float,float)}</summary>
+		public void DashedPolyline (List<Vector3> points, float dash, float gap, Color color) {
+			draw.DashedPolyline(points, dash, gap, color);
+		}
+
 		/// <summary>\copydocref{Cross(float3,float)}</summary>
 		public void Cross (float3 position, float size, Color color) {
 			draw.Cross(position, size, color);

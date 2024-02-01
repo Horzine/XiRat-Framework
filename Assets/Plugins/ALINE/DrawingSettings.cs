@@ -1,4 +1,4 @@
-﻿#pragma warning disable CS0169, CS0414 // The field 'DrawingSettings.version' is never used
+#pragma warning disable CS0169, CS0414 // The field 'DrawingSettings.version' is never used
 using UnityEditor;
 using UnityEngine;
 
@@ -9,8 +9,8 @@ namespace Drawing {
 		public const string SettingsName = "ALINE";
 		public const string SettingsPath = "Assets/Plugins/ALINE/Settings/Resources/" + SettingsName + ".asset";
 
-        /// <summary>Stores ALINE project settings</summary>
-        [System.Serializable]
+		/// <summary>Stores ALINE project settings</summary>
+		[System.Serializable]
 		public class Settings {
 			/// <summary>Opacity of lines when in front of objects</summary>
 			public float lineOpacity = 1.0f;

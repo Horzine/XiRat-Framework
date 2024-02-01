@@ -1,3 +1,11 @@
+## 1.7.1 (2023-11-14)
+    - Removed "com.unity.jobs" as a dependency, since it has been replaced by the collections package.
+    - Added support for rendering gizmos while the scene view is in wireframe mode. This is supported in Unity 2023.1 and up.
+    - Added \reflink{CommandBuilder.DashedLine}.
+        \shadowimage{rendered/dashedline.png}
+    - Added \reflink{CommandBuilder.DashedPolyline}.
+        \shadowimage{rendered/dashedpolyline.png}
+
 ## 1.7.0 (2023-10-17)
     - Added a much more ergonomic way to draw using 2D coordinates. Take a look at \ref 2d-drawing for more info.
         \shadowimage{rendered/drawxy@8x.png}
