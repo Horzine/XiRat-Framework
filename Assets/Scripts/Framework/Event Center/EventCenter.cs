@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using Cysharp.Threading.Tasks;
 using Xi.Tools;
@@ -11,12 +11,12 @@ namespace Xi.Framework
     public interface IEventListener { }
     public interface IEventListener<T> : IEventListener where T : CustomEvent
     {
-        internal void OnEventFire(T customEvent);
+        public void OnEventFire(T customEvent);
     }
     public class EventCenter : MonoSingleton<EventCenter>, ISingleton
     {
-        private readonly Dictionary<Type, CustomEventDefine.EventId> _eventMapping = new();
-        private readonly Dictionary<int, List<IEventListener>> _allEvent = new();
+        private readonly Dictionary<string, CustomEventDefine.EventId> _eventMapping = CustomEventDefine.Map;
+        private Dictionary<int, List<IEventListener>> _allEvent;
         private readonly List<Action> _pendingOperations = new();
         private bool _isFiringEvent = false;
 
@@ -25,27 +25,9 @@ namespace Xi.Framework
 
         }
 
-        public async UniTask InitAsync(IReadOnlyCollection<Type> allTypeInAssembly)
+        public async UniTask InitAsync()
         {
-            foreach (var type in allTypeInAssembly)
-            {
-                if (typeof(CustomEvent).IsAssignableFrom(type))
-                {
-                    var customEvent = type.GetCustomAttribute<CustomEventAttribute>();
-                    if (customEvent != null)
-                    {
-                        var eventId = customEvent.EventId;
-                        if (_eventMapping.ContainsKey(type))
-                        {
-                            throw new ArgumentException($"Type '{type.Name}' is already mapped to EventId '{_eventMapping[type]}'");
-                        }
-
-                        _eventMapping[type] = eventId;
-                        _allEvent[(int)eventId] = new List<IEventListener>();
-                    }
-                }
-            }
-
+            _allEvent = _eventMapping.ToDictionary((item) => (int)item.Value, (itme) => new List<IEventListener>());
             await UniTask.Yield();
         }
 
@@ -58,12 +40,13 @@ namespace Xi.Framework
             }
 
             var eventType = typeof(T);
-            if (!_eventMapping.ContainsKey(eventType))
+            string fullName = eventType.FullName;
+            if (!_eventMapping.ContainsKey(eventType.FullName))
             {
-                throw new ArgumentException($"EventType '{eventType.Name}' is not mapped to any EventId");
+                throw new ArgumentException($"EventType '{fullName}' is not mapped to any EventId");
             }
 
-            var eventId = _eventMapping[eventType];
+            var eventId = _eventMapping[fullName];
             var listeners = _allEvent[(int)eventId];
 
             if (!listeners.Contains(listener))
@@ -85,12 +68,13 @@ namespace Xi.Framework
             }
 
             var eventType = typeof(T);
-            if (!_eventMapping.ContainsKey(eventType))
+            string fullName = eventType.FullName;
+            if (!_eventMapping.ContainsKey(fullName))
             {
-                throw new ArgumentException($"EventType '{eventType.Name}' is not mapped to any EventId");
+                throw new ArgumentException($"EventType '{fullName}' is not mapped to any EventId");
             }
 
-            var eventId = _eventMapping[eventType];
+            var eventId = _eventMapping[fullName];
             var listeners = _allEvent[(int)eventId];
 
             if (listeners.Contains(listener))
@@ -105,18 +89,19 @@ namespace Xi.Framework
 
         public void FireEvent<T>(T customEvent) where T : CustomEvent
         {
-            var eventType = typeof(T);
             if (_isFiringEvent)
             {
                 throw new InvalidOperationException("Cannot call FireEvent while already firing an event");
             }
 
-            if (!_eventMapping.ContainsKey(eventType))
+            var eventType = typeof(T);
+            string fullName = eventType.FullName;
+            if (!_eventMapping.ContainsKey(fullName))
             {
-                throw new ArgumentException($"EventType '{eventType.Name}' is not mapped to any EventId");
+                throw new ArgumentException($"EventType '{fullName}' is not mapped to any EventId, please regenerate event id");
             }
 
-            var eventId = _eventMapping[eventType];
+            var eventId = _eventMapping[fullName];
             var listeners = _allEvent[(int)eventId];
             _isFiringEvent = true;
             foreach (var listener in listeners)

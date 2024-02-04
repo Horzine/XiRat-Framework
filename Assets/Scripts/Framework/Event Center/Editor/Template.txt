@@ -1,0 +1,19 @@
+﻿using System.Collections.Generic;
+
+namespace Xi.Framework
+{
+    public static partial class CustomEventDefine
+    {
+        public enum EventId
+        {
+%ENUM_ITEMS%
+        }
+
+        public static int nextEventId = %NEXT_EVENT_ID%;
+
+        public static Dictionary<string, EventId> Map { get; } = new()
+        {
+%MAP_ITEMS%
+        };
+    }
+}

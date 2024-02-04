@@ -4,7 +4,10 @@ using static Xi.Framework.CustomEventDefine;
 
 namespace Xi.TestCase
 {
-    public class MyEventListener : IEventListener<Event1Event>, IEventListener<Event2Event>
+    public class MyEventListener : 
+        IEventListener<Event1Event>,
+        IEventListener<Event2Event>,
+        IEventListener<Event2Event4>
     {
         public void Start()
         {
@@ -25,13 +28,15 @@ namespace Xi.TestCase
         }
 
         void IEventListener<Event2Event>.OnEventFire(Event2Event eventArgs) => Debug.Log($"{GetHashCode()}: Event2 EventArgs received");
+
+        void IEventListener<Event2Event4>.OnEventFire(Event2Event4 customEvent) => Debug.Log($"{GetHashCode()}: Event2Event4 EventArgs received");
     }
 
     public class Test_EventCenter : MonoBehaviour
     {
         private async void Start()
         {
-            await EventCenter.Instance.InitAsync(Bootstrap.GetTypesFromAssembly());
+            await EventCenter.Instance.InitAsync();
 
             var obj = new MyEventListener();
             obj.Start();
@@ -41,6 +46,11 @@ namespace Xi.TestCase
 
             obj.Stop();
             new Event1Event().FireEvent();
+
+
+            EventCenter.Instance.AddListener<Event2Event4>(obj);
+            EventCenter.Instance.FireEvent(new Event2Event4());
+
         }
     }
 }
