@@ -4,7 +4,7 @@ using static Xi.Framework.CustomEventDefine;
 
 namespace Xi.TestCase
 {
-    public class MyEventListener : 
+    public class MyEventListener :
         IEventListener<Event1Event>,
         IEventListener<Event2Event>,
         IEventListener<Event2Event4>
@@ -46,7 +46,6 @@ namespace Xi.TestCase
 
             obj.Stop();
             new Event1Event().FireEvent();
-
 
             EventCenter.Instance.AddListener<Event2Event4>(obj);
             EventCenter.Instance.FireEvent(new Event2Event4());

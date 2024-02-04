@@ -15,7 +15,7 @@ namespace Xi.Framework
     }
     public class EventCenter : MonoSingleton<EventCenter>, ISingleton
     {
-        private readonly Dictionary<string, CustomEventDefine.EventId> _eventMapping = CustomEventDefine.Map;
+        private readonly Dictionary<string, CustomEventDefine.EventId> _eventMapping = CustomEventDefine.TypeNameMapEventId;
         private Dictionary<int, List<IEventListener>> _allEvent;
         private readonly List<Action> _pendingOperations = new();
         private bool _isFiringEvent = false;

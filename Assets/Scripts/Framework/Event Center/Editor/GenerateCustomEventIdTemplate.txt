@@ -11,7 +11,7 @@ namespace Xi.Framework
 
         public static int nextEventId = %NEXT_EVENT_ID%;
 
-        public static Dictionary<string, EventId> Map { get; } = new()
+        public static Dictionary<string, EventId> TypeNameMapEventId { get; } = new()
         {
 %MAP_ITEMS%
         };

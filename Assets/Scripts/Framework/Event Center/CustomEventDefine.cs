@@ -12,39 +12,19 @@
             // 自定义事件 Event2 的参数
         }
 
-
-
         public class Event2Event4 : CustomEvent
         {
             // 自定义事件 Event2 的参数
         }
 
-
-
-        public class Event2Event6 : CustomEvent
+        public class Event2Event10 : CustomEvent
         {
             // 自定义事件 Event2 的参数
         }
-        //
-        //
-        //
-        // public class Event2Event9 : Event2Event6
-        // {
-        //     // 自定义事件 Event2 的参数
-        // }
-        //
-        //
-        // public class Event2Event10 : Event2Event6
-        // {
-        //     // 自定义事件 Event2 的参数
-        // }
-        //
-        //
-        //
-        // public class Event2Event11 : Event2Event6
-        // {
-        //     // 自定义事件 Event2 的参数
-        // }
 
+        public class Event2Event11 : CustomEvent
+        {
+            // 自定义事件 Event2 的参数
+        }
     }
 }
