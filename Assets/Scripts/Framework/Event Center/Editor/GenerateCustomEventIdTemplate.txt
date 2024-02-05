@@ -15,5 +15,10 @@ namespace Xi.Framework
         {
 %MAP_ITEMS%
         };
+
+        public static Dictionary<int, int[]> InheritanceChainMap { get; } = new()
+        {
+%INHERITANCE_CHAIN_MAP%
+        };
     }
 }

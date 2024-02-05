@@ -41,12 +41,11 @@ namespace Xi.Framework
 
             var eventType = typeof(T);
             string fullName = eventType.FullName;
-            if (!_eventMapping.ContainsKey(eventType.FullName))
+            if (!_eventMapping.TryGetValue(fullName, out var eventId))
             {
-                throw new ArgumentException($"EventType '{fullName}' is not mapped to any EventId");
+                throw new ArgumentException($"EventType '{fullName}' is not mapped to any EventId, Generate event id again");
             }
 
-            var eventId = _eventMapping[fullName];
             var listeners = _allEvent[(int)eventId];
 
             if (!listeners.Contains(listener))
@@ -69,12 +68,11 @@ namespace Xi.Framework
 
             var eventType = typeof(T);
             string fullName = eventType.FullName;
-            if (!_eventMapping.ContainsKey(fullName))
+            if (!_eventMapping.TryGetValue(fullName, out var eventId))
             {
-                throw new ArgumentException($"EventType '{fullName}' is not mapped to any EventId");
+                throw new ArgumentException($"EventType '{fullName}' is not mapped to any EventId, Generate event id again");
             }
 
-            var eventId = _eventMapping[fullName];
             var listeners = _allEvent[(int)eventId];
 
             if (listeners.Contains(listener))
@@ -96,12 +94,11 @@ namespace Xi.Framework
 
             var eventType = typeof(T);
             string fullName = eventType.FullName;
-            if (!_eventMapping.ContainsKey(fullName))
+            if (!_eventMapping.TryGetValue(fullName, out var eventId))
             {
-                throw new ArgumentException($"EventType '{fullName}' is not mapped to any EventId, please regenerate event id");
+                throw new ArgumentException($"EventType '{fullName}' is not mapped to any EventId, Generate event id again");
             }
 
-            var eventId = _eventMapping[fullName];
             var listeners = _allEvent[(int)eventId];
             _isFiringEvent = true;
             foreach (var listener in listeners)

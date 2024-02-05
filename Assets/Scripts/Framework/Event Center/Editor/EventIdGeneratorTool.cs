@@ -41,6 +41,9 @@ namespace Xi.Framework.Editor
             var mapItemsBuilder = new StringBuilder();
             var preMap = CustomEventDefine.TypeNameMapEventId;
             int nextEventId = CustomEventDefine.nextEventId;
+            var resultMap = new Dictionary<int, Type>();
+            var reMap = new Dictionary<Type, int>();
+
             foreach (var eventType in eventTypes)
             {
                 string eventName = eventType.Name;
@@ -49,21 +52,56 @@ namespace Xi.Framework.Editor
                 {
                     enumItemsBuilder.AppendLine($"            {eventName} = {(int)enumValue},");
                     mapItemsBuilder.AppendLine($"            {{ \"{fullName}\", EventId.{eventName} }},");
+                    resultMap.Add((int)enumValue, eventType);
+                    reMap.Add(eventType, (int)enumValue);
                 }
                 else
                 {
                     enumItemsBuilder.AppendLine($"            {eventName} = {nextEventId},");
                     mapItemsBuilder.AppendLine($"            {{ \"{fullName}\", EventId.{eventName} }},");
+                    resultMap.Add(nextEventId, eventType);
+                    reMap.Add(eventType, nextEventId);
                     nextEventId++;
                 }
             }
 
+            var inheritanceChainMap = new SortedList<int, int[]>();
+            var tempChainCache = new List<int>();
+            foreach (var kvp in resultMap)
+            {
+                int eventId = kvp.Key;
+                var eventType = kvp.Value;
+
+                tempChainCache.Clear();
+
+                var currentType = eventType;
+                while (currentType != typeof(CustomEvent))
+                {
+                    if (reMap.TryGetValue(currentType.BaseType, out int parentId))
+                    {
+                        tempChainCache.Add(parentId);
+                    }
+
+                    currentType = currentType.BaseType;
+                }
+
+                inheritanceChainMap.Add(eventId, tempChainCache.ToArray());
+            }
+
+            var inheritanceChainMapBuilder = new StringBuilder();
+            foreach (var item in inheritanceChainMap)
+            {
+                inheritanceChainMapBuilder.AppendLine($"            {{ {item.Key}, new int[] {{ {string.Join(", ", item.Value)} }} }},");
+            }
+
             string enumItems = enumItemsBuilder.ToString().TrimEnd();
             string mapItems = mapItemsBuilder.ToString().TrimEnd();
+            string inheritanceChains = inheritanceChainMapBuilder.ToString().TrimEnd();
             string outputContent = templateContent
                 .Replace("%ENUM_ITEMS%", enumItems)
                 .Replace("%NEXT_EVENT_ID%", nextEventId.ToString())
-                .Replace("%MAP_ITEMS%", mapItems);
+                .Replace("%MAP_ITEMS%", mapItems)
+                .Replace("%INHERITANCE_CHAIN_MAP%", inheritanceChains);
 
             File.WriteAllText(outputPath, outputContent);
         }
