@@ -15,7 +15,7 @@ namespace Xi.Framework
     }
     public class EventCenter : MonoSingleton<EventCenter>, ISingleton
     {
-        private readonly Dictionary<string, CustomEventDefine.EventId> _eventMapping = CustomEventDefine.TypeNameMapEventId;
+        private readonly Dictionary<string, int> _eventMapping = CustomEventDefine.TypeNameMapInt;
         private Dictionary<int, List<IEventListener>> _allEvent;
         private readonly List<Action> _pendingOperations = new();
         private bool _isFiringEvent = false;
@@ -27,7 +27,7 @@ namespace Xi.Framework
 
         public async UniTask InitAsync()
         {
-            _allEvent = _eventMapping.ToDictionary((item) => (int)item.Value, (itme) => new List<IEventListener>());
+            _allEvent = _eventMapping.ToDictionary((item) => item.Value, (itme) => new List<IEventListener>());
             await UniTask.Yield();
         }
 
@@ -41,12 +41,12 @@ namespace Xi.Framework
 
             var eventType = typeof(T);
             string fullName = eventType.FullName;
-            if (!_eventMapping.TryGetValue(fullName, out var eventId))
+            if (!_eventMapping.TryGetValue(fullName, out int eventId))
             {
                 throw new ArgumentException($"EventType '{fullName}' is not mapped to any EventId, Generate event id again");
             }
 
-            var listeners = _allEvent[(int)eventId];
+            var listeners = _allEvent[eventId];
 
             if (!listeners.Contains(listener))
             {
@@ -68,12 +68,12 @@ namespace Xi.Framework
 
             var eventType = typeof(T);
             string fullName = eventType.FullName;
-            if (!_eventMapping.TryGetValue(fullName, out var eventId))
+            if (!_eventMapping.TryGetValue(fullName, out int eventId))
             {
                 throw new ArgumentException($"EventType '{fullName}' is not mapped to any EventId, Generate event id again");
             }
 
-            var listeners = _allEvent[(int)eventId];
+            var listeners = _allEvent[eventId];
 
             if (listeners.Contains(listener))
             {
@@ -94,12 +94,12 @@ namespace Xi.Framework
 
             var eventType = typeof(T);
             string fullName = eventType.FullName;
-            if (!_eventMapping.TryGetValue(fullName, out var eventId))
+            if (!_eventMapping.TryGetValue(fullName, out int eventId))
             {
                 throw new ArgumentException($"EventType '{fullName}' is not mapped to any EventId, Generate event id again");
             }
 
-            var listeners = _allEvent[(int)eventId];
+            var listeners = _allEvent[eventId];
             _isFiringEvent = true;
             foreach (var listener in listeners)
             {

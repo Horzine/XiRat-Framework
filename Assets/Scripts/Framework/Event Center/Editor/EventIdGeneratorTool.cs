@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using UnityEditor;
 using UnityEngine;
@@ -37,47 +38,50 @@ namespace Xi.Framework.Editor
         {
             string templateContent = File.ReadAllText(templatePath);
 
-            var enumItemsBuilder = new StringBuilder();
-            var mapItemsBuilder = new StringBuilder();
-            var preMap = CustomEventDefine.TypeNameMapEventId;
+            var typeMapIntBuilder = new StringBuilder();
+            var intMapTypeBuilder = new StringBuilder();
+            var preMap = CustomEventDefine.TypeNameMapInt;
             int nextEventId = CustomEventDefine.nextEventId;
-            var resultMap = new Dictionary<int, Type>();
-            var reMap = new Dictionary<Type, int>();
+            var intMapType = new Dictionary<int, Type>();
+            var typeMapInt = new Dictionary<Type, int>();
 
             foreach (var eventType in eventTypes)
             {
                 string eventName = eventType.Name;
                 string fullName = eventType.FullName;
-                if (preMap.TryGetValue(fullName, out var enumValue))
+                if (preMap.TryGetValue(fullName, out int enumValue))
                 {
-                    enumItemsBuilder.AppendLine($"            {eventName} = {(int)enumValue},");
-                    mapItemsBuilder.AppendLine($"            {{ \"{fullName}\", EventId.{eventName} }},");
-                    resultMap.Add((int)enumValue, eventType);
-                    reMap.Add(eventType, (int)enumValue);
+                    intMapType.Add(enumValue, eventType);
+                    typeMapInt.Add(eventType, enumValue);
                 }
                 else
                 {
-                    enumItemsBuilder.AppendLine($"            {eventName} = {nextEventId},");
-                    mapItemsBuilder.AppendLine($"            {{ \"{fullName}\", EventId.{eventName} }},");
-                    resultMap.Add(nextEventId, eventType);
-                    reMap.Add(eventType, nextEventId);
+                    intMapType.Add(nextEventId, eventType);
+                    typeMapInt.Add(eventType, nextEventId);
                     nextEventId++;
                 }
             }
 
+            var intList = intMapType.Keys.ToList();
+            intList.Sort();
+            foreach (int id in intList)
+            {
+                string fullName = intMapType[id].FullName;
+                typeMapIntBuilder.AppendLine($"            {{ \"{fullName}\", {id} }},");
+                intMapTypeBuilder.AppendLine($"            {{ {id}, \"{fullName}\" }},");
+            }
+
             var inheritanceChainMap = new SortedList<int, int[]>();
             var tempChainCache = new List<int>();
-            foreach (var kvp in resultMap)
+            foreach (int id in intList)
             {
-                int eventId = kvp.Key;
-                var eventType = kvp.Value;
-
+                var eventType = intMapType[id];
                 tempChainCache.Clear();
 
                 var currentType = eventType;
                 while (currentType != typeof(CustomEvent))
                 {
-                    if (reMap.TryGetValue(currentType.BaseType, out int parentId))
+                    if (typeMapInt.TryGetValue(currentType.BaseType, out int parentId))
                     {
                         tempChainCache.Add(parentId);
                     }
@@ -85,7 +89,7 @@ namespace Xi.Framework.Editor
                     currentType = currentType.BaseType;
                 }
 
-                inheritanceChainMap.Add(eventId, tempChainCache.ToArray());
+                inheritanceChainMap.Add(id, tempChainCache.ToArray());
             }
 
             var inheritanceChainMapBuilder = new StringBuilder();
@@ -94,13 +98,13 @@ namespace Xi.Framework.Editor
                 inheritanceChainMapBuilder.AppendLine($"            {{ {item.Key}, new int[] {{ {string.Join(", ", item.Value)} }} }},");
             }
 
-            string enumItems = enumItemsBuilder.ToString().TrimEnd();
-            string mapItems = mapItemsBuilder.ToString().TrimEnd();
+            string typeMapIntItems = typeMapIntBuilder.ToString().TrimEnd();
+            string intMapTypeItems = intMapTypeBuilder.ToString().TrimEnd();
             string inheritanceChains = inheritanceChainMapBuilder.ToString().TrimEnd();
             string outputContent = templateContent
-                .Replace("%ENUM_ITEMS%", enumItems)
                 .Replace("%NEXT_EVENT_ID%", nextEventId.ToString())
-                .Replace("%MAP_ITEMS%", mapItems)
+                .Replace("%TYPE_NAME_MAP_INT%", typeMapIntItems)
+                .Replace("%INT_MAP_TYPE_NAME%", intMapTypeItems)
                 .Replace("%INHERITANCE_CHAIN_MAP%", inheritanceChains);
 
             File.WriteAllText(outputPath, outputContent);

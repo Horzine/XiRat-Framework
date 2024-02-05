@@ -4,16 +4,16 @@ namespace Xi.Framework
 {
     public static partial class CustomEventDefine
     {
-        public enum EventId
-        {
-%ENUM_ITEMS%
-        }
-
         public static int nextEventId = %NEXT_EVENT_ID%;
 
-        public static Dictionary<string, EventId> TypeNameMapEventId { get; } = new()
+        public static Dictionary<string, int> TypeNameMapInt { get; } = new()
         {
-%MAP_ITEMS%
+%TYPE_NAME_MAP_INT%
+        };
+
+        public static Dictionary<int, string> IntMapTypeName { get; } = new()
+        {
+%INT_MAP_TYPE_NAME%
         };
 
         public static Dictionary<int, int[]> InheritanceChainMap { get; } = new()
