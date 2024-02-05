@@ -42,5 +42,10 @@
             // 自定义事件 Event2 的参数
         }
 
+        public class Event2Event19 : CustomEvent
+        {
+            // 自定义事件 Event2 的参数
+        }
+
     }
 }

@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace Xi.Framework
 {
     public static partial class CustomEventDefine
     {
-        public static int nextEventId = 10;
+        public static int nextEventId = 11;
 
         public static Dictionary<string, int> TypeNameMapInt { get; } = new()
         {
@@ -16,6 +16,7 @@ namespace Xi.Framework
             { "Xi.Framework.CustomEventDefine+Event2Event14", 7 },
             { "Xi.Framework.CustomEventDefine+Event2Event16", 8 },
             { "Xi.Framework.CustomEventDefine+Event2Event17", 9 },
+            { "Xi.Framework.CustomEventDefine+Event2Event19", 10 },
         };
 
         public static Dictionary<int, string> IntMapTypeName { get; } = new()
@@ -28,6 +29,7 @@ namespace Xi.Framework
             { 7, "Xi.Framework.CustomEventDefine+Event2Event14" },
             { 8, "Xi.Framework.CustomEventDefine+Event2Event16" },
             { 9, "Xi.Framework.CustomEventDefine+Event2Event17" },
+            { 10, "Xi.Framework.CustomEventDefine+Event2Event19" },
         };
 
         public static Dictionary<int, int[]> InheritanceChainMap { get; } = new()
@@ -40,6 +42,7 @@ namespace Xi.Framework
             { 7, new int[] { 6, 5, 2 } },
             { 8, new int[] { 6, 5, 2 } },
             { 9, new int[] { 8, 6, 5, 2 } },
+            { 10, new int[] {  } },
         };
     }
 }

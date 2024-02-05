@@ -9,7 +9,7 @@ namespace Xi.Framework
 {
     public abstract class CustomEvent { }
     public interface IEventListener { }
-    public interface IEventListener<T> : IEventListener where T : CustomEvent
+    public interface IEventListener<in T> : IEventListener where T : CustomEvent
     {
         public void OnEventFire(T customEvent);
     }
@@ -112,6 +112,26 @@ namespace Xi.Framework
                     catch (Exception e)
                     {
                         XiLogger.LogException(e);
+                    }
+                }
+            }
+
+            int[] inheritanceChain = CustomEventDefine.InheritanceChainMap[eventId];
+            foreach (int item in inheritanceChain)
+            {
+                var parentListeners = _allEvent[item];
+                foreach (var listener in parentListeners)
+                {
+                    if (listener is IEventListener<T> eventListener)
+                    {
+                        try
+                        {
+                            eventListener.OnEventFire(customEvent);
+                        }
+                        catch (Exception e)
+                        {
+                            XiLogger.LogException(e);
+                        }
                     }
                 }
             }
