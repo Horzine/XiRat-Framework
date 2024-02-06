@@ -30,6 +30,7 @@ namespace Xi.Framework
         private UiRootObject _uiRootObj;
         private Action _willRelaseAfterOpening = null;
         public WindowState CurrentWindowState { get; protected set; } = WindowState.None;
+        public bool HasWindowObj => WindowObj != null;
         protected abstract UiEnum UiEnumValue { get; }
         protected abstract (string groupName, string uiFeatureName, string uiPrefabName) PrefabAssetPath { get; }
         protected abstract bool IsOverlayMode { get; }
@@ -135,6 +136,7 @@ namespace Xi.Framework
                     _willRelaseAfterOpening = DoDestroyWindow;
                     return;
                 case WindowState.OnDisplay:
+                    OnCloseAccomplishCallback();
                     DoDestroyWindow();
                     return;
                 default:

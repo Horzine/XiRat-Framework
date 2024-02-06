@@ -1,4 +1,5 @@
 ﻿using Xi.Framework;
+using Xi.Tools;
 using static Xi.Metagame.Ui.ClassBuildWindowController;
 
 namespace Xi.Metagame.Ui
@@ -14,9 +15,9 @@ namespace Xi.Metagame.Ui
             => (AssetGroupNameConst.kAddressableGroupName_MetagameUi, UiFeatureNameConst.kMetagame_ClassBuild, UiPrefabNameConst.kMetagame_ClassBuild);
         protected override bool IsOverlayMode => false;
 
-        protected override void OnCloseAccomplishCallback() { }
-        protected override void OnOpenAccomplishCallback() { }
-        protected override void OnWindowInstantiateCallback() { }
-        protected override void OnWindowDestoryCallback() { }
+        protected override void OnCloseAccomplishCallback() { WindowObj.RemoveCallback(); }
+        protected override void OnOpenAccomplishCallback() { WindowObj.AddCallback(); }
+        protected override void OnWindowInstantiateCallback() { XiLogger.CallMark(); }
+        protected override void OnWindowDestoryCallback() { XiLogger.CallMark(); }
     }
 }
