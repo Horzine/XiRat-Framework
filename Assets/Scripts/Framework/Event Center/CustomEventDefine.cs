@@ -1,37 +1,51 @@
-﻿using System;
-
-namespace Xi.Framework
+﻿namespace Xi.Framework
 {
-    [AttributeUsage(AttributeTargets.Class)]
-    public class CustomEventAttribute : Attribute
+    public static partial class CustomEventDefine
     {
-        public CustomEventDefine.EventId EventId { get; }
-        public CustomEventAttribute(CustomEventDefine.EventId eventId) => EventId = eventId;
-    }
-}
-
-namespace Xi.Framework
-{
-    public static class CustomEventDefine
-    {
-        public enum EventId
-        {
-            Event1,
-            Event2,
-            Event3
-            // 添加更多的事件
-        }
-
-        [CustomEvent(EventId.Event1)]
         public class Event1Event : CustomEvent
         {
             // 自定义事件 Event1 的参数
         }
 
-        [CustomEvent(EventId.Event2)]
         public class Event2Event : CustomEvent
         {
             // 自定义事件 Event2 的参数
         }
+
+        public class Event2Event4 : CustomEvent
+        {
+            // 自定义事件 Event2 的参数
+        }
+
+
+        public class Event2Event12 : Event2Event4
+        {
+            // 自定义事件 Event2 的参数
+        }
+
+        public class Event2Event13 : Event2Event12
+        {
+            // 自定义事件 Event2 的参数
+        }
+
+        public class Event2Event14 : Event2Event13
+        {
+            // 自定义事件 Event2 的参数
+        }
+
+        public class Event2Event16 : Event2Event13
+        {
+            // 自定义事件 Event2 的参数
+        }
+        public class Event2Event17 : Event2Event16
+        {
+            // 自定义事件 Event2 的参数
+        }
+
+        public class Event2Event19 : CustomEvent
+        {
+            // 自定义事件 Event2 的参数
+        }
+
     }
 }

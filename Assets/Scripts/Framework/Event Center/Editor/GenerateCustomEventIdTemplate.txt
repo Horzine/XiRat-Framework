@@ -1,0 +1,24 @@
+﻿using System.Collections.Generic;
+
+namespace Xi.Framework
+{
+    public static partial class CustomEventDefine
+    {
+        public static int nextEventId = %NEXT_EVENT_ID%;
+
+        public static Dictionary<string, int> TypeNameMapInt { get; } = new()
+        {
+%TYPE_NAME_MAP_INT%
+        };
+
+        public static Dictionary<int, string> IntMapTypeName { get; } = new()
+        {
+%INT_MAP_TYPE_NAME%
+        };
+
+        public static Dictionary<int, int[]> InheritanceChainMap { get; } = new()
+        {
+%INHERITANCE_CHAIN_MAP%
+        };
+    }
+}

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using Cysharp.Threading.Tasks;
 using Xi.Tools;
@@ -9,14 +9,14 @@ namespace Xi.Framework
 {
     public abstract class CustomEvent { }
     public interface IEventListener { }
-    public interface IEventListener<T> : IEventListener where T : CustomEvent
+    public interface IEventListener<in T> : IEventListener where T : CustomEvent
     {
-        internal void OnEventFire(T customEvent);
+        public void OnEventFire(T customEvent);
     }
     public class EventCenter : MonoSingleton<EventCenter>, ISingleton
     {
-        private readonly Dictionary<Type, CustomEventDefine.EventId> _eventMapping = new();
-        private readonly Dictionary<int, List<IEventListener>> _allEvent = new();
+        private readonly Dictionary<string, int> _eventMapping = CustomEventDefine.TypeNameMapInt;
+        private Dictionary<int, List<IEventListener>> _allEvent;
         private readonly List<Action> _pendingOperations = new();
         private bool _isFiringEvent = false;
 
@@ -25,33 +25,14 @@ namespace Xi.Framework
 
         }
 
-        public async UniTask InitAsync(IReadOnlyCollection<Type> allTypeInAssembly)
+        public async UniTask InitAsync()
         {
-            Init(allTypeInAssembly);
+            Init();
             await UniTask.Yield();
         }
 
-        public void Init(IReadOnlyCollection<Type> allTypeInAssembly)
-        {
-            foreach (var type in allTypeInAssembly)
-            {
-                if (typeof(CustomEvent).IsAssignableFrom(type))
-                {
-                    var customEvent = type.GetCustomAttribute<CustomEventAttribute>();
-                    if (customEvent != null)
-                    {
-                        var eventId = customEvent.EventId;
-                        if (_eventMapping.ContainsKey(type))
-                        {
-                            throw new ArgumentException($"Type '{type.Name}' is already mapped to EventId '{_eventMapping[type]}'");
-                        }
-
-                        _eventMapping[type] = eventId;
-                        _allEvent[(int)eventId] = new List<IEventListener>();
-                    }
-                }
-            }
-        }
+        public void Init()
+            => _allEvent = _eventMapping.ToDictionary((item) => item.Value, (itme) => new List<IEventListener>());
 
         public void AddListener<T>(IEventListener<T> listener) where T : CustomEvent
         {
@@ -62,13 +43,13 @@ namespace Xi.Framework
             }
 
             var eventType = typeof(T);
-            if (!_eventMapping.ContainsKey(eventType))
+            string fullName = eventType.FullName;
+            if (!_eventMapping.TryGetValue(fullName, out int eventId))
             {
-                throw new ArgumentException($"EventType '{eventType.Name}' is not mapped to any EventId");
+                throw new ArgumentException($"EventType '{fullName}' is not mapped to any EventId, Generate event id again");
             }
 
-            var eventId = _eventMapping[eventType];
-            var listeners = _allEvent[(int)eventId];
+            var listeners = _allEvent[eventId];
 
             if (!listeners.Contains(listener))
             {
@@ -89,13 +70,13 @@ namespace Xi.Framework
             }
 
             var eventType = typeof(T);
-            if (!_eventMapping.ContainsKey(eventType))
+            string fullName = eventType.FullName;
+            if (!_eventMapping.TryGetValue(fullName, out int eventId))
             {
-                throw new ArgumentException($"EventType '{eventType.Name}' is not mapped to any EventId");
+                throw new ArgumentException($"EventType '{fullName}' is not mapped to any EventId, Generate event id again");
             }
 
-            var eventId = _eventMapping[eventType];
-            var listeners = _allEvent[(int)eventId];
+            var listeners = _allEvent[eventId];
 
             if (listeners.Contains(listener))
             {
@@ -109,19 +90,19 @@ namespace Xi.Framework
 
         public void FireEvent<T>(T customEvent) where T : CustomEvent
         {
-            var eventType = typeof(T);
             if (_isFiringEvent)
             {
                 throw new InvalidOperationException("Cannot call FireEvent while already firing an event");
             }
 
-            if (!_eventMapping.ContainsKey(eventType))
+            var eventType = typeof(T);
+            string fullName = eventType.FullName;
+            if (!_eventMapping.TryGetValue(fullName, out int eventId))
             {
-                throw new ArgumentException($"EventType '{eventType.Name}' is not mapped to any EventId");
+                throw new ArgumentException($"EventType '{fullName}' is not mapped to any EventId, Generate event id again");
             }
 
-            var eventId = _eventMapping[eventType];
-            var listeners = _allEvent[(int)eventId];
+            var listeners = _allEvent[eventId];
             _isFiringEvent = true;
             foreach (var listener in listeners)
             {
@@ -134,6 +115,26 @@ namespace Xi.Framework
                     catch (Exception e)
                     {
                         XiLogger.LogException(e);
+                    }
+                }
+            }
+
+            int[] inheritanceChain = CustomEventDefine.InheritanceChainMap[eventId];
+            foreach (int item in inheritanceChain)
+            {
+                var parentListeners = _allEvent[item];
+                foreach (var listener in parentListeners)
+                {
+                    if (listener is IEventListener<T> eventListener)
+                    {
+                        try
+                        {
+                            eventListener.OnEventFire(customEvent);
+                        }
+                        catch (Exception e)
+                        {
+                            XiLogger.LogException(e);
+                        }
                     }
                 }
             }
