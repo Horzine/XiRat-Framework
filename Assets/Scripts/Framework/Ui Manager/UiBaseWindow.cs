@@ -12,20 +12,20 @@ namespace Xi.Framework
 
         public async UniTask OpenAsync()
         {
-            XiLogger.Log($"[{GetType().Name}]: Begin Open");
+            XiLogger.Log($"[{GetType().FullName}]: Begin Open");
             SetCanvasGroupInteractable(false);
             await UniTask.Yield();
             SetCanvasGroupInteractable(true);
-            XiLogger.Log($"[{GetType().Name}]: End Open");
+            XiLogger.Log($"[{GetType().FullName}]: End Open");
         }
 
         public async UniTask CloseAsync()
         {
-            XiLogger.Log($"[{GetType().Name}]: Begin Close");
+            XiLogger.Log($"[{GetType().FullName}]: Begin Close");
             SetCanvasGroupInteractable(false);
             await UniTask.Yield();
             SetCanvasGroupInteractable(false);
-            XiLogger.Log($"[{GetType().Name}]: End Close");
+            XiLogger.Log($"[{GetType().FullName}]: End Close");
         }
 
         public void BaseWindowInit(int sortOrder)

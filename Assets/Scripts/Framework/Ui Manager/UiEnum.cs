@@ -23,7 +23,11 @@
             int sortOrderBelow = (int)UiEnum.________SortOrder_Below____;
             int sortOrderDefault = (int)UiEnum.________SortOrder_Default____;
 
-            return uiInt < defaultAbove ? kDefaultOrder : uiInt > sortOrderBelow ? uiInt - sortOrderDefault + kDefaultOrder : kDefaultOrder;
+            return uiInt < defaultAbove
+                ? kDefaultOrder
+                : uiInt > sortOrderBelow
+                ? uiInt - sortOrderDefault + kDefaultOrder
+                : kDefaultOrder;
         }
     }
 }

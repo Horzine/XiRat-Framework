@@ -7,13 +7,16 @@ using Xi.Tools;
 
 namespace Xi.Framework
 {
+    public interface IUiInitParams { }
     public interface IUiController
     {
         void ForceReleaseWindow();
-        UiEnum UiEnum { get; }
-        UiRootObject UiRootObject { set; }
+        UiEnum UiEnumValue { get; }
+        UiRootObject UiRootObj { set; }
     }
-    public abstract class UiBaseController<TWindow> : IUiController where TWindow : UiBaseWindow
+    public abstract class UiBaseController<TWindow, TInitParams> : IUiController
+        where TWindow : UiBaseWindow
+        where TInitParams : struct, IUiInitParams
     {
         public enum WindowState
         {
@@ -22,40 +25,46 @@ namespace Xi.Framework
             OnDisplay,
             Closing,
         }
-
         protected TWindow WindowObj { get; private set; }
-        private UiRootObject _uiRootObject;
+        protected TInitParams CachedInitParams { get; private set; }
+        private UiRootObject _uiRootObj;
         private Action _willRelaseAfterOpening = null;
         public WindowState CurrentWindowState { get; protected set; } = WindowState.None;
-        protected abstract UiEnum UiEnum { get; }
+        public bool HasWindowObj => WindowObj != null;
+        protected abstract UiEnum UiEnumValue { get; }
         protected abstract (string groupName, string uiFeatureName, string uiPrefabName) PrefabAssetPath { get; }
         protected abstract bool IsOverlayMode { get; }
-
-        protected abstract void CleanControllerDependency();
         protected abstract void OnOpenAccomplishCallback();
         protected abstract void OnCloseAccomplishCallback();
+        protected abstract void OnWindowInstantiateCallback();
+        protected abstract void OnWindowDestoryCallback();
 
-        protected async UniTask OpenAsync()
+        public virtual async UniTask OpenAsync(TInitParams initParams)
         {
             if (!CanOpen)
             {
                 return;
             }
 
+            CachedInitParams = initParams;
+
             CurrentWindowState = WindowState.Opening;
             await DoOpenAsync();
         }
+
+        public void OpenAsyncAndForget(TInitParams initParams) => OpenAsync(initParams).Forget();
 
         protected async UniTask DoOpenAsync()
         {
             WindowObj = await AssetManager.Instance.InstantiateScriptAsync<TWindow>(UiNameConst_Extend.AddressableName(PrefabAssetPath),
                 Vector3.zero,
                 Quaternion.identity,
-                IsOverlayMode ? _uiRootObject.OverlayModeCanvasTsf : _uiRootObject.CameraModeCanvasTsf,
+                IsOverlayMode ? _uiRootObj.OverlayModeCanvasTsf : _uiRootObj.CameraModeCanvasTsf,
                 CancellationToken.None,
                 false);
             WindowObj.GetRectTransform().anchoredPosition3D = Vector3.zero;
-            WindowObj.BaseWindowInit(UiEnum_Extend.GetSortingOrder(UiEnum));
+            WindowObj.BaseWindowInit(UiEnum_Extend.GetSortingOrder(UiEnumValue));
+            OnWindowInstantiateCallback();
             await WindowObj.OpenAsync();
             if (_willRelaseAfterOpening != null)
             {
@@ -75,16 +84,17 @@ namespace Xi.Framework
                 return;
             }
 
-            CleanControllerDependency();
             CurrentWindowState = WindowState.Closing;
             await DoCloseAsync();
         }
 
+        public void CloseAsyncAndForget() => CloseAsync().Forget();
+
         protected async UniTask DoCloseAsync()
         {
             await WindowObj.CloseAsync();
-            DestroyWindow();
             OnCloseAccomplishCallback();
+            DoDestroyWindow();
         }
 
         protected void DestroyWindow()
@@ -92,20 +102,29 @@ namespace Xi.Framework
             if (WindowObj)
             {
                 WindowObj.DestroySelfGameObject();
-                XiLogger.Log($"Destroy {UiEnum} Window");
+                XiLogger.Log($"Destroy {UiEnumValue} Window");
             }
 
             WindowObj = null;
             CurrentWindowState = WindowState.None;
         }
 
+        protected void CleanUiInitParams() => CachedInitParams = default;
+
         protected bool CanOpen => CurrentWindowState == WindowState.None;
 
         protected bool CanClose => CurrentWindowState == WindowState.OnDisplay;
 
+        private void DoDestroyWindow()
+        {
+            DestroyWindow();
+            OnWindowDestoryCallback();
+            CleanUiInitParams();
+        }
+
         #region Interface IUiController
-        UiEnum IUiController.UiEnum => UiEnum;
-        UiRootObject IUiController.UiRootObject { set => _uiRootObject = value; }
+        UiEnum IUiController.UiEnumValue => UiEnumValue;
+        UiRootObject IUiController.UiRootObj { set => _uiRootObj = value; }
         void IUiController.ForceReleaseWindow()
         {
             switch (CurrentWindowState)
@@ -114,19 +133,14 @@ namespace Xi.Framework
                 case WindowState.Closing:
                     return;
                 case WindowState.Opening:
-                    _willRelaseAfterOpening = doDestroyWindow;
+                    _willRelaseAfterOpening = DoDestroyWindow;
                     return;
                 case WindowState.OnDisplay:
-                    doDestroyWindow();
+                    OnCloseAccomplishCallback();
+                    DoDestroyWindow();
                     return;
                 default:
                     return;
-            }
-
-            void doDestroyWindow()
-            {
-                CleanControllerDependency();
-                DestroyWindow();
             }
         }
         #endregion

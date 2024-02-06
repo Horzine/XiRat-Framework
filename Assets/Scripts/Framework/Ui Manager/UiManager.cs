@@ -45,8 +45,8 @@ namespace Xi.Framework
                 if (typeof(IUiController).IsAssignableFrom(type) && !type.IsInterface && !type.IsAbstract)
                 {
                     var uiController = (IUiController)Activator.CreateInstance(type);
-                    uiController.UiRootObject = _uiRootObject;
-                    var uiEnum = uiController.UiEnum;
+                    uiController.UiRootObj = _uiRootObject;
+                    var uiEnum = uiController.UiEnumValue;
                     if (!_allUiController.TryAdd((int)uiEnum, uiController))
                     {
                         XiLogger.LogError($"UiEnum {uiEnum} already has instance!");

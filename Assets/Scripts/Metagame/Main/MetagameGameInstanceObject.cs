@@ -18,9 +18,13 @@ namespace Xi.Metagame.Main
 
             _mainMenuCtrl = UiManager.Instance.GetController<MainMenuWindowController>(UiEnum.Metagame_MainMenu);
             var userSystem = MetagameGameInstance.Client.GetMetagameSystem_User();
-            _mainMenuCtrl.Open(userSystem, featureController);
+            _mainMenuCtrl.OpenAsyncAndForget(new MainMenuWindowController.InitParams
+            {
+                UserSystem = userSystem,
+                FeatureController = featureController
+            });
         }
 
-        public void OnDestroy() => _mainMenuCtrl?.Close();
+        public void OnDestroy() => _mainMenuCtrl?.CloseAsyncAndForget();
     }
 }
