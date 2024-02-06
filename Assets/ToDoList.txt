@@ -2,5 +2,4 @@
 2. 修饰器设计模式, 举例: Buff生效的修饰]
 4. UpdateInvoker
 11. Cenimachine 的虚拟相机通过切换 priority 实现
-12. InitIInGame3DUiInitParam , 泛型约束 ,这样解决UI参数上下文传入的问题
-13.	通过代码生成 event 枚举值
+

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using UnityEditor;
 using UnityEditor.AddressableAssets;
 using UnityEditor.AddressableAssets.Settings;
@@ -146,6 +147,20 @@ namespace Xi.EditorExtend
             AssetDatabase.Refresh();
 
             XiLogger.Log("Auto Grouping Scene Finish");
+        }
+
+        [MenuItem("Xi-Tool/Addressable Extend Tool/Manage Groups")]
+        public static void ManageGroups()
+        {
+            string assemblyName = "Unity.Addressables.Editor";
+            var type = Assembly.Load(assemblyName)
+                                .GetTypes()
+                                .FirstOrDefault(t => t.FullName == "UnityEditor.AddressableAssets.GUI.AddressableAssetsWindow");
+            if (type != null)
+            {
+                var method = type.GetMethod("Init", BindingFlags.Static | BindingFlags.NonPublic);
+                method?.Invoke(null, null);
+            }
         }
     }
 }
