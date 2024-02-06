@@ -31,7 +31,13 @@ namespace Xi.Framework
             SceneManager.sceneUnloaded -= OnSceneUnloaded;
         }
 
-        public async UniTask InitAsync() => await UniTask.Yield();
+        public async UniTask InitAsync()
+        {
+            Init();
+            await UniTask.Yield();
+        }
+
+        public void Init() { }
 
         private void OnSceneUnloaded(Scene scene)
         {

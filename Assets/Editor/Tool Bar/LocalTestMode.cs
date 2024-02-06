@@ -1,7 +1,7 @@
-﻿using Cysharp.Threading.Tasks;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEditor.Callbacks;
 using UnityEngine;
+using Xi.Framework;
 
 namespace Xi.EditorExtend
 {
@@ -32,6 +32,7 @@ namespace Xi.EditorExtend
                 }
             }
         }
+
         static LocalTestMode() { }
 
         [PostProcessScene(1)]
@@ -47,7 +48,7 @@ namespace Xi.EditorExtend
                 EditorApplication.playModeStateChanged += HandleOnPlayModeChanged;
                 _inited = true;
 
-                CreateDebugGameObjects().Forget();
+                CreateLocalTestObjects();
             }
         }
 
@@ -60,11 +61,10 @@ namespace Xi.EditorExtend
             }
         }
 
-        private static async UniTaskVoid CreateDebugGameObjects()
+        private static void CreateLocalTestObjects()
         {
-            // Add GameObject Here
-            var go = new GameObject($"{nameof(LocalTestMode)}");
-            await UniTask.Yield();
+            var go = new GameObject($"====== {nameof(LocalTestObject)} ======");
+            go.AddComponent<LocalTestObject>();
         }
     }
 }

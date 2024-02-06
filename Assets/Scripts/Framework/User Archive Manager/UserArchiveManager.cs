@@ -36,6 +36,8 @@ namespace Xi.Framework
 
         public async UniTask InitAsync() => await LoadAsync();
 
+        public void Init() => DoLoad();
+
         public Dictionary<string, SaveData> CachedSaveData { get; private set; }
 
         public async UniTask SaveAsync(Dictionary<string, SaveData> saveData)
@@ -108,43 +110,42 @@ namespace Xi.Framework
             }
         }
 
-        public async UniTask LoadAsync()
+        private async UniTask LoadAsync() => await UniTask.RunOnThreadPool(DoLoad);
+
+        private void DoLoad()
         {
-            await UniTask.RunOnThreadPool(() =>
+            if (File.Exists(FilePath))
             {
-                if (File.Exists(FilePath))
+                var saveData = new Dictionary<string, SaveData>();
+                using var fileStream = new FileStream(FilePath, FileMode.Open, FileAccess.Read);
+                while (fileStream.Position < fileStream.Length)
                 {
-                    var saveData = new Dictionary<string, SaveData>();
-                    using var fileStream = new FileStream(FilePath, FileMode.Open, FileAccess.Read);
-                    while (fileStream.Position < fileStream.Length)
-                    {
-                        byte[] systemNameLengthBytes = new byte[sizeof(int)];
-                        fileStream.Read(systemNameLengthBytes, 0, systemNameLengthBytes.Length);
-                        int systemNameLength = BitConverter.ToInt32(systemNameLengthBytes, 0);
+                    byte[] systemNameLengthBytes = new byte[sizeof(int)];
+                    fileStream.Read(systemNameLengthBytes, 0, systemNameLengthBytes.Length);
+                    int systemNameLength = BitConverter.ToInt32(systemNameLengthBytes, 0);
 
-                        byte[] systemNameBytes = new byte[systemNameLength];
-                        fileStream.Read(systemNameBytes, 0, systemNameBytes.Length);
-                        string systemName = System.Text.Encoding.UTF8.GetString(systemNameBytes);
+                    byte[] systemNameBytes = new byte[systemNameLength];
+                    fileStream.Read(systemNameBytes, 0, systemNameBytes.Length);
+                    string systemName = System.Text.Encoding.UTF8.GetString(systemNameBytes);
 
-                        byte[] systemDataLengthBytes = new byte[sizeof(int)];
-                        fileStream.Read(systemDataLengthBytes, 0, systemDataLengthBytes.Length);
-                        int systemDataLength = BitConverter.ToInt32(systemDataLengthBytes, 0);
+                    byte[] systemDataLengthBytes = new byte[sizeof(int)];
+                    fileStream.Read(systemDataLengthBytes, 0, systemDataLengthBytes.Length);
+                    int systemDataLength = BitConverter.ToInt32(systemDataLengthBytes, 0);
 
-                        byte[] systemData = new byte[systemDataLength];
-                        fileStream.Read(systemData, 0, systemData.Length);
+                    byte[] systemData = new byte[systemDataLength];
+                    fileStream.Read(systemData, 0, systemData.Length);
 
-                        saveData.Add(systemName, new SaveData(systemName, systemData));
-                    }
-
-                    CachedSaveData = saveData;
-                    XiLogger.Log($"Load finish. Path = {FilePath}");
+                    saveData.Add(systemName, new SaveData(systemName, systemData));
                 }
-                else
-                {
-                    XiLogger.Log($"File not exists. FilePath = {FilePath}");
-                    CachedSaveData = null;
-                }
-            });
+
+                CachedSaveData = saveData;
+                XiLogger.Log($"Load finish. Path = {FilePath}");
+            }
+            else
+            {
+                XiLogger.Log($"File not exists. FilePath = {FilePath}");
+                CachedSaveData = null;
+            }
         }
 
         private void OnDestroy()

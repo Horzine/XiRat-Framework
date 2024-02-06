@@ -27,6 +27,12 @@ namespace Xi.Framework
 
         public async UniTask InitAsync(IReadOnlyCollection<Type> allTypeInAssembly)
         {
+            Init(allTypeInAssembly);
+            await UniTask.Yield();
+        }
+
+        public void Init(IReadOnlyCollection<Type> allTypeInAssembly)
+        {
             foreach (var type in allTypeInAssembly)
             {
                 if (typeof(CustomEvent).IsAssignableFrom(type))
@@ -45,8 +51,6 @@ namespace Xi.Framework
                     }
                 }
             }
-
-            await UniTask.Yield();
         }
 
         public void AddListener<T>(IEventListener<T> listener) where T : CustomEvent

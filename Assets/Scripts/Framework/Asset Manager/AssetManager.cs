@@ -20,6 +20,13 @@ namespace Xi.Framework
             await Addressables.InitializeAsync(true);
         }
 
+        public void Init(GameSceneManager gameSceneManager)
+        {
+            _gameSceneManager = gameSceneManager;
+            Addressables.InitializeAsync(true).WaitForCompletion();
+        }
+
+        #region Async 
         public async UniTask<(bool success, TObject asset, AsyncOperationHandle operationHandle)> LoadAssetAsync<TObject>(string key,
             CancellationToken cancellationToken,
             bool currentActiveSceneOnly = true)
@@ -79,12 +86,12 @@ namespace Xi.Framework
                 lastSceneName = _gameSceneManager.CurrentActiveSceneName;
             }
 
-            var loadOperation = Addressables.InstantiateAsync(key, instantiateParameters);
-            var (isCanceled, result) = await loadOperation.WithCancellation(cancellationToken).SuppressCancellationThrow();
+            var operation = Addressables.InstantiateAsync(key, instantiateParameters);
+            var (isCanceled, result) = await operation.WithCancellation(cancellationToken).SuppressCancellationThrow();
             if (isCanceled)
             {
                 XiLogger.LogWarning($"Async Operating Canceled! key = {key}, cancellationToken.IsCancellationRequested = {cancellationToken.IsCancellationRequested}");
-                Release(loadOperation);
+                Release(operation);
                 return null;
             }
 
@@ -95,7 +102,7 @@ namespace Xi.Framework
                 if (lastSceneName != newSceneName)
                 {
                     XiLogger.LogWarning($"CurrentActiveSceneName changed! lastSceneName: {lastSceneName}, currentSceneName = {newSceneName}, key = {key}");
-                    Release(loadOperation);
+                    Release(operation);
                     return null;
                 }
             }
@@ -103,11 +110,11 @@ namespace Xi.Framework
             if (cancellationToken.IsCancellationRequested)
             {
                 XiLogger.LogWarning($"CancellationToken IsCancellationRequested! key = {key}");
-                Release(loadOperation);
+                Release(operation);
                 return null;
             }
 
-            asset.AddComponent<AutoReleaseAsset>().Init(loadOperation);
+            asset.AddComponent<AutoReleaseAsset>().Init(operation);
             return asset;
         }
 
@@ -139,6 +146,42 @@ namespace Xi.Framework
 
             return script;
         }
+        #endregion
+
+        #region Sync
+        public (TObject asset, AsyncOperationHandle operationHandle) LoadAsset<TObject>(string key)
+        {
+            var loadOperation = Addressables.LoadAssetAsync<TObject>(key);
+            var asset = loadOperation.WaitForCompletion();
+            return (asset, loadOperation);
+        }
+
+        public TScript InstantiateScript<TScript>(string key, InstantiationParameters instantiateParameters) where TScript : MonoBehaviour
+        {
+            var go = InstantiateGameObject(key, instantiateParameters);
+            if (!go)
+            {
+                XiLogger.LogError($"GameObject is null! key = {key}");
+                return null;
+            }
+
+            if (!go.TryGetComponent<TScript>(out var script))
+            {
+                XiLogger.LogError($"No '{typeof(TScript)}' this component! key = {key}");
+                return null;
+            }
+
+            return script;
+        }
+
+        public GameObject InstantiateGameObject(string key, InstantiationParameters instantiateParameters)
+        {
+            var operation = Addressables.InstantiateAsync(key, instantiateParameters);
+            var go = operation.WaitForCompletion();
+            go.AddComponent<AutoReleaseAsset>().Init(operation);
+            return go;
+        }
+        #endregion
 
         public void Release(AsyncOperationHandle operationHandle)
         {

@@ -20,10 +20,17 @@ namespace Xi.Framework
             Func<IGameInstance> createMetagameGameInstanceFunc,
             Func<IGameInstance> createGameplayGameInstanceFunc)
         {
+            Init(gameSceneManager, createMetagameGameInstanceFunc, createGameplayGameInstanceFunc);
+            await UniTask.Yield();
+        }
+
+        public void Init(GameSceneManager gameSceneManager,
+            Func<IGameInstance> createMetagameGameInstanceFunc,
+            Func<IGameInstance> createGameplayGameInstanceFunc)
+        {
             _createMetagameGameInstanceFunc = createMetagameGameInstanceFunc;
             _createGameplayGameInstanceFunc = createGameplayGameInstanceFunc;
             _gameSceneManager = gameSceneManager;
-            await UniTask.Yield();
         }
 
         public async UniTaskVoid ChangeSceneToMetagameScene() => await DoChangeSceneToGameInstance(_createMetagameGameInstanceFunc);

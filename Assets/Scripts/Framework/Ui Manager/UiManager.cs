@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.ResourceManagement.ResourceProviders;
 using Xi.Extend.Collection;
 using Xi.Tools;
 
@@ -27,6 +28,13 @@ namespace Xi.Framework
                 transform,
                 this.GetCancellationTokenOnDestroy(),
                 false);
+            CreateAllUiControllerInstance(allTypeInAssembly);
+        }
+
+        public void Init(IReadOnlyCollection<Type> allTypeInAssembly, AssetManager assetManager)
+        {
+            _uiRootObject = assetManager.InstantiateScript<UiRootObject>($"{AssetGroupNameConst.kAddressableGroupName_Manager}/{kUiManagerPrefabName}",
+               new InstantiationParameters(Vector3.zero, Quaternion.identity, transform));
             CreateAllUiControllerInstance(allTypeInAssembly);
         }
 

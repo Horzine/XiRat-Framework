@@ -15,9 +15,12 @@ namespace Xi.Framework
 
         public async UniTask InitAsync(GameSceneManager gameSceneManager)
         {
-            gameSceneManager.AddOnActiveSceneChangedActionListener(OnActiveSceneChangedCallback);
+            Init(gameSceneManager);
             await UniTask.Yield();
         }
+
+        public void Init(GameSceneManager gameSceneManager)
+            => gameSceneManager.AddOnActiveSceneChangedActionListener(OnActiveSceneChangedCallback);
 
         private void OnActiveSceneChangedCallback(Scene scene1, Scene scene2)
         {

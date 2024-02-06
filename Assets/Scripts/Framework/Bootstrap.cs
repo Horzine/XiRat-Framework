@@ -15,13 +15,15 @@ namespace Xi.Framework
         private static IReadOnlyCollection<Type> _cachedTypes;
 #pragma warning disable IDE0052 
         private static AdvancedLoggerTool _loggerTool;
-#pragma warning restore IDE0052 
+#pragma warning restore IDE0052
 
-        private void Awake() => SelfInit().Forget();
+#pragma warning disable IDE0051 
+        private void Awake() => SelfInitAsync().Forget();
+#pragma warning restore IDE0051 
 
-        private static async UniTaskVoid SelfInit()
+        private static async UniTaskVoid SelfInitAsync()
         {
-            await InitAllManager();
+            await InitAllManagerAsync();
             await OnInitAllManagerAccomplish();
         }
 
@@ -43,7 +45,7 @@ namespace Xi.Framework
             return _cachedTypes;
         }
 
-        public static async UniTask InitAllManager()
+        public static async UniTask InitAllManagerAsync()
         {
             XiLogger.SetupMainThread(Thread.CurrentThread);
             _loggerTool ??= new AdvancedLoggerTool();
@@ -61,6 +63,26 @@ namespace Xi.Framework
             await UiManager.Instance.InitAsync(GetTypesFromAssembly(), assetManager);
             await EventCenter.Instance.InitAsync(GetTypesFromAssembly());
             await InputManager.Instance.InitAsync();
+        }
+
+        public static void InitAllManager()
+        {
+            XiLogger.SetupMainThread(Thread.CurrentThread);
+            _loggerTool ??= new AdvancedLoggerTool();
+
+            ConfigManager.Instance.Init();
+            UserArchiveManager.Instance.Init();
+            GameSceneManager.Instance.Init();
+            var gameSceneManager = GameSceneManager.Instance;
+            AssetManager.Instance.Init(gameSceneManager);
+            var assetManager = AssetManager.Instance;
+            GameMain.Instance.Init(gameSceneManager,
+                 MetagameGameInstance_Extend.CreateMetagameGameInstance,
+                 GameplayGameInstance_Extend.CreateGameplayGameInstance);
+            GameObjectPoolManager.Instance.Init(gameSceneManager);
+            UiManager.Instance.Init(GetTypesFromAssembly(), assetManager);
+            EventCenter.Instance.Init(GetTypesFromAssembly());
+            InputManager.Instance.Init();
         }
     }
 }

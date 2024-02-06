@@ -19,7 +19,13 @@ namespace Xi.Framework
             _actionConfig.Enable();
         }
 
-        public async UniTask InitAsync() => await UniTask.Yield();
+        public async UniTask InitAsync()
+        {
+            Init();
+            await UniTask.Yield();
+        }
+
+        public void Init() { }
 
         public void SetInputEnable_Player(bool enable)
         {

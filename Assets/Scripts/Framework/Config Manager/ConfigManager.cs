@@ -13,5 +13,7 @@ namespace Xi.Framework
             AllConfig.Init();
             await UniTask.Yield();
         }
+
+        public void Init() => AllConfig.Init();
     }
 }

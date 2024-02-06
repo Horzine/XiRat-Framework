@@ -11,7 +11,7 @@ namespace Xi.TestCase
         private void Awake()
         {
             DontDestroyOnLoad(this);
-            Bootstrap.InitAllManager().Forget();
+            Bootstrap.InitAllManagerAsync().Forget();
         }
 
         private void Update()
