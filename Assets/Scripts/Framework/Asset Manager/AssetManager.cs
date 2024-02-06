@@ -183,14 +183,26 @@ namespace Xi.Framework
         }
         #endregion
 
-        public void Release(AsyncOperationHandle operationHandle)
+        public bool Release(AsyncOperationHandle operationHandle)
         {
             if (!operationHandle.IsValid())
             {
-                return;
+                return false;
             }
 
             Addressables.Release(operationHandle);
+            return true;
+        }
+    }
+
+    public static class AssetManager_Extend
+    {
+        public static void Release(this AssetManager instance, ref GameObject goRef, AsyncOperationHandle operationHandle)
+        {
+            if (instance.Release(operationHandle))
+            {
+                goRef = null;
+            }
         }
     }
 }
