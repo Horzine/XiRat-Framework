@@ -35,7 +35,7 @@ namespace Xi.Framework
                             {
                                 var singleton = new GameObject();
                                 _instance = singleton.AddComponent<T>();
-                                singleton.name = typeof(T).Name;
+                                singleton.name = typeof(T).FullName;
                                 _instance.OnCreate();
                                 DontDestroyOnLoad(singleton);
                                 XiLogger.Log($"[{singleton.name}] was created with DontDestroyOnLoad.");

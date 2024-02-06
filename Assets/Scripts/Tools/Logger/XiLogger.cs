@@ -10,7 +10,8 @@ namespace Xi.Tools
     public static class XiLogger
     {
         private const string kCallMarkStr = "****** CALL MARK ******";
-        private const string kFrameCountNotInMainThread = "[NotMainThread]";
+        private const string kFrameCountNotInMainThread = "[NotMain]";
+        private const string kNoSetupMainThread = "[Null]";
         private static Thread _mainThread;
         private static bool IsMainThread => _mainThread == Thread.CurrentThread;
 
@@ -47,7 +48,11 @@ namespace Xi.Tools
         {
             int curThreadId = Thread.CurrentThread.ManagedThreadId;
             string logMsg = $" [T:{curThreadId}] [{Path.GetFileNameWithoutExtension(filePath)}] <{methodName}> ({lineNumber}) ===> {message}";
-            string frameCount = IsMainThread ? $"[F:{Time.frameCount}]" : kFrameCountNotInMainThread;
+            string frameCount = _mainThread == null
+                ? kNoSetupMainThread
+                : IsMainThread
+                ? $"[F:{Time.frameCount}]"
+                : kFrameCountNotInMainThread;
 
             switch (logType)
             {
