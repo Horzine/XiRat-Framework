@@ -39,6 +39,7 @@ namespace Xi.Tools
 
             Application.logMessageReceivedThreaded += HandleLog;
             Application.quitting += OnApplicationQuit;
+            AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionHandler;
 
             ThreadPool.QueueUserWorkItem(state =>
             {
@@ -117,10 +118,17 @@ namespace Xi.Tools
             _logQueue.Enqueue(new LogData(logString, level));
         }
 
+        private void UnhandledExceptionHandler(object sender, UnhandledExceptionEventArgs args)
+        {// This function called only in il2cpp mode
+            var e = args.ExceptionObject as Exception;
+            XiLogger.LogError($"Handler running on thread {Thread.CurrentThread.ManagedThreadId}: Exception with message '{e.Message}'. isTerminating = {args.IsTerminating}");
+        }
+
         private void OnApplicationQuit()
         {
             Application.logMessageReceivedThreaded -= HandleLog;
             Application.quitting -= OnApplicationQuit;
+            AppDomain.CurrentDomain.UnhandledException -= UnhandledExceptionHandler;
 
             while (_isWriting || _isWritingWarningError)
             {
