@@ -21,7 +21,7 @@ namespace Xi.Config
 
         private static readonly Dictionary<string, Type> typeCache = new();
 
-        private static void ParseConfigData<T>(string[] lines, Dictionary<string, T> resultDic) where T : IConfigData, new()
+        private static void ParseConfigData<T>(string configFileName, string[] lines, Dictionary<string, T> resultDic) where T : IConfigData, new()
         {
             string memberNamesLine = lines[1];
             string memberTypesLine = lines[2];
@@ -52,21 +52,28 @@ namespace Xi.Config
 
                 for (int j = 0; j < values.Length; j++)
                 {
-                    SetMemberValue(unit, memberNames[j], memberTypes[j], values[j]);
+                    SetMemberValue(unit, configFileName, memberNames[j], memberTypes[j], values[j]);
                 }
 
                 resultDic.Add(unit.Key, unit);
             }
         }
-        private static void SetMemberValue(object obj, string memberName, string typeName, string value)
+        private static void SetMemberValue(object obj, string configFileName, string memberName, string typeName, string value)
         {
-            var type = obj.GetType();
+            var type = Type.GetType($"Xi.Config.{configFileName}");
+            if (type == null)
+            {
+                Debug.LogError($"[{nameof(ConfigUtils)}] <{nameof(SetMemberValue)}> ===> type is null, configFileName = {configFileName}");
+                return;
+            }
+
             var field = type.GetProperty(memberName);
             string typeDefineName = GetTypeDefineName(typeName);
+            //Debug.LogError($"[{nameof(ConfigUtils)}] <{nameof(SetMemberValue)}>:typeName: {typeName}, typeDefineName {typeDefineName}");
             var valueType = Type.GetType(typeDefineName);
             if (valueType == null)
             {
-                Debug.LogError($"[{nameof(ConfigUtils)}] <{nameof(SetMemberValue)}> ===> valueType is null, obj = {obj}, memberName = {memberName}, typeName = {typeName}, value = {value}, typeDefineName = {typeDefineName}");
+                Debug.LogError($"[{nameof(ConfigUtils)}] <{nameof(SetMemberValue)}> ===> valueType is null, configFileName = {configFileName}, memberName = {memberName}, typeName = {typeName}, value = {value}, typeDefineName = {typeDefineName}");
                 return;
             }
 
@@ -105,7 +112,11 @@ namespace Xi.Config
             if (typeCache.ContainsKey(typeName))
             {
                 var t = typeCache[typeName];
+#if !UNITY_EDITOR && IL2CPP_BUILD
+                return t.FullName;
+#else
                 return $"{t.AssemblyQualifiedName}, {t.FullName}";
+#endif
             }
 
             var type = typeName switch
@@ -125,7 +136,12 @@ namespace Xi.Config
             if (type != null)
             {
                 typeCache[typeName] = type;
+
+#if !UNITY_EDITOR && IL2CPP_BUILD
+                return type.FullName;
+#else
                 return $"{type.AssemblyQualifiedName}, {type.FullName}";
+#endif
             }
 
             return null;
@@ -184,7 +200,7 @@ namespace Xi.Config
 #else
             string[] lines = DeserializeFromFile(Path.Combine(kRuntimeLoadPath, fileName), kKey);
 #endif
-            ParseConfigData(lines, dataDic);
+            ParseConfigData(fileName, lines, dataDic);
         }
     }
 }
