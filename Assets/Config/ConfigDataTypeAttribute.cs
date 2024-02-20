@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 namespace Xi.Config
 {
@@ -8,6 +8,6 @@ namespace Xi.Config
     }
     public interface IConfigData
     {
-        string Key { get; }
+        internal string Key { get; }
     }
 }

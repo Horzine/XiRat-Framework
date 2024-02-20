@@ -5,7 +5,7 @@ namespace Xi.Framework
 {
     public interface ISingleton
     {
-        void OnCreate();
+        internal void OnCreate();
     }
 
     public class MonoSingleton<T> : MonoBehaviour where T : MonoBehaviour, ISingleton

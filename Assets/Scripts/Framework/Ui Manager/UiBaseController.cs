@@ -10,9 +10,9 @@ namespace Xi.Framework
     public interface IUiInitParams { }
     public interface IUiController
     {
-        void ForceReleaseWindow();
-        UiEnum UiEnumValue { get; }
-        UiRootObject UiRootObj { set; }
+        internal void ForceReleaseWindow();
+        internal UiEnum UiEnumValue { get; }
+        internal UiRootObject UiRootObj { set; }
     }
     public abstract class UiBaseController<TWindow, TInitParams> : IUiController
         where TWindow : UiBaseWindow

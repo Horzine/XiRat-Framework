@@ -8,12 +8,15 @@ namespace Xi.Framework
 {
     public interface IGameObjectPoolEntry
     {
-        void ActionOnCreate();
-        void ActionOnGet();
-        void ActionOnRelease();
-        void ActionOnDestroy();
+        internal void ActionOnCreate();
+        internal void ActionOnGet();
+        internal void ActionOnRelease();
+        internal void ActionOnDestroy();
     }
-    public interface IGameObjectPool { void Release(); }
+    public interface IGameObjectPool
+    {
+        internal void Release();
+    }
     public class GameObjectPool<T> : IDisposable, IGameObjectPool where T : MonoBehaviour, IGameObjectPoolEntry
     {
         private readonly ObjectPool<T> _pool;

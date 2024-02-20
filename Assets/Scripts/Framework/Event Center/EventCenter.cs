@@ -11,7 +11,7 @@ namespace Xi.Framework
     public interface IEventListener { }
     public interface IEventListener<in T> : IEventListener where T : CustomEvent
     {
-        public void OnEventFire(T customEvent);
+        internal void OnEventFire(T customEvent);
     }
     public class EventCenter : MonoSingleton<EventCenter>, ISingleton
     {

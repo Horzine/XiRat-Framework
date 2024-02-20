@@ -28,7 +28,7 @@ namespace Xi.Metagame.Client.System.User
     }
     public interface ISystemObserver_User : IMetagameSystemObserver
     {
-        void TestIntChange(int num);
+        internal void TestIntChange(int num);
     }
 }
 

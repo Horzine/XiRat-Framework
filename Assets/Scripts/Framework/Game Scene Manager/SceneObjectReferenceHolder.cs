@@ -9,7 +9,10 @@ namespace Xi.Framework
         public abstract int EnumIntValue { get; }
         public GameObject sceneObject;
     }
-    public interface ISceneObjectReferenceHolder { T GetSceneObjectReference<T>(string objectEnumName, int intValue) where T : Component; }
+    public interface ISceneObjectReferenceHolder
+    {
+        internal T GetSceneObjectReference<T>(string objectEnumName, int intValue) where T : Component;
+    }
     public abstract class SceneObjectReferenceHolder<TSceneObjectReference> : MonoBehaviour, ISceneObjectReferenceHolder where TSceneObjectReference : SceneObjectReference
     {
         protected abstract List<TSceneObjectReference> SceneObjectReferences { get; }

@@ -4,10 +4,10 @@ namespace Xi.Framework
 {
     public interface IGameInstance
     {
-        string SceneName { get; set; }
-        void OnCreate();
-        void OnAfterNewSceneActive(IGameInstance oldGameInstance);
-        void WillBeReplaced();
+        internal string SceneName { get; set; }
+        internal void OnCreate();
+        internal void OnAfterNewSceneActive(IGameInstance oldGameInstance);
+        internal void WillBeReplaced();
     }
     public abstract class GameInstance : IGameInstance
     {

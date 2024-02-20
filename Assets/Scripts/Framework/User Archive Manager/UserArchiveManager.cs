@@ -27,7 +27,7 @@ namespace Xi.Framework
         private CancellationTokenSource _saveCancellationTokenSource;
         public event Action OnDestroyAction;
 
-        public void OnCreate() =>
+        void ISingleton.OnCreate() =>
 #if UNITY_EDITOR
             FilePath = Path.Combine(Application.streamingAssetsPath, kSaveFileName);
 #else
