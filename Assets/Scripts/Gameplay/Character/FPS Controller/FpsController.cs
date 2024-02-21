@@ -169,7 +169,11 @@ namespace Xi.Gameplay.Character.Controller
 
         private void OnDisable()
         {
-            InputManager.Instance.SetInputEnable_Player(false);
+            if (InputManager.Instance)
+            {
+                InputManager.Instance.SetInputEnable_Player(false);
+            }
+
             foreach (var item in _playerInputHandlers)
             {
                 item.RemoveInputListner();
