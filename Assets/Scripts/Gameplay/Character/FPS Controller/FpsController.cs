@@ -8,8 +8,9 @@ using Xi.Gameplay.Character.InputHandler;
 namespace Xi.Gameplay.Character.Controller
 {
     [RequireComponent(typeof(CharacterController))]
-    public class FpsController : MonoBehaviour
+    public partial class FpsController : MonoBehaviour
     {
+        [SerializeField] private Transform _testRenderer;
         [SerializeField] private FpsControllerConfig _config;
         public PlayerInputHandlerMotor _motorInput;
         public PlayerInputHandlerCombat _cambotInput;
@@ -23,6 +24,8 @@ namespace Xi.Gameplay.Character.Controller
         private float outputWalkSpeed;
         private float outputSprintSpeed;
         private float outputTacticalSprintSpeed;
+
+        private const float kCrouchLerpSpeed = 15f;
 
         //input velocity
         private Vector3 desiredVelocityRef;
@@ -38,7 +41,7 @@ namespace Xi.Gameplay.Character.Controller
 
         private Vector3 slopeDirection;
 
-        private Transform Orientation { get; set; }
+        private Transform SnappingRoot { get; set; }
         public CollisionFlags CollisionFlags { get; private set; }
         public bool IsOnGround => _unityCharacterController.isGrounded;
 
@@ -55,8 +58,9 @@ namespace Xi.Gameplay.Character.Controller
                 _cambotInput,
             };
 
-            Orientation = new GameObject("Orientation").transform;
-            _selfTsf.AddChildAndSetIdentity(Orientation);
+            SnappingRoot = new GameObject("SnappingRoot").transform;
+            _selfTsf.AddChildAndSetIdentity(SnappingRoot);
+            UpdateSnapRootPosition();
 
             // characterManager.orientation = Orientation;
             // characterManager.Setup(Actor, controller, cameraManager, Orientation);
@@ -67,6 +71,8 @@ namespace Xi.Gameplay.Character.Controller
             defaultstepOffset = _unityCharacterController.stepOffset;
             _unityCharacterController.skinWidth = _unityCharacterController.radius / 10;
         }
+
+        private void UpdateSnapRootPosition() => SnappingRoot.localPosition = new Vector3(0, -_unityCharacterController.height / 2, 0);
 
         private void OnEnable()
         {
@@ -93,14 +99,20 @@ namespace Xi.Gameplay.Character.Controller
             }
             //update desiredVelocity in order to normalize it and smooth the movement
             desiredVelocity = slideVelocity + Vector3.SmoothDamp(desiredVelocity,
-                ((SlopeDirection() * _motorInput.MoveInput.y) + (Orientation.right * _motorInput.MoveInput.x)).normalized * speed, ref desiredVelocityRef, _config.acceleration);
+                ((SlopeDirection() * _motorInput.MoveInput.y) + (_selfTsf.right * _motorInput.MoveInput.x)).normalized * speed, ref desiredVelocityRef, _config.acceleration);
 
             //set controller height according to if player is crouching
-            _unityCharacterController.height = _motorInput.CrouchInput ?
-             Mathf.Lerp(_unityCharacterController.height, _config.crouchHeight, Time.deltaTime * 15) :
-             Mathf.Lerp(_unityCharacterController.height, defaultHeight, Time.deltaTime * 15);
+            float crouchHeight = _config.crouchHeight;
+            float targetHeight = _motorInput.CrouchInput ? crouchHeight : defaultHeight;
+            float newHeight = Mathf.Lerp(_unityCharacterController.height, targetHeight, Time.deltaTime * kCrouchLerpSpeed);
+            _unityCharacterController.height = newHeight;
+            float targetRenderLocalPosY = _motorInput.CrouchInput ? -(defaultHeight - crouchHeight) / 2 : 0;
+            float newRenderLocalPosY = Mathf.Lerp(_testRenderer.localPosition.y, targetRenderLocalPosY, Time.deltaTime * kCrouchLerpSpeed);
+            _testRenderer.localPosition = new Vector3(_testRenderer.localPosition.x, newRenderLocalPosY, _testRenderer.localPosition.z);
 
             _unityCharacterController.stepOffset = !_unityCharacterController.isGrounded || OnSlope() ? 0 : defaultstepOffset;
+
+            UpdateSnapRootPosition();
 
             //copy desiredVelocity x, z with normalized values
             velocity.x = desiredVelocity.x;
@@ -203,14 +215,14 @@ namespace Xi.Gameplay.Character.Controller
         public Vector3 SlopeDirection()
         {
             //setup a raycast from position to down at the bottom of the collider
-            if (Physics.Raycast(Orientation.position, Vector3.down, out var slopeHit, (_unityCharacterController.height / 2) + 0.1f))
+            if (Physics.Raycast(_selfTsf.position, Vector3.down, out var slopeHit, (_unityCharacterController.height / 2) + 0.1f))
             {
                 //get the direction result according to slope normal
-                return Vector3.ProjectOnPlane(Orientation.forward, slopeHit.normal);
+                return Vector3.ProjectOnPlane(_selfTsf.forward, slopeHit.normal);
             }
 
             //if not on slope then slope is forward ;)
-            return Orientation.forward;
+            return _selfTsf.forward;
         }
 
         public float SlopeAngle()
@@ -243,7 +255,7 @@ namespace Xi.Gameplay.Character.Controller
         [Tooltip("The amount of meters to move per second while tactical walking.")]
         public float tacticalSprintSpeed = 11;
         [Tooltip("Player height while crouching.")]
-        public float crouchHeight = 1.5f;
+        public float crouchHeight = 1.2f;
         [Tooltip("Force multiplier from Physics/Gravity when grounded")]
         public float stickToGroundForce = 1;
         [Tooltip("Force multiplier from Physics/Gravity.")]
@@ -254,5 +266,59 @@ namespace Xi.Gameplay.Character.Controller
         public Vector3 offset = new(0, -0.2f, 0);
         [Tooltip("Max speed the player can reach while falling")]
         public float maxFallSpeed = 100;
+    }
+
+    public partial class FpsController
+    {
+
+        // 检查站起来是否有足够的空间
+        private bool CheckStandUpSpace()
+        {
+            var origin = transform.position + (Vector3.up * (_unityCharacterController.height * 0.5f)); // 从角色头顶位置发射射线
+            float maxDistance = _unityCharacterController.height * 0.5f; // 射线的最大距离为角色高度的一半
+
+            // 检查是否有碰撞体阻挡
+            return !Physics.Raycast(origin, Vector3.up, maxDistance);
+        }
+
+        // 尝试站起来
+        public void TryStandUp()
+        {
+            if (!CheckStandUpSpace()) // 如果头顶有障碍物
+            {
+                Debug.Log("Cannot stand up, not enough space above.");
+                return; // 无法站起来
+            }
+
+            // 如果头顶没有障碍物，就站起来
+            _unityCharacterController.height = defaultHeight;
+            _unityCharacterController.center = new Vector3(_unityCharacterController.center.x, defaultHeight * 0.5f, _unityCharacterController.center.z);
+        }
+    }
+
+    public partial class FpsController
+    {
+        public void SetupControllerPosition(Vector3 position)
+        {
+            _unityCharacterController.enabled = false;
+            _selfTsf.position = position;
+            _unityCharacterController.enabled = true;
+        }
+
+        public void SetupControllerRotation(Quaternion rotation) => _selfTsf.rotation = rotation;
+
+        public void SetupControllerPositionAndRotation(Vector3 position, Quaternion rotation) => _selfTsf.SetPositionAndRotation(position, rotation);
+
+        public void SetupSnappingRootPosition(Vector3 position)
+        {
+            var newPos = position - SnappingRoot.localPosition;
+            SetupControllerPosition(newPos);
+        }
+
+        public void SetupSnappingRootPositionAndRotation(Vector3 position, Quaternion rotation)
+        {
+            var newPos = position - SnappingRoot.localPosition;
+            SetupControllerPositionAndRotation(newPos, rotation);
+        }
     }
 }
