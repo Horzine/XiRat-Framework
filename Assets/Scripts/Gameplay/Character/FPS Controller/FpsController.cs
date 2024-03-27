@@ -300,9 +300,8 @@ namespace Xi.Gameplay.Character.Controller
     {
         public void SetupControllerPosition(Vector3 position)
         {
-            _unityCharacterController.enabled = false;
-            _selfTsf.position = position;
-            _unityCharacterController.enabled = true;
+            var moveVector = position - _selfTsf.position;
+            _unityCharacterController.Move(moveVector);
         }
 
         public void SetupControllerRotation(Quaternion rotation) => _selfTsf.rotation = rotation;
