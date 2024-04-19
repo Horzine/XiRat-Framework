@@ -3,3 +3,7 @@
 4. UpdateInvoker
 11. Cenimachine 的虚拟相机通过切换 priority 实现
 
+12. 需要打包的场景，每个场景都需要加一个父级文件夹
+13. 场景中 prefab 的 AB 包引用关系
+14. AssetLoader 渐进加载,和高优先级加载
+15. 场景-> Area -> Level 动态加载
