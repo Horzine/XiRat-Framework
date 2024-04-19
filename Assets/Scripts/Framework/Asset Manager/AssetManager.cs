@@ -149,7 +149,7 @@ namespace Xi.Framework
         #endregion
 
         #region Sync
-        public (TObject asset, AsyncOperationHandle operationHandle) LoadAsset<TObject>(string key)
+        public (TObject asset, AsyncOperationHandle<TObject> operationHandle) LoadAsset<TObject>(string key)
         {
             var loadOperation = Addressables.LoadAssetAsync<TObject>(key);
             var asset = loadOperation.WaitForCompletion();
