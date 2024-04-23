@@ -26,7 +26,7 @@ namespace Xi.TestCase
             catch (Exception ex)
             {
                 //HandleException(ex);
-                Debug.Log("的异常！");
+                Debug.Log($"的异常！ {ex}");
             }
 
             throw new Exception("的异常2！");
@@ -74,7 +74,7 @@ namespace Xi.TestCase
                 catch (Exception ex)
                 {
                     //HandleException(ex);
-                    Debug.Log("线程池中的异常！");
+                    Debug.Log($"线程池中的异常！{ex}");
                 }
 
                 throw new Exception("线程池中的异常！ 2");

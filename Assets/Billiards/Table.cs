@@ -1,5 +1,7 @@
 ﻿using Drawing;
 using UnityEngine;
+using UnityEngine.UIElements;
+using Xi.Tools;
 using Color = UnityEngine.Color;
 
 namespace Xi_
@@ -8,6 +10,11 @@ namespace Xi_
     {
         [SerializeField] private BoxCollider _boxCollider;
         [SerializeField] private Ball _ballTemplate;
+        [SerializeField] private TableBoard _boardForward;
+        [SerializeField] private TableBoard _boardBackward;
+        [SerializeField] private TableBoard _boardLeft;
+        [SerializeField] private TableBoard _boardRight;
+
         private Plane _topSurfacePlane;
         private Bounds _localTopSurfaceLimitBounds;
         private Transform _selfTsf;
@@ -21,6 +28,13 @@ namespace Xi_
             var boundsCenter = _selfTsf.InverseTransformPoint(TopSurfaceCenterPoint);
             var boundsSize = new Vector3(_boxCollider.size.x - (2 * _ballTemplate.BallRadius / _selfTsf.localScale.x), 0, _boxCollider.size.z - (2 * _ballTemplate.BallRadius / _selfTsf.localScale.z));
             _localTopSurfaceLimitBounds = new Bounds(boundsCenter, boundsSize);
+
+            foreach (var item in new TableBoard[] { _boardForward, _boardBackward, _boardLeft, _boardRight, })
+            {
+                var boardToTable = _selfTsf.position - item.transform.position;
+                boardToTable.y = 0;
+                item.Init(OnBoardTriggerEnterBall, OnBoardTriggerExitBall, boardToTable);
+            }
         }
 
         private void Update()
@@ -60,7 +74,7 @@ namespace Xi_
 
         public Vector3 GetPointOnTopSurface(Vector3 worldPoint) => _topSurfacePlane.ClosestPointOnPlane(worldPoint);
 
-        private Vector3 ProjectPointOnOBB(Vector3 point)
+        public Vector3 ProjectPointOnOBB(Vector3 point)
         {
             // 将点转换到OBB的局部坐标系
             var localPoint = _selfTsf.InverseTransformPoint(point);
@@ -79,6 +93,16 @@ namespace Xi_
 
             // 将裁剪后的点转换回世界坐标系
             return _selfTsf.TransformPoint(clampedLocalPoint);
+        }
+
+        private void OnBoardTriggerEnterBall(BoardDirectionEnum boardDirection, Ball ballObj)
+        {
+            //XiLogger.CallMark();
+        }
+
+        private void OnBoardTriggerExitBall(BoardDirectionEnum boardDirection, Ball ballObj)
+        {
+            //XiLogger.CallMark();
         }
     }
 }
