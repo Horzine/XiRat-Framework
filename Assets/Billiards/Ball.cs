@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using Xi.Tools;
 
 namespace Xi_
@@ -13,32 +11,40 @@ namespace Xi_
         public Vector3 _direction;
         public float _speedValue;
         public Vector3 CurrentVelocity => _speedValue * _direction.normalized;
+        private BallCollisionHandler _collisionHandler;
+
+
+        public void SetNewVelocity(Vector3 newVelocity)
+        {
+            _speedValue = newVelocity.magnitude;
+            _direction = newVelocity.normalized;
+        }
 
         private void Awake()
         {
             _rig = GetComponent<Rigidbody>();
-
+            _collisionHandler = FindObjectOfType<BallCollisionHandler>();
         }
+
         private void Start()
         {
             var table = FindObjectOfType<Table>();
             transform.position = table.ProjectPointOnOBB(transform.position) + new Vector3(0, BallRadius, 0);
-
         }
 
         private void OnTriggerEnter(Collider other)
         {
-            XiLogger.CallMark();
+            if (other.attachedRigidbody && other.attachedRigidbody.TryGetComponent<Ball>(out var ball))
+            {
+                _collisionHandler.OnTriggerEnterBall(this, ball);
+            }
         }
 
         private void OnTriggerExit(Collider other)
         {
-            XiLogger.CallMark();
+            // XiLogger.CallMark();
         }
 
-        private void Update()
-        {
-            transform.Translate(CurrentVelocity * Time.deltaTime);
-        }
+        private void Update() => transform.Translate(CurrentVelocity * Time.deltaTime);
     }
 }

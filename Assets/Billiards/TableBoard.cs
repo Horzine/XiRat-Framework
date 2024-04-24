@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Xi_
@@ -17,12 +15,12 @@ namespace Xi_
         [SerializeField] private BoardDirectionEnum _BoardDirection;
 
         private Vector3 _boardNormalDirection;
-        private Action<BoardDirectionEnum, Ball> _onTriggerEnterBallAction;
+        private Action<BoardDirectionEnum, Ball, Vector3> _onTriggerEnterBallAction;
         private Action<BoardDirectionEnum, Ball> _onTriggerExitBallAction;
 
         public float bounceForce = 10f;
 
-        public void Init(Action<BoardDirectionEnum, Ball> onTriggerEnterBallAction,
+        public void Init(Action<BoardDirectionEnum, Ball, Vector3> onTriggerEnterBallAction,
             Action<BoardDirectionEnum, Ball> onTriggerExitBallAction,
             Vector3 boardToTable)
         {
@@ -35,8 +33,7 @@ namespace Xi_
         {
             if (other.attachedRigidbody && other.attachedRigidbody.TryGetComponent<Ball>(out var ball))
             {
-                _onTriggerEnterBallAction?.Invoke(_BoardDirection, ball);
-                Rules.TableBoardReflectBall(ball, _boardNormalDirection);
+                _onTriggerEnterBallAction?.Invoke(_BoardDirection, ball, _boardNormalDirection);
             }
         }
 
@@ -47,6 +44,5 @@ namespace Xi_
                 _onTriggerExitBallAction?.Invoke(_BoardDirection, ball);
             }
         }
-
     }
 }

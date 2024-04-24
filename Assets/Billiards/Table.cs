@@ -1,7 +1,5 @@
 ﻿using Drawing;
 using UnityEngine;
-using UnityEngine.UIElements;
-using Xi.Tools;
 using Color = UnityEngine.Color;
 
 namespace Xi_
@@ -18,11 +16,14 @@ namespace Xi_
         private Plane _topSurfacePlane;
         private Bounds _localTopSurfaceLimitBounds;
         private Transform _selfTsf;
+        private BallCollisionHandler _collisionHandler;
 
         private Vector3 TopSurfaceCenterPoint => _selfTsf.position + _boxCollider.center + (0.5f * _boxCollider.size.y * _selfTsf.localScale.y * _selfTsf.up);
 
         private void Awake()
         {
+            _collisionHandler = FindObjectOfType<BallCollisionHandler>();
+
             _selfTsf = transform;
             _topSurfacePlane = new Plane(_selfTsf.up, TopSurfaceCenterPoint);
             var boundsCenter = _selfTsf.InverseTransformPoint(TopSurfaceCenterPoint);
@@ -95,9 +96,10 @@ namespace Xi_
             return _selfTsf.TransformPoint(clampedLocalPoint);
         }
 
-        private void OnBoardTriggerEnterBall(BoardDirectionEnum boardDirection, Ball ballObj)
+        private void OnBoardTriggerEnterBall(BoardDirectionEnum boardDirection, Ball ballObj, Vector3 boardNormal)
         {
             //XiLogger.CallMark();
+            _collisionHandler.OnTriggerEnterTableBoard(ballObj, boardNormal);
         }
 
         private void OnBoardTriggerExitBall(BoardDirectionEnum boardDirection, Ball ballObj)
