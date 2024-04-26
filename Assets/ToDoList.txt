@@ -7,3 +7,6 @@
 13. 场景中 prefab 的 AB 包引用关系
 14. AssetLoader 渐进加载,和高优先级加载
 15. 场景-> Area -> Level 动态加载
+
+16. local test 再 第一个 场景不生效
+

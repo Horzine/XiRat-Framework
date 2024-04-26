@@ -89,7 +89,7 @@ namespace Xi.Tools
             }
             catch (Exception e)
             {
-                Debug.LogError("Failed to write log to file: " + e.Message);
+                Debug.LogError($"Failed to write log to file: {e.Message}");
             }
         }
 

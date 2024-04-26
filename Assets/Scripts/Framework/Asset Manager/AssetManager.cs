@@ -68,14 +68,6 @@ namespace Xi.Framework
         }
 
         public async UniTask<GameObject> InstantiateGameObjectAsync(string key,
-            Vector3 position,
-            Quaternion rotation,
-            Transform parent,
-            CancellationToken cancellationToken,
-            bool currentActiveSceneOnly = true)
-            => await InstantiateGameObjectAsync(key, new InstantiationParameters(position, rotation, parent), cancellationToken, currentActiveSceneOnly);
-
-        public async UniTask<GameObject> InstantiateGameObjectAsync(string key,
             InstantiationParameters instantiateParameters,
             CancellationToken cancellationToken,
             bool currentActiveSceneOnly = true)
@@ -117,14 +109,6 @@ namespace Xi.Framework
             asset.AddComponent<AutoReleaseAsset>().Init(operation);
             return asset;
         }
-
-        public async UniTask<TScript> InstantiateScriptAsync<TScript>(string key,
-            Vector3 position,
-            Quaternion rotation,
-            Transform parent,
-            CancellationToken cancellationToken,
-            bool currentActiveSceneOnly = true) where TScript : MonoBehaviour
-            => await InstantiateScriptAsync<TScript>(key, new InstantiationParameters(position, rotation, parent), cancellationToken, currentActiveSceneOnly);
 
         public async UniTask<TScript> InstantiateScriptAsync<TScript>(string key,
             InstantiationParameters instantiateParameters,
@@ -204,5 +188,24 @@ namespace Xi.Framework
                 goRef = null;
             }
         }
+
+        public static async UniTask<GameObject> InstantiateGameObjectAsync(this AssetManager instance,
+            string key,
+            Vector3 position,
+            Quaternion rotation,
+            Transform parent,
+            CancellationToken cancellationToken,
+            bool currentActiveSceneOnly = true)
+            => await instance.InstantiateGameObjectAsync(key, new InstantiationParameters(position, rotation, parent), cancellationToken, currentActiveSceneOnly);
+
+        public static async UniTask<TScript> InstantiateScriptAsync<TScript>(this AssetManager instance,
+            string key,
+            Vector3 position,
+            Quaternion rotation,
+            Transform parent,
+            CancellationToken cancellationToken,
+            bool currentActiveSceneOnly = true) where TScript : MonoBehaviour
+            => await instance.InstantiateScriptAsync<TScript>(key, new InstantiationParameters(position, rotation, parent), cancellationToken, currentActiveSceneOnly);
+
     }
 }
