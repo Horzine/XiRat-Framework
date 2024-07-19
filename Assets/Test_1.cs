@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using UnityEngine;
 
 namespace Xi_
@@ -26,6 +28,7 @@ namespace Xi_
 
         private void Awake() => testData = new Test_Data_1();
 
+#if UNITY_EDITOR
         [ContextMenu("Modify")]
         public void Modify()
         {
@@ -33,8 +36,9 @@ namespace Xi_
             testData = new Test_Data_1() { a = 10, b = 20 };
             PrefabUtility.ApplyObjectOverride(this, path, InteractionMode.UserAction);
         }
+#endif
     }
-
+#if UNITY_EDITOR
     [CustomEditor(typeof(Test_1))]
     public class MyScriptEditor : Editor
     {
@@ -87,5 +91,6 @@ namespace Xi_
             }
         }
     }
+#endif
 }
 

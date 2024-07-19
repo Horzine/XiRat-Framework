@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using UnityEngine;
 
 namespace Xi_
@@ -41,7 +43,7 @@ namespace Xi_
             print(int_1);
         }
     }
-
+#if UNITY_EDITOR
     [CustomEditor(typeof(Test_DataClass))]
     public class Test_DataClassEditor : Editor
     {
@@ -123,4 +125,5 @@ namespace Xi_
             }
         }
     }
+#endif
 }
