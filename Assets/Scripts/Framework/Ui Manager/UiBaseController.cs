@@ -2,7 +2,7 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
-using Xi.Extend.UnityExtend;
+using Xi.Extension.UnityExtension;
 using Xi.Tools;
 
 namespace Xi.Framework
@@ -56,14 +56,14 @@ namespace Xi.Framework
 
         protected async UniTask DoOpenAsync()
         {
-            WindowObj = await AssetManager.Instance.InstantiateScriptAsync<TWindow>(UiNameConst_Extend.AddressableName(PrefabAssetPath),
+            WindowObj = await AssetManager.Instance.InstantiateScriptAsync<TWindow>(UiNameConst_Extension.AddressableName(PrefabAssetPath),
                 Vector3.zero,
                 Quaternion.identity,
                 IsOverlayMode ? _uiRootObj.OverlayModeCanvasTsf : _uiRootObj.CameraModeCanvasTsf,
                 CancellationToken.None,
                 false);
             WindowObj.GetRectTransform().anchoredPosition3D = Vector3.zero;
-            WindowObj.BaseWindowInit(UiEnum_Extend.GetSortingOrder(UiEnumValue));
+            WindowObj.BaseWindowInit(UiEnum_Extension.GetSortingOrder(UiEnumValue));
             OnWindowInstantiateCallback();
             await WindowObj.OpenAsync();
             if (_willRelaseAfterOpening != null)

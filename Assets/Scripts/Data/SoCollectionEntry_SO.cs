@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using Xi.Extend.Attribute;
+using Xi.Extension.Attribute;
 #if UNITY_EDITOR
 #endif
 

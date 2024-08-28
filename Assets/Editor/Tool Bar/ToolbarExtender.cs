@@ -4,7 +4,7 @@ using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
-namespace Xi.EditorExtend
+namespace Xi.EditorExtension
 {
     [InitializeOnLoad]
     public static class ToolbarExtender

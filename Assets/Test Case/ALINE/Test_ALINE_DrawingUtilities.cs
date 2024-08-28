@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Drawing;
 using UnityEngine;
-using Xi.Extend;
+using Xi.Extension;
 
 namespace Xi.TestCase
 {

@@ -149,7 +149,7 @@ namespace Xi.Framework
         }
     }
 
-    public static class EventCenter_Extend
+    public static class EventCenter_Extension
     {
         public static void RegisterListener<T>(this IEventListener<T> eventListener,
             [CallerFilePath] string filePath = "",

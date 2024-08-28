@@ -2,7 +2,7 @@
 using UnityEngine;
 using Xi.Tools;
 
-namespace Xi.EditorExtend
+namespace Xi.EditorExtension
 {
     [InitializeOnLoad]
     public static class LocalTestModePlayButton

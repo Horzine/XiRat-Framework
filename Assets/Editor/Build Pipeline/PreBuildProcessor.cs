@@ -2,7 +2,7 @@
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
 
-namespace Xi.EditorExtend
+namespace Xi.EditorExtension
 {
     public class PreBuildProcessor : IPreprocessBuildWithReport
     {

@@ -1,7 +1,7 @@
 ﻿using Cysharp.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEngine;
-using Xi.Extend.UnityExtend;
+using Xi.Extension.UnityExtension;
 using Xi.Tools;
 
 namespace Xi.Framework
@@ -37,7 +37,7 @@ namespace Xi.Framework
 
         private void SetCanvasSortOrder(int sortOrder)
         {
-            if (sortOrder == UiEnum_Extend.kDefaultOrder)
+            if (sortOrder == UiEnum_Extension.kDefaultOrder)
             {
                 return;
             }

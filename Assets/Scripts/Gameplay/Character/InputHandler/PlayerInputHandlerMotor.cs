@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using Xi.Config;
-using Xi.Extend.UnityExtend;
+using Xi.Extension.UnityExtension;
 using static UnityEngine.InputSystem.InputAction;
 
 namespace Xi.Gameplay.Character.InputHandler

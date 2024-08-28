@@ -1,12 +1,14 @@
 ﻿1. SubBuff : ISubEffect, 利用 is as 去判断哪些受到 ISubEffect 影响
-2. 修饰器设计模式, 举例: Buff生效的修饰]
+2. 修饰器设计模式, 举例: Buff生效的修饰
 4. UpdateInvoker
 11. Cenimachine 的虚拟相机通过切换 priority 实现
-
 12. 需要打包的场景，每个场景都需要加一个父级文件夹
 13. 场景中 prefab 的 AB 包引用关系
 14. AssetLoader 渐进加载,和高优先级加载
 15. 场景-> Area -> Level 动态加载
-
 16. local test 在 第一个 场景不生效
 17. txt 配表工具开发, 反射实现标记特性的成员生成common和类型名字, 反射进行数据和SO之间的自动赋值操作
+18. networkeventId 自动生成
+19. 前缀树, 常用数据结构, 数学练习巩固
+20. Idle Game Big Number 数据结构
+21. 通用的 burst层，支持 async

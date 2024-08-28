@@ -3,7 +3,7 @@ using UnityEditor.Callbacks;
 using UnityEngine;
 using Xi.Framework;
 
-namespace Xi.EditorExtend
+namespace Xi.EditorExtension
 {
     [InitializeOnLoad]
     public static class LocalTestMode

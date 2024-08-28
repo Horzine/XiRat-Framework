@@ -13,7 +13,7 @@
         Metagame_SelectMap,
     }
 
-    public static class UiEnum_Extend
+    public static class UiEnum_Extension
     {
         public const int kDefaultOrder = 0;
         public static int GetSortingOrder(UiEnum uiEnum)

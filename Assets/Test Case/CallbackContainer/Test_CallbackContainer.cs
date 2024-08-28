@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
-using Xi.Extend.Collection;
+using Xi.Extension.Collection;
 using Xi.Tools;
 
 namespace Xi.TestCase

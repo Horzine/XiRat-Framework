@@ -15,7 +15,7 @@ using Xi.Tools;
 /// Based on an idea on this thread:
 /// http://forum.unity3d.com/threads/157502-Executing-first-scene-in-build-settings-when-pressing-play-button-in-editor
 /// </description>
-namespace Xi.EditorExtend
+namespace Xi.EditorExtension
 {
     [InitializeOnLoad]
     internal static class SceneAutoLoaderButton

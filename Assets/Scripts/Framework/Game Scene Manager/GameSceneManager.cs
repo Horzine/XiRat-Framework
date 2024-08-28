@@ -83,7 +83,7 @@ namespace Xi.Framework
         private async UniTask<AsyncOperationHandle<SceneInstance>> LoadSceneAsync(string sceneName, bool isAdditive, bool autoActivateOnLoad)
         {
             float startTime = Time.realtimeSinceStartup;
-            var op = Addressables.LoadSceneAsync(SceneNameConst_Extend.SceneAddressableName(sceneName), isAdditive ? LoadSceneMode.Additive : LoadSceneMode.Single, activateOnLoad: autoActivateOnLoad);
+            var op = Addressables.LoadSceneAsync(SceneNameConst_Extension.SceneAddressableName(sceneName), isAdditive ? LoadSceneMode.Additive : LoadSceneMode.Single, activateOnLoad: autoActivateOnLoad);
             await op;
             LoadSceneAsyncOnCompleted(sceneName, isAdditive, op, startTime);
             return op;

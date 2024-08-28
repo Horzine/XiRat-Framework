@@ -57,8 +57,8 @@ namespace Xi.Framework
             await AssetManager.Instance.InitAsync(gameSceneManager);
             var assetManager = AssetManager.Instance;
             await GameMain.Instance.InitAsync(gameSceneManager,
-                MetagameGameInstance_Extend.CreateMetagameGameInstance,
-                GameplayGameInstance_Extend.CreateGameplayGameInstance);
+                MetagameGameInstance_Extension.CreateMetagameGameInstance,
+                GameplayGameInstance_Extension.CreateGameplayGameInstance);
             await GameObjectPoolManager.Instance.InitAsync(gameSceneManager);
             await UiManager.Instance.InitAsync(GetTypesFromAssembly(), assetManager);
             await EventCenter.Instance.InitAsync();
@@ -77,8 +77,8 @@ namespace Xi.Framework
             AssetManager.Instance.Init(gameSceneManager);
             var assetManager = AssetManager.Instance;
             GameMain.Instance.Init(gameSceneManager,
-                 MetagameGameInstance_Extend.CreateMetagameGameInstance,
-                 GameplayGameInstance_Extend.CreateGameplayGameInstance);
+                 MetagameGameInstance_Extension.CreateMetagameGameInstance,
+                 GameplayGameInstance_Extension.CreateGameplayGameInstance);
             GameObjectPoolManager.Instance.Init(gameSceneManager);
             UiManager.Instance.Init(GetTypesFromAssembly(), assetManager);
             EventCenter.Instance.Init();

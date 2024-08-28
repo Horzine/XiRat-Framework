@@ -14,7 +14,7 @@
         public const string kMetagame_SelectMap = "Ui_Metagame_SelectMap";
     }
 
-    public static class UiNameConst_Extend
+    public static class UiNameConst_Extension
     {
         public static string AddressableName((string groupName, string uiFeatureName, string uiPrefabName) prefabAssetName)
              => $"{prefabAssetName.groupName}/{prefabAssetName.uiFeatureName}/{prefabAssetName.uiPrefabName}{AssetSuffix.kPrefabSuffix}";

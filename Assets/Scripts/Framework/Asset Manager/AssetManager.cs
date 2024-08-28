@@ -179,7 +179,7 @@ namespace Xi.Framework
         }
     }
 
-    public static class AssetManager_Extend
+    public static class AssetManager_Extension
     {
         public static void Release(this AssetManager instance, ref GameObject goRef, AsyncOperationHandle operationHandle)
         {

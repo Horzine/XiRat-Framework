@@ -39,7 +39,7 @@ namespace Xi.Gameplay.Main
         }
     }
 
-    public static class GameplayGameInstance_Extend
+    public static class GameplayGameInstance_Extension
     {
         public static GameplayGameInstance CreateGameplayGameInstance() => new();
 

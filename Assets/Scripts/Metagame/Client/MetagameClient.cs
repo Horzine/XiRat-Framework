@@ -73,7 +73,7 @@ namespace Xi.Metagame.Client
         public T GetSystem<T>(string systemName) where T : MetagameSystem => _allSystem.TryGetValue(systemName, out var system) ? system as T : null;
     }
 
-    public static class MetagameClient_Extend
+    public static class MetagameClient_Extension
     {
         public static void CreateAllSystemInstance(this MetagameClient metagameClient)
         {

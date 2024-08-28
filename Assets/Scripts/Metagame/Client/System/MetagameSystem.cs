@@ -1,6 +1,6 @@
 ﻿using System;
 using MemoryPack;
-using Xi.Extend.Collection;
+using Xi.Extension.Collection;
 
 namespace Xi.Metagame.Client.System
 {

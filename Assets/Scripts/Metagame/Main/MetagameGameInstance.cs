@@ -52,7 +52,7 @@ namespace Xi.Metagame.Main
         }
     }
 
-    public static class MetagameGameInstance_Extend
+    public static class MetagameGameInstance_Extension
     {
         public static MetagameGameInstance CreateMetagameGameInstance() => new();
 

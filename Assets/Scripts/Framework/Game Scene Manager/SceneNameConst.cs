@@ -8,7 +8,7 @@
         public const string kMap_1 = "Map_1";
     }
 
-    public static class SceneNameConst_Extend
+    public static class SceneNameConst_Extension
     {
         public static string SceneAddressableName(string sceneName) => $"{AssetGroupNameConst.kAddressableGroupName_Scene}/{sceneName}";
     }

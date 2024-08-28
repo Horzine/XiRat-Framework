@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using Xi.Extend.UnityExtend;
+using Xi.Extension.UnityExtension;
 using Xi.Framework;
 using Xi.Gameplay.Character.InputHandler;
 

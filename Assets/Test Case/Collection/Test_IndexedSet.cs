@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.Assertions;
-using Xi.Extend.Collection;
+using Xi.Extension.Collection;
 
 namespace Xi.TestCase
 {

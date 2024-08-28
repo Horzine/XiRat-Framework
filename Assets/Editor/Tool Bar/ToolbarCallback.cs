@@ -8,7 +8,7 @@ using UnityEngine.UIElements;
 using UnityEngine.Experimental.UIElements;
 #endif
 
-namespace Xi.EditorExtend
+namespace Xi.EditorExtension
 {
     public static class ToolbarCallback
     {

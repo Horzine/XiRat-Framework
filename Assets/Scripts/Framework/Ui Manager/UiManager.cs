@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.ResourceManagement.ResourceProviders;
-using Xi.Extend.Collection;
+using Xi.Extension.Collection;
 using Xi.Tools;
 
 namespace Xi.Framework

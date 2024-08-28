@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using UnityEngine.Pool;
-using Xi.Extend.UnityExtend;
+using Xi.Extension.UnityExtension;
 using Object = UnityEngine.Object;
 
 namespace Xi.Framework
