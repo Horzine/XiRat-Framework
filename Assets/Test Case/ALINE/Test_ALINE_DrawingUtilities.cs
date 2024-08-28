@@ -22,7 +22,7 @@ namespace Xi.TestCase
 
         private void BoundsForm3Point()
         {
-            var points = new List<Vector3> { new Vector3(0, 0, 0), new Vector3(1, 0, 0)/*, new Vector3(0, 1, 1) */};
+            var points = new List<Vector3> { new(0, 0, 0), new(1, 0, 0)/*, new Vector3(0, 1, 1) */};
             Draw.WireBox(DrawingUtilities.BoundsFrom(points), Color.green);
         }
     }

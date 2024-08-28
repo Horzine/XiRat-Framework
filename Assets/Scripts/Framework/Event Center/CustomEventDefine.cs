@@ -17,7 +17,6 @@
             // 自定义事件 Event2 的参数
         }
 
-
         public class Event2Event12 : Event2Event4
         {
             // 自定义事件 Event2 的参数
@@ -46,6 +45,5 @@
         {
             // 自定义事件 Event2 的参数
         }
-
     }
 }

@@ -39,7 +39,7 @@ namespace Xi_
 
         private void Update()
         {
-            var int_1 = (dataClasses.First() as DataClass_1).info.info_1_int;
+            int int_1 = (dataClasses.First() as DataClass_1).info.info_1_int;
             print(int_1);
         }
     }

@@ -42,9 +42,10 @@ namespace Xi.Config.Editor
             var sb = new StringBuilder();
             foreach (var type in configDataTypes)
             {
-                var typeName = type.Name;
+                string typeName = type.Name;
                 sb.AppendLine($"            ConfigUtils.LoadAndParseConfigDictionary(\"{typeName}\", ref {ConfigDataGenerateTool.ClassNameParseToFieldName(typeName)});");
             }
+
             return template.Replace("{CONTENT}", sb.ToString());
         }
     }

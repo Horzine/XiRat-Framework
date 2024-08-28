@@ -15,9 +15,9 @@ namespace Xi.Metagame.Ui
             => (AssetGroupNameConst.kAddressableGroupName_MetagameUi, UiFeatureNameConst.kMetagame_ClassBuild, UiPrefabNameConst.kMetagame_ClassBuild);
         protected override bool IsOverlayMode => false;
 
-        protected override void OnCloseAccomplishCallback() { WindowObj.RemoveCallback(); }
-        protected override void OnOpenAccomplishCallback() { WindowObj.AddCallback(); }
-        protected override void OnWindowInstantiateCallback() { XiLogger.CallMark(); }
-        protected override void OnWindowDestoryCallback() { XiLogger.CallMark(); }
+        protected override void OnCloseAccomplishCallback() => WindowObj.RemoveCallback();
+        protected override void OnOpenAccomplishCallback() => WindowObj.AddCallback();
+        protected override void OnWindowInstantiateCallback() => XiLogger.CallMark();
+        protected override void OnWindowDestoryCallback() => XiLogger.CallMark();
     }
 }

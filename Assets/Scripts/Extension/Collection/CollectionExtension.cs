@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Xi.Extension.Collection
 {
-    public static partial class ExtendCollection
+    public static partial class CollectionExtension
     {
         public struct Pair<K, V>
         {

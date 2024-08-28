@@ -6,8 +6,9 @@ namespace Xi.Extension.Collection
 {
     public class IndexedSet<T> : IList<T>
     {
-        private readonly List<T> _elements = new();
-        private readonly Dictionary<T, int> _hashedElementIdx = new();
+        private const int kDefaultCapacity = 8;
+        private readonly List<T> _elements = new(kDefaultCapacity);
+        private readonly Dictionary<T, int> _hashedElementIdx = new(kDefaultCapacity);
 
         public void Add(T item)
         {

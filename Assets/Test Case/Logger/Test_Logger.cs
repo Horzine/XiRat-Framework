@@ -18,7 +18,6 @@ namespace Xi.TestCase
 
             await Task.Delay(1000);
 
-
             try
             {
                 throw new Exception("的异常！");

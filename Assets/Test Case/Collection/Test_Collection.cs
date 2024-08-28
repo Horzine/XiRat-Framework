@@ -13,9 +13,9 @@ namespace Xi.TestCase
         private void Func_1()
         {
             string space = "__________";
-            ExtendCollection.Foreach(3, (x) => Debug.Log(x));
+            CollectionExtension.Foreach(3, (x) => Debug.Log(x));
             Debug.Log(space);
-            ExtendCollection.Foreach(4, 3, (y, x) => Debug.Log($"{x}/{y}"));
+            CollectionExtension.Foreach(4, 3, (y, x) => Debug.Log($"{x}/{y}"));
             Debug.Log(space);
             var list = new List<int> { 1, 2, 3, 4, 5, };
             list.ForEach((x) => Debug.Log(x));
