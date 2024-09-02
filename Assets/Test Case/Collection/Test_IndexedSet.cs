@@ -27,6 +27,14 @@ namespace Xi.TestCase
             GetEnumerator_ReturnsEnumerator();
 
             print("Test End");
+
+            var set = new IndexedSet<int>
+            {
+                0,1,2,3,4,5,6,
+            };
+
+            set.RemoveAt(0);
+
         }
 
         public void AddElement_AddsToSet()

@@ -4,6 +4,19 @@ using System.Collections.Generic;
 
 namespace Xi.Extension.Collection
 {
+    /// <summary>
+    /// 
+    /// !!! No Guarantee Element Order  !!!
+    /// 
+    /// Add: O(1)
+    /// Remove: O(1)
+    /// Contains: O(1)
+    /// IndexOf: O(1)
+    /// RemoveAt: O(1)
+    /// this[int index]: O(1)
+    /// 
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class IndexedSet<T> : IList<T>
     {
         private const int kDefaultCapacity = 8;
@@ -12,12 +25,14 @@ namespace Xi.Extension.Collection
 
         public void Add(T item)
         {
-            if (!_hashedElementIdx.ContainsKey(item))
+            if (_hashedElementIdx.ContainsKey(item))
             {
-                int index = _elements.Count;
-                _hashedElementIdx.Add(item, index);
-                _elements.Add(item);
+                throw new InvalidOperationException("Element already exists in the IndexedSet.");
             }
+
+            int index = _elements.Count;
+            _hashedElementIdx.Add(item, index);
+            _elements.Add(item);
         }
 
         public bool Remove(T item)
@@ -62,7 +77,7 @@ namespace Xi.Extension.Collection
                 (_hashedElementIdx[_elements[index]], _hashedElementIdx[_elements[lastIndex]]) = (index, lastIndex);
             }
 
-            _hashedElementIdx.Remove(_elements[index]);
+            _hashedElementIdx.Remove(_elements[lastIndex]);
             _elements.RemoveAt(lastIndex);
         }
 
@@ -71,6 +86,11 @@ namespace Xi.Extension.Collection
             get => _elements[index];
             set
             {
+                if (_hashedElementIdx.ContainsKey(value))
+                {
+                    throw new InvalidOperationException("Element already exists in the IndexedSet.");
+                }
+
                 var oldItem = _elements[index];
                 _hashedElementIdx.Remove(oldItem);
 
