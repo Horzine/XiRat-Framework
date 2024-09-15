@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -12,6 +13,7 @@ namespace Xi.Tools
         private const string kCallMarkStr = "****** CALL MARK ******";
         private const string kFrameCountNotInMainThread = "[NotMain]";
         private const string kNoSetupMainThread = "[Null]";
+        private static readonly Dictionary<string, string> _fileNameCache = new();
         private static Thread _mainThread;
         private static bool IsMainThread => _mainThread == Thread.CurrentThread;
 
@@ -47,7 +49,14 @@ namespace Xi.Tools
         private static void LogMessage(string message, LogType logType, string filePath, string methodName, int lineNumber, Object context = null)
         {
             int curThreadId = Thread.CurrentThread.ManagedThreadId;
-            string logMsg = $" [T:{curThreadId}] [{Path.GetFileNameWithoutExtension(filePath)}] <{methodName}> ({lineNumber}) ===> {message}";
+            if (!_fileNameCache.TryGetValue(filePath, out string fileName))
+            {
+                fileName = Path.GetFileNameWithoutExtension(filePath);
+                fileName = fileName[(fileName.LastIndexOf('\\') + 1)..];
+                _fileNameCache.Add(filePath, fileName);
+            }
+
+            string logMsg = $" [T:{curThreadId}] [{fileName}] <{methodName}> ({lineNumber}) ===> {message}";
             string frameCount = _mainThread == null
                 ? kNoSetupMainThread
                 : IsMainThread
