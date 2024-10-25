@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.UI;
+using Xi.Tools;
 
 namespace Xi.TestCase
 {
@@ -14,6 +15,8 @@ namespace Xi.TestCase
         [SerializeField] private AssetReference _target;
         [SerializeField] private Image _image;
 
+        private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
+
         private void Start()
         {
             var token = this.GetCancellationTokenOnDestroy();
@@ -21,6 +24,18 @@ namespace Xi.TestCase
 
             TestDOTweenAsync().Forget();
 
+            TestFor().Forget();
+        }
+
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.Q))
+            {
+                _cancellationTokenSource.Cancel();
+                XiLogger.CallMark();
+                _cancellationTokenSource = new CancellationTokenSource();
+                XiLogger.CallMark();
+            }
         }
 
         public async UniTaskVoid InitializeAsync(AssetReference target, CancellationToken token)
@@ -71,6 +86,25 @@ namespace Xi.TestCase
         {
             var tmp = GetComponent<TMP_InputField>();
             await tmp.OnValueChangedAsync();
+        }
+
+        private async UniTaskVoid TestFor()
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                XiLogger.CallMark();
+                await DoTestFor(_cancellationTokenSource.Token);
+                XiLogger.CallMark();
+            }
+
+            XiLogger.LogError("123");
+        }
+
+        private async UniTask DoTestFor(CancellationToken cancellationTokenSource)
+        {
+            XiLogger.CallMark();
+            await UniTask.Delay(1000, cancellationToken: cancellationTokenSource);
+            XiLogger.CallMark();
         }
     }
 }
